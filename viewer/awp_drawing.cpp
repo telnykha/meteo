@@ -1,12 +1,12 @@
 //---------------------------------------------------------------------------
-
-
 #pragma hdrstop
-
 #include "awp_drawing.h"
+#include <math.h>
 
-//---------------------------------------------------------------------------
-
+#define _CHECK_RESULT_(r) if ((r) != AWP_OK) goto CLEANUP;
+#define _ERROR_EXIT_RES_(v) {res = v; goto CLEANUP;}
+#define _PIXEL(img, x, y, ch, type)\
+	((type*)img->pPixels)[y*img->sSizeX*img->bChannels + x*img->bChannels + ch]
 
 //---------------------------------------------------------------------------
 int _awpDrawLine(awpImage* pImage, awpPoint p1, awpPoint p2, AWPBYTE bChan, AWPDOUBLE dValue, double v1,double v2)
@@ -46,8 +46,8 @@ int _awpDrawLine(awpImage* pImage, awpPoint p1, awpPoint p2, AWPBYTE bChan, AWPD
 	else if (delta_y == 0) incy = 0;
 	else incy = -1;
 
-	delta_x = abs(delta_x);
-	delta_y = abs(delta_y);
+	delta_x = fabs(delta_x);
+	delta_y = fabs(delta_y);
 	if (delta_x > delta_y) distance = delta_x;
 	else distance = delta_y;
 
@@ -84,8 +84,8 @@ int _awpDrawLine(awpImage* pImage, awpPoint p1, awpPoint p2, AWPBYTE bChan, AWPD
 
 		xerr += delta_x;
 		yerr += delta_y;
-		if (xerr > (AWPINT)distance){xerr -= (AWPINT)distance; startx += (DWORD)incx;}
-		if (yerr > (AWPINT)distance){yerr -= (AWPINT)distance; starty += (DWORD)incy;}
+		if (xerr > (AWPINT)distance){xerr -= (AWPINT)distance; startx += (AWPDWORD)incx;}
+		if (yerr > (AWPINT)distance){yerr -= (AWPINT)distance; starty += (AWPDWORD)incy;}
 	}
 
 CLEANUP:
@@ -95,11 +95,11 @@ AWPRESULT _awpDrawPoint(awpImage* pImage, awpPoint p, AWPBYTE bChan, AWPDOUBLE d
 {
 	AWPRESULT res;
 	AWPBYTE*	b;
-	SHORT*	s;
+	AWPSHORT*	s;
 	AWPFLOAT*  f;
 	AWPDOUBLE* d;
-	WORD  width; /*width of image line in elements*/
-	DWORD pos;
+	AWPWORD  width; /*width of image line in elements*/
+	AWPDWORD pos;
 	res = AWP_OK;
 	_CHECK_RESULT_(( res = awpCheckImage(pImage)))
 	/*check the position*/
@@ -118,8 +118,8 @@ AWPRESULT _awpDrawPoint(awpImage* pImage, awpPoint p, AWPBYTE bChan, AWPDOUBLE d
 			b[pos] = (AWPBYTE)dValue;
 		break;
 	case AWP_SHORT:
-			s = (SHORT*)pImage->pPixels;
-			s[pos] = (SHORT)dValue;
+			s = (AWPSHORT*)pImage->pPixels;
+			s[pos] = (AWPSHORT)dValue;
 		break;
 	case AWP_FLOAT:
 			f = (AWPFLOAT*)pImage->pPixels;
@@ -307,8 +307,8 @@ AWPRESULT _awpDrawThickLine(awpImage* pImage, awpPoint p1, awpPoint p2, AWPBYTE 
 
 		xerr += delta_x;
 		yerr += delta_y;
-		if (xerr > (AWPINT)distance){xerr -= (AWPINT)distance; startx += (DWORD)incx;}
-		if (yerr > (AWPINT)distance){yerr -= (AWPINT)distance; starty += (DWORD)incy;}
+		if (xerr > (AWPINT)distance){xerr -= (AWPINT)distance; startx += (AWPDWORD)incx;}
+		if (yerr > (AWPINT)distance){yerr -= (AWPINT)distance; starty += (AWPDWORD)incy;}
 	}
 
 CLEANUP:
