@@ -644,9 +644,10 @@ void __fastcall TForm2::DrawSourceConeInter(int channel)
     double* t = (double*)tmp->pPixels;
     awpImage* res = NULL;
     int idx  = ComboBox1->ItemIndex;
-    double len = m_source->sSizeX;
-    int len1   = m_source->sSizeX-1;
-    awpCreateImage(&res, 2*m_source->sSizeX*this->m_2DOptions.dist_x / 450, 2*m_source->sSizeX*this->m_2DOptions.dist_x / 450, 1, AWP_DOUBLE);
+    double len    = m_source->sSizeX;
+    int    len1   = len -1;
+    int    size = ceil(2.*m_source->sSizeX*this->m_2DOptions.dist_x / 450.);
+    awpCreateImage(&res, size, size, 1, AWP_DOUBLE);
     double* r  = (double*)res->pPixels;
 
     awpPoint p1,p2,p3,p4, c[5];
@@ -656,7 +657,7 @@ void __fastcall TForm2::DrawSourceConeInter(int channel)
     contour.NumPoints = 5;
     contour.Direction = true;
     contour.Points = c;
-    int l = m_source->sSizeX*this->m_2DOptions.dist_x / 450;
+    int l = size / 2;
     len1 = l;
     for (int i = 0; i < m_azmuth->sSizeX-1; i++ )
     {
@@ -690,7 +691,6 @@ void __fastcall TForm2::DrawSourceConeInter(int channel)
             if (v1 == v2 && v1 == v3 && v1 == v4)
                 continue;
 
-               //    awpDrawPolygon(res, &contour, 0, 100, 0);
 
             double l1,l2;
             l1 = sqrt((c[1].X - c[0].X)*(c[1].X - c[0].X) + (c[1].Y - c[0].Y)*(c[1].Y - c[0].Y));
@@ -737,15 +737,6 @@ void __fastcall TForm2::DrawSourceConeInter(int channel)
                   }
                 }
             }
-
-
-            awpPoint p1,p2;
-            p1.X = c[0].X;
-            p2.X = c[1].X;
-            p1.Y = c[0].Y;
-            p2.Y = c[1].Y;
-
-          // _awpDrawThickLine(res, p1,p2, 0, (v1+v2)/2, v1,v2);
         }
     }
 
