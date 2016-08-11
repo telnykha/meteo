@@ -4,8 +4,8 @@
   <MACROS>
     <VERSION value="BCB.06.00"/>
     <PROJECT value="..\netCDFLib\bin\netcdf2.exe"/>
-    <OBJFILES value="netcdf2.obj MainCdf2.obj Cube3D.obj OptionsForm.obj ImageData.obj 
-      Convert_Log_Lon.obj awp_drawing.obj"/>
+    <OBJFILES value="netcdf2.obj MainCdf2.obj Cube3D.obj OptionsForm.obj Convert_Log_Lon.obj 
+      awp_drawing.obj"/>
     <RESFILES value="netcdf2.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
@@ -60,7 +60,6 @@
       <FILE FILENAME="MainCdf2.cpp" FORMNAME="Form2" UNITNAME="MainCdf2" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="Cube3D.cpp" FORMNAME="" UNITNAME="Cube3D" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="OptionsForm.cpp" FORMNAME="OptionsDlg" UNITNAME="OptionsForm" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="ImageData.cpp" FORMNAME="" UNITNAME="ImageData" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="Convert_Log_Lon.cpp" FORMNAME="" UNITNAME="Convert_Log_Lon" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="awp_drawing.cpp" FORMNAME="" UNITNAME="awp_drawing" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
   </FILELIST>
