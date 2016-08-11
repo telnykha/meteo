@@ -140,6 +140,11 @@ void __fastcall TForm2::OpenNCFile(const char* lpFileName)
           size_t start[3] = {0,0,0};
           size_t count[3]  = {c,h,w};
           double* data = (double*)malloc(c*h*w*sizeof(double));
+          if (data == NULL)
+          {
+             ShowMessage("data == NULL");
+             return;
+          }
           status = nc_get_vara_double(this->m_ncid, varID, start, count, data);
           if (status != NC_NOERR)
               ShowMessage("ошибка!");

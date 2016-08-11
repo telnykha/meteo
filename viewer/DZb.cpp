@@ -10,7 +10,7 @@
 //---------------------------------------------------------------------------
 
 #pragma package(smart_init)
-  void DZb=(double ref,double dist, double x)
-  {
+void DZb(double ref,double dist, double x)
+{
   x=ct-(ref+log10(dist));
-  }
+}

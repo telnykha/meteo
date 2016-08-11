@@ -5,7 +5,7 @@
     <VERSION value="BCB.06.00"/>
     <PROJECT value="..\netCDFLib\bin\netcdf2.exe"/>
     <OBJFILES value="netcdf2.obj MainCdf2.obj Cube3D.obj OptionsForm.obj Convert_Log_Lon.obj 
-      awp_drawing.obj"/>
+      awp_drawing.obj DZb.obj"/>
     <RESFILES value="netcdf2.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
@@ -62,6 +62,7 @@
       <FILE FILENAME="OptionsForm.cpp" FORMNAME="OptionsDlg" UNITNAME="OptionsForm" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="Convert_Log_Lon.cpp" FORMNAME="" UNITNAME="Convert_Log_Lon" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="awp_drawing.cpp" FORMNAME="" UNITNAME="awp_drawing" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="DZb.cpp" FORMNAME="" UNITNAME="DZb" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
   </FILELIST>
   <BUILDTOOLS>
   </BUILDTOOLS>
