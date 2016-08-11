@@ -1,8 +1,8 @@
 object Form2: TForm2
-  Left = 385
-  Top = 131
+  Left = 425
+  Top = 151
   Width = 757
-  Height = 591
+  Height = 595
   Caption = 'Form2'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -16,10 +16,10 @@ object Form2: TForm2
   PixelsPerInch = 96
   TextHeight = 13
   object Splitter1: TSplitter
-    Left = 353
+    Left = 0
     Top = 41
     Width = 3
-    Height = 384
+    Height = 388
     Cursor = crHSplit
   end
   object Panel1: TPanel
@@ -99,19 +99,19 @@ object Form2: TForm2
     end
   end
   object FImage1: TFImage
-    Left = 0
+    Left = 3
     Top = 41
-    Width = 353
-    Height = 384
+    Width = 738
+    Height = 388
     Cursor = 1
     BorderStyle = bsFSingle
-    Align = alLeft
+    Align = alClient
     ParentColor = False
     OnMouseMove = FImage1MouseMove
   end
   object Panel2: TPanel
     Left = 0
-    Top = 425
+    Top = 429
     Width = 741
     Height = 88
     Align = alBottom
@@ -225,7 +225,7 @@ object Form2: TForm2
   end
   object StatusBar1: TStatusBar
     Left = 0
-    Top = 513
+    Top = 517
     Width = 741
     Height = 19
     Panels = <
@@ -236,18 +236,19 @@ object Form2: TForm2
     SimplePanel = False
   end
   object Panel3: TPanel
-    Left = 356
+    Left = 3
     Top = 41
-    Width = 385
-    Height = 384
+    Width = 738
+    Height = 388
     Align = alClient
     TabOrder = 4
+    Visible = False
     OnResize = Panel3Resize
     object PaintBox1: TPaintBox
       Left = 1
       Top = 1
-      Width = 383
-      Height = 382
+      Width = 736
+      Height = 386
       Align = alClient
       OnMouseDown = PaintBox1MouseDown
       OnMouseMove = PaintBox1MouseMove

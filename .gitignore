@@ -48,3 +48,9 @@ Temporary Items
 *.obj
 viewer/netcdf2.exe
 *.tds
+*.~h
+*.~cpp
+netCDFLib/bin/netcdf2.exe
+*.~ddp
+*.~dfm
+*.~bpr

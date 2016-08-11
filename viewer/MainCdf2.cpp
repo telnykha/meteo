@@ -84,9 +84,9 @@ void __fastcall TForm2::SpeedButton1Click(TObject *Sender)
 
    ComboBox1->ItemIndex = 0;
    this->Draw2DScene();
-   this->MakeSourceCone3D();
-   this->MakeInterCone3D();
-   this->DrawScene();
+//   this->MakeSourceCone3D();
+//   this->MakeInterCone3D();
+//   this->DrawScene();
    OpenFlashes("C:\\_alt\\++netcdf_1\\flashes.txt");
 }
 
