@@ -192,7 +192,7 @@ private:	// User declarations
         void __fastcall MakeInterPic(double H, double R, awpImage* img);
         void __fastcall FindAlfaMaxMin(double& amin, double& amax);
         awpPoint __fastcall FindFiTheta(double fi, double theta);
-        void __fastcall OpenNCFile(const char* lpFileName);
+        bool __fastcall OpenNCFile(const char* lpFileName);
 
         void __fastcall OpenFlashes(const char* lpFileName);
         void __fastcall DrawFlashes();

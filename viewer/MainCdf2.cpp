@@ -1,4 +1,3 @@
-
 //---------------------------------------------------------------------------
 
 #include <vcl.h>
@@ -27,7 +26,7 @@ __fastcall TForm2::TForm2(TComponent* Owner)
 
     m_mdown = false;
 
-    m_2DViewOptions = eIntepolatedCone;
+    m_2DViewOptions = eSourceData;
     m_3DViewOptions = e3dSourceData;
 
     m_2DOptions.dist_x = 100;
@@ -50,7 +49,6 @@ __fastcall TForm2::TForm2(TComponent* Owner)
 
 }
 //---------------------------------------------------------------------------
-
 void __fastcall TForm2::SpeedButton1Click(TObject *Sender)
 {
     if (m_ncid != 0)
@@ -83,112 +81,186 @@ void __fastcall TForm2::SpeedButton1Click(TObject *Sender)
 //   this->MakeSourceCone3D();
 //   this->MakeInterCone3D();
 //   this->DrawScene();
-   OpenFlashes("C:\\_alt\\++netcdf_1\\flashes.txt");
+//   OpenFlashes("C:\\_alt\\++netcdf_1\\flashes.txt");
 }
 
-void __fastcall TForm2::OpenNCFile(const char* lpFileName)
+bool __fastcall TForm2::OpenNCFile(const char* lpFileName)
 {
-              int status = NC_NOERR;
-              int ncid   = 0;
-              AnsiString FileName = lpFileName;
-              status = nc_open(lpFileName, 0, &m_ncid);
-              if (status != NC_NOERR)
-                  ShowMessage("не могу открыть файл " + FileName);
-              int  ndims, nvars, ngatts, unlimdimid;
-              status = nc_inq(m_ncid, &ndims, &nvars, &ngatts, &unlimdimid);
-              if (status != NC_NOERR)
-                  ShowMessage("не могу открыть файл " + FileName);
-              int varID;
-              nc_inq_varid(this->m_ncid, "Reflectivity", &varID);
+      if (m_ncid != 0)
+      {
+          nc_close(m_ncid);
+          m_ncid = 0;
+      }
+
+      int status = NC_NOERR;
+      int ncid   = 0;
+
+      AnsiString FileName = lpFileName;
+      status = nc_open(lpFileName, 0, &m_ncid);
+
+      if (status != NC_NOERR)
+      {
+          ShowMessage("не могу открыть файл " + FileName);
+          return false;
+      }
+      //
+      Caption = lpFileName;
+      int  ndims, nvars, ngatts, unlimdimid;
+      status = nc_inq(m_ncid, &ndims, &nvars, &ngatts, &unlimdimid);
+      if (status != NC_NOERR)
+      {
+          ShowMessage("не могу открыть файл " + FileName);
+          return false;
+      }
 
 
-              nc_type xtypep;
-              int ndimsp;
-              int dimidsp[128];
-              int nattsp;
-              nc_inq_var(this->m_ncid,  varID, NULL, &xtypep, &ndimsp, dimidsp, &nattsp);
+      int varID;
+      status = nc_inq_varid(this->m_ncid, "Reflectivity", &varID);
+       if (status != NC_NOERR)
+      {
+          ShowMessage("nc_inq_varid Reflectivity" + FileName);
+          return false;
+      }
 
-              char buf[NC_MAX_NAME+1];
-              int w, h, c;
-              for (int i = 0; i < ndimsp; i++)
-              {
-                 size_t len;
-                 nc_inq_dim(this->m_ncid,dimidsp[i], buf, &len);
-                 AnsiString str = buf;
+      nc_type xtypep;
+      int ndimsp;
+      int dimidsp[128];
+      int nattsp;
+      status = nc_inq_var(this->m_ncid,  varID, NULL, &xtypep, &ndimsp, dimidsp, &nattsp);
+       if (status != NC_NOERR)
+      {
+          ShowMessage("nc_inq_var" + FileName);
+          return false;
+      }
 
-                   if (str == "scanR")
-                   {
-                      c = len;
-                   }
-                   else if (str == "radialR")
-                   {
-                      h = len;
-                   }
-                   else if (str == "gateR")
-                   {
-                      w = len;
-                   }
+      char buf[NC_MAX_NAME+1];
+      int w, h, c;
+      for (int i = 0; i < ndimsp; i++)
+      {
+         size_t len;
+         nc_inq_dim(this->m_ncid,dimidsp[i], buf, &len);
+         AnsiString str = buf;
 
-             }
+           if (str == "scanR")
+           {
+              c = len;
+           }
+           else if (str == "radialR")
+           {
+              h = len;
+           }
+           else if (str == "gateR")
+           {
+              w = len;
+           }
 
-          _AWP_SAFE_RELEASE_(m_source);
-          _AWP_SAFE_RELEASE_(m_azmuth);
+     }
 
-          awpCreateImage(&m_source, w,h,c, AWP_DOUBLE);
-          double* p = (double*)m_source->pPixels;
+  _AWP_SAFE_RELEASE_(m_source);
+  _AWP_SAFE_RELEASE_(m_azmuth);
 
-          size_t start[3] = {0,0,0};
-          size_t count[3]  = {c,h,w};
-          double* data = (double*)malloc(c*h*w*sizeof(double));
-          if (data == NULL)
+  if (awpCreateImage(&m_source, w,h,c, AWP_DOUBLE) != AWP_OK)
+  {
+     AnsiString msg = "awpCreateImage != AWP_OK ";
+     msg += IntToStr(w);
+     msg += " ";
+     msg += IntToStr(h);
+     msg + " ";
+     msg += IntToStr(c);
+     ShowMessage(msg);
+     Timer1->Enabled = false;
+     return false;
+  }
+  double* p = (double*)m_source->pPixels;
+
+  size_t start[3] = {0,0,0};
+  size_t count[3]  = {c,h,w};
+  double* data = (double*)malloc(c*h*w*sizeof(double));
+  if (data == NULL)
+  {
+     ShowMessage("data == NULL");
+     Timer1->Enabled = false;
+     return false;
+  }
+  status = nc_get_vara_double(this->m_ncid, varID, start, count, data);
+  if (status != NC_NOERR)
+  {
+      ShowMessage("ошибка!");
+      return false;
+  }
+
+  status = nc_inq_varid(this->m_ncid, "azimuthR", &varID);
+  if (status != NC_NOERR)
+  {
+      ShowMessage("ошибка!");
+      return false;
+  }
+
+  awpCreateImage(&m_azmuth, h, c, 1, AWP_DOUBLE);
+  double* dd = (double*)m_azmuth->pPixels;
+  status = nc_get_var_double(this->m_ncid, varID, dd);
+  if (status != NC_NOERR)
+  {
+      ShowMessage("ошибка!");
+      return false;
+  }
+
+
+  status = nc_inq_varid(this->m_ncid, "distanceR", &varID);
+  if (status != NC_NOERR)
+  {
+      ShowMessage("ошибка!");
+      return false;
+  }
+  if (m_dist != NULL)
+  {
+    free(m_dist);
+    m_dist = NULL;
+  }
+  m_dist = (double*)malloc(w*sizeof(double));
+  status = nc_get_var_double(this->m_ncid, varID, m_dist);
+  if (status != NC_NOERR)
+  {
+      ShowMessage("ошибка!");
+      return false;
+  }
+
+
+  status = nc_inq_varid(this->m_ncid, "elevationR", &varID);
+  if (status != NC_NOERR)
+  {
+      ShowMessage("ошибка!");
+      return false;
+  }
+
+  awpCreateImage(&m_elev, h, c, 1, AWP_DOUBLE);
+  dd = (double*)m_elev->pPixels;
+
+  status = nc_get_var_double(this->m_ncid, varID, dd);
+  if (status != NC_NOERR)
+  {
+      ShowMessage("ошибка!");
+      return false;
+  }
+
+  ComboBox1->Clear();
+  for (int i = 0; i < c; i++)
+      ComboBox1->AddItem(FormatFloat("00.00", dd[i*m_elev->sSizeX]), NULL);
+
+
+  for (int r = 0;r < w; r++)
+  {
+      for (int a = 0; a < h; a++)
+      {
+         for (int cc = 0;cc < c; cc++)
           {
-             ShowMessage("data == NULL");
-             return;
+              p[r*c + cc+ c*w*a] = data[cc*w*h + (r + w*a)];
           }
-          status = nc_get_vara_double(this->m_ncid, varID, start, count, data);
-          if (status != NC_NOERR)
-              ShowMessage("ошибка!");
+      }
+  }
 
-          nc_inq_varid(this->m_ncid, "azimuthR", &varID);
+  free(data);
 
-          awpCreateImage(&m_azmuth, h, c, 1, AWP_DOUBLE);
-          double* dd = (double*)m_azmuth->pPixels;
-          status = nc_get_var_double(this->m_ncid, varID, dd);
-          if (status != NC_NOERR)
-              ShowMessage("ошибка!");
-
-
-          nc_inq_varid(this->m_ncid, "distanceR", &varID);
-          m_dist = (double*)malloc(w*sizeof(double));
-          status = nc_get_var_double(this->m_ncid, varID, m_dist);
-          if (status != NC_NOERR)
-              ShowMessage("ошибка!");
-
-
-          nc_inq_varid(this->m_ncid, "elevationR", &varID);
-          awpCreateImage(&m_elev, h, c, 1, AWP_DOUBLE);
-          dd = (double*)m_elev->pPixels;
-          status = nc_get_var_double(this->m_ncid, varID, dd);
-          if (status != NC_NOERR)
-              ShowMessage("ошибка!");
-
-
-          ComboBox1->Clear();
-          for (int i = 0; i < c; i++)
-              ComboBox1->AddItem(FormatFloat("00.00", dd[i*m_elev->sSizeX]), NULL);
-
-          for (int r = 0;r < w; r++)
-          {
-              for (int a = 0; a < h; a++)
-              {
-                 for (int cc = 0;cc < c; cc++)
-                  {
-                      p[r*c + cc+ c*w*a] = data[cc*w*h + (r + w*a)];
-                  }
-              }
-          }
-
-          free(data);
 }
 
 //---------------------------------------------------------------------------
@@ -218,9 +290,6 @@ void __fastcall TForm2::SpeedButton3Click(TObject *Sender)
         FImage1->SaveToFile(SaveDialog1->FileName);
      }
 }
-
-
-
 //---------------------------------------------------------------------------
 
 void __fastcall TForm2::Exit1Click(TObject *Sender)
@@ -414,12 +483,16 @@ void __fastcall TForm2::DrawSource(int channel)
     FImage1->BestFit();
     awpReleaseImage(&tmp);
 }
+
 void __fastcall TForm2::DrawSourceCone(int channel)
 {
 
       awpImage* tmp = NULL;
+      if (m_source == NULL)
+        return;
 
       awpGetChannel(m_source,  &tmp, channel);
+
       awpConvert(tmp, AWP_CONVERT_TO_BYTE_WITH_NORM);
       AWPBYTE* bb = (AWPBYTE*)tmp->pPixels;
       //
@@ -439,7 +512,8 @@ void __fastcall TForm2::DrawSourceCone(int channel)
         {
             int x =  width / 2 + j*cos(3.14*a[i]/180);
             int y =  width / 2 + j*sin(3.14*a[i]/180);
-            b[y*width + x] = bb[i*tmp->sSizeX + j];
+
+                b[y*width + x] = bb[i*tmp->sSizeX + j];
         }
       }
 
@@ -447,7 +521,9 @@ void __fastcall TForm2::DrawSourceCone(int channel)
         FImage1->BestFit();
 
       _AWP_SAFE_RELEASE_(polar);
+
       _AWP_SAFE_RELEASE_(tmp);
+
 }
 
 void __fastcall TForm2::MakeSourceCone3D()
@@ -984,16 +1060,18 @@ void __fastcall TForm2::Draw3DPoint(TCanvas* cnv, T3DPoint& p)
 //enum {SourceData, SourceCone, IntepolatedCone, SourceVirtical, InterpolatedVertical} EView2D;
 void __fastcall TForm2::Draw2DScene()
 {
+    int channel = ComboBox1->ItemIndex;
+
     switch (m_2DViewOptions)
     {
         case eSourceData:
-            DrawSource(ComboBox1->ItemIndex);
+            DrawSource(channel);
         break;
         case eSourceCone:
-            DrawSourceCone(ComboBox1->ItemIndex);
+            DrawSourceCone(channel);
         break;
         case eIntepolatedCone:
-            DrawSourceConeInter(ComboBox1->ItemIndex);
+            DrawSourceConeInter(channel);
         break;
         case eSourceVirtical:
             DrawVerticalArea();
@@ -1361,7 +1439,6 @@ void __fastcall TForm2::SpeedButton4Click(TObject *Sender)
     this->OpenNCFile(m_imageFiles->Strings[m_currentFrame].c_str());
     ComboBox1->ItemIndex = 0;
     this->Draw2DScene();
-
 }
 //---------------------------------------------------------------------------
 
@@ -1380,14 +1457,33 @@ void __fastcall TForm2::Timer1Timer(TObject *Sender)
 {
  if (m_imageFiles->Count == 0)
     return;
+    
   SpeedButton4Click(NULL);
 }
 //---------------------------------------------------------------------------
 
 void __fastcall TForm2::SpeedButton5Click(TObject *Sender)
 {
-    Timer1->Enabled = !Timer1->Enabled;
-    SpeedButton5->Caption = Timer1->Enabled ? "Stop" : "Play";
+//    Timer1->Enabled = !Timer1->Enabled;
+//    SpeedButton5->Caption = Timer1->Enabled ? "Stop" : "Play";
+    m_currentFrame = 0;
+    while (m_currentFrame < this->m_imageFiles->Count)
+    {
+        if (!this->OpenNCFile(m_imageFiles->Strings[m_currentFrame].c_str()))
+            break;
+        ComboBox1->ItemIndex = 0;
+        this->Draw2DScene();
+        m_currentFrame++;
+        Application->ProcessMessages();
+    }
+/*
+    m_currentFrame++;
+    if (m_currentFrame >= this->m_imageFiles->Count)
+        m_currentFrame = 0;
+    this->OpenNCFile(m_imageFiles->Strings[m_currentFrame].c_str());
+    ComboBox1->ItemIndex = 0;
+    this->Draw2DScene();
+*/
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm2::FindAlfaMaxMin(double& amin, double& amax)
