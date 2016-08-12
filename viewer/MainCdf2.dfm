@@ -1,7 +1,7 @@
 object Form2: TForm2
-  Left = 821
-  Top = 182
-  Width = 757
+  Left = 78
+  Top = 241
+  Width = 801
   Height = 595
   Caption = 'Form2'
   Color = clBtnFace
@@ -25,7 +25,7 @@ object Form2: TForm2
   object Panel1: TPanel
     Left = 0
     Top = 0
-    Width = 741
+    Width = 785
     Height = 41
     Align = alTop
     TabOrder = 0
@@ -101,7 +101,7 @@ object Form2: TForm2
   object FImage1: TFImage
     Left = 3
     Top = 41
-    Width = 738
+    Width = 782
     Height = 388
     Cursor = 1
     BorderStyle = bsFSingle
@@ -112,7 +112,7 @@ object Form2: TForm2
   object Panel2: TPanel
     Left = 0
     Top = 429
-    Width = 741
+    Width = 785
     Height = 88
     Align = alBottom
     BevelInner = bvLowered
@@ -222,11 +222,19 @@ object Form2: TForm2
       TabOrder = 3
       OnChange = ComboBox2Change
     end
+    object Panel4: TPanel
+      Left = 599
+      Top = 1
+      Width = 185
+      Height = 86
+      Align = alRight
+      TabOrder = 4
+    end
   end
   object StatusBar1: TStatusBar
     Left = 0
     Top = 517
-    Width = 741
+    Width = 785
     Height = 19
     Panels = <
       item
@@ -238,7 +246,7 @@ object Form2: TForm2
   object Panel3: TPanel
     Left = 3
     Top = 41
-    Width = 738
+    Width = 782
     Height = 388
     Align = alClient
     TabOrder = 4
@@ -247,7 +255,7 @@ object Form2: TForm2
     object PaintBox1: TPaintBox
       Left = 1
       Top = 1
-      Width = 736
+      Width = 780
       Height = 386
       Align = alClient
       OnMouseDown = PaintBox1MouseDown

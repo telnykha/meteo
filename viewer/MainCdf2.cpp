@@ -56,12 +56,15 @@ void __fastcall TForm2::SpeedButton1Click(TObject *Sender)
         nc_close(m_ncid);
         m_ncid = 0;
     }
+   AnsiString strFlashName;
 
     if (OpenDialog1->Execute())
     {
         if (OpenDialog1->Files->Count == 1)
         {
             this->OpenNCFile(OpenDialog1->FileName.c_str());
+            strFlashName = ExtractFilePath(OpenDialog1->FileName.c_str());
+
         }
         else
         {
@@ -73,6 +76,7 @@ void __fastcall TForm2::SpeedButton1Click(TObject *Sender)
             }
             m_currentFrame = 0;
             this->OpenNCFile(this->m_imageFiles->Strings[m_currentFrame].c_str());
+            strFlashName = ExtractFilePath(OpenDialog1->Files->Strings[0]);
         }
     } // opendialog
 
@@ -81,7 +85,8 @@ void __fastcall TForm2::SpeedButton1Click(TObject *Sender)
 //   this->MakeSourceCone3D();
 //   this->MakeInterCone3D();
 //   this->DrawScene();
-//   OpenFlashes("C:\\_alt\\++netcdf_1\\flashes.txt");
+   strFlashName += "\\flashes.txt";
+   OpenFlashes(strFlashName.c_str());
 }
 
 bool __fastcall TForm2::OpenNCFile(const char* lpFileName)
@@ -105,6 +110,11 @@ bool __fastcall TForm2::OpenNCFile(const char* lpFileName)
       }
       //
       Caption = lpFileName;
+      AnsiString dateStr = DateToStr(this->GetFileDate(lpFileName));
+      dateStr += "   ";
+      dateStr += TimeToStr(this->GetFileTime(lpFileName));
+       m_currentTime = this->GetFileTime(lpFileName);
+      Panel4->Caption = dateStr;
       int  ndims, nvars, ngatts, unlimdimid;
       status = nc_inq(m_ncid, &ndims, &nvars, &ngatts, &unlimdimid);
       if (status != NC_NOERR)
@@ -949,6 +959,8 @@ void __fastcall TForm2::FImage1MouseMove(TObject *Sender,
     y = FImage1->GetImageY(Y);
     h = FImage1->Bitmap->Height;
     int r = (int)sqrt(x*x + (h-y)*(h-y));
+    if (r > 1000)
+        return;
     double dist = this->m_dist[r];
     double psi  = 0;
     if (x == 0)
@@ -1631,17 +1643,26 @@ void __fastcall TForm2::OpenFlashes(const char* lpFileName)
     float log;
     float lon;
     int KK;
-    int count = 0;
-    while (fscanf(f,"%f\t%f\t%d\n",&log,&lon,&KK)!= EOF)
+    int c = 0;
+    char stime[15];
+    m_flashes_count= 0;
+    while (fscanf(f,"%s\t%f\t%f\t%d\n",&stime, &log,&lon,&KK)!= EOF )
     {
         //
-        m_flashes[count].lat = log;
-        m_flashes[count].lon = lon;
-        m_flashes[count].num = KK;
-
-        count++;
+        AnsiString str = stime;
+        unsigned short hour, min, sec;
+       hour = StrToInt(str.SubString(0,2));
+       min = StrToInt(str.SubString(4,2));
+       sec = StrToInt(str.SubString(7,2));
+        TTime t(hour,min, sec,0);
+        m_flashes[c].time = t;
+        m_flashes[c].lat = log;
+        m_flashes[c].lon = lon;
+        m_flashes[c].num = KK;
+        c++;
     }
-    m_flashes_count = count;
+
+    m_flashes_count =  c;
   //  ShowMessage("Flashes count = " + IntToStr(count));
 }
 
@@ -1661,20 +1682,53 @@ void __fastcall TForm2::DrawFlashes()
     {
         double x, y;
 
-        ConLL(m_flashes[i].lat, m_flashes[i].lon, 46,-100, w,h,  x, y);
+        ConLL(m_flashes[i].lat, m_flashes[i].lon, 48.392,-100.864, w,h,  x, y);
         awpRect rect;
 
         double r = (double)m_flashes[i].num / 100. < 1 ? 10 : m_flashes[i].num / 10;
         double alfa = (double)m_flashes[i].num / 500.;
-        rect.left = x - r;
-        rect.top  = y - r;
-        rect.right = x + r;
-        rect.bottom = y + r;
-
-        awpDrawCRect(img, &rect,  128+alfa*128,0, 128+alfa*128,  2);
+        rect.left = x/2 - r;
+        rect.top  = y/2 - r;
+        rect.right = x/2 + r;
+        rect.bottom = y/2 + r;
+        TTime delta = m_flashes[i].time - m_currentTime;
+        unsigned short hour, min, sec, msec;
+        delta.DecodeTime(&hour, &min, &sec, &msec);
+        if (hour == 0 && min < 30)
+            awpDrawCRect(img, &rect,  128+alfa*128,0, 128+alfa*128,  2);
     }
     FImage1->Bitmap->SetAWPImage(img);
     FImage1->BestFit();
     awpReleaseImage(&img);
 }
+
+TDateTime TForm2::GetFileDate(const char* lpFileName)
+{
+
+    unsigned short year, month, day;
+
+    AnsiString source = ExtractFileName(lpFileName);
+    source = source.SubString(source.Length() - 17, 15);
+
+    year = StrToInt(source.SubString(0,4));
+    month = StrToInt(source.SubString(5,2));
+    day = StrToInt(source.SubString(7,2));
+    TDate result(year, month, day);
+    return result;
+}
+
+TDateTime TForm2::GetFileTime(const char* lpFileName)
+{
+    unsigned short hour, min, sec, msec;
+
+    AnsiString source = ExtractFileName(lpFileName);
+    source = source.SubString(source.Length() - 8, 6);
+
+    hour = StrToInt(source.SubString(0,2));
+    min = StrToInt(source.SubString(3,2));
+    sec = StrToInt(source.SubString(6,2));
+    TTime result(hour, min, sec, 0);
+    return result;
+}
+
 

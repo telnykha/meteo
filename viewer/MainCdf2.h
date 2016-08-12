@@ -105,6 +105,7 @@ __published:	// IDE-managed Components
     TSpeedButton *SpeedButton5;
     TAction *InterHorizontalAction;
     TMenuItem *N2;
+    TPanel *Panel4;
     void __fastcall SpeedButton1Click(TObject *Sender);
     void __fastcall ComboBox1Change(TObject *Sender);
     void __fastcall SpeedButton3Click(TObject *Sender);
@@ -160,6 +161,7 @@ private:	// User declarations
         int	    m_dx;
         int 	m_dy;
         int     m_currentFrame;
+        TTime   m_currentTime;
 
         EView2D         m_2DViewOptions;
         View2DOptions   m_2DOptions;
@@ -197,7 +199,8 @@ private:	// User declarations
         void __fastcall OpenFlashes(const char* lpFileName);
         void __fastcall DrawFlashes();
 
-
+        TDateTime GetFileDate(const char* lpFileName);
+        TDateTime GetFileTime(const char* lpFileName);
 public:		// User declarations
     __fastcall TForm2(TComponent* Owner);
 };
