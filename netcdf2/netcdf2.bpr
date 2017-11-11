@@ -3,9 +3,9 @@
 <PROJECT>
   <MACROS>
     <VERSION value="BCB.06.00"/>
-    <PROJECT value="netcdf2.exe"/>
+    <PROJECT value="..\bin\netcdf2.exe"/>
     <OBJFILES value="netcdf2.obj MainCdf2.obj Cube3D.obj OptionsForm.obj ImageData.obj 
-      Convert_Log_Lon.obj"/>
+      Convert_Log_Lon.obj NCDataUnit.obj"/>
     <RESFILES value="netcdf2.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
@@ -62,6 +62,7 @@
       <FILE FILENAME="OptionsForm.cpp" FORMNAME="OptionsDlg" UNITNAME="OptionsForm" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="ImageData.cpp" FORMNAME="" UNITNAME="ImageData" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="Convert_Log_Lon.cpp" FORMNAME="" UNITNAME="Convert_Log_Lon" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="NCDataUnit.cpp" FORMNAME="" UNITNAME="NCDataUnit" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
   </FILELIST>
   <BUILDTOOLS>
   </BUILDTOOLS>
@@ -94,6 +95,9 @@ ProductName=
 ProductVersion=1.0.0.0
 Comments=
 
+[Excluded Packages]
+c:\borland\cbuilder6\Bin\dclite60.bpl=Borland Integrated Translation Environment
+
 [HistoryLists\hlIncludePath]
 Count=8
 Item0=$(BCB)\Projects;$(BCB)\Bin;$(BCB)\include;$(PHOTON);$(BCB)\include\vcl;$(AWP);..\netcdfLib\include;$(LF);$(TINY)
@@ -120,6 +124,10 @@ Item0=$(BCB)\source\vcl
 Count=1
 Item0=_DEBUG
 
+[HistoryLists\hlFinalOutputDir]
+Count=1
+Item0=..\bin\
+
 [Debugging]
 DebugSourceDirs=$(BCB)\source\vcl
 
@@ -144,10 +152,5 @@ LinkCGLIB=0
 AddServerUnit=1
 AddClientUnit=1
 PrecompiledHeaders=1
-
-[Language]
-ActiveLang=
-ProjectLang=
-RootDir=
   </IDEOPTIONS>
 </PROJECT>

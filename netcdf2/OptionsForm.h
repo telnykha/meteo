@@ -21,7 +21,6 @@ __published:
 	TButton *Button2;
 	TPageControl *PageControl1;
 	TTabSheet *TabSheet1;
-	TTabSheet *TabSheet2;
     TCSpinEdit *CSpinEdit1;
     TCSpinEdit *CSpinEdit4;
     TCSpinEdit *CSpinEdit5;

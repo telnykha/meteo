@@ -20,7 +20,7 @@
 
 #include "Cube3D.h"
 #include <ActnList.hpp>
-enum EView2D {eSourceData, eSourceCone, eIntepolatedCone, eSourceVirtical, eInterpolatedVertical, eInterpolatedHorizontal} ;
+enum EView2D {eSourceData, eSourceCone, eIntepolatedCone, eSourceVirtical, eInterpolatedVertical, eInterpolatedHorizontal, eResultCell} ;
 enum EView3D {e3dSourceData, e3dConeContours};
 typedef struct
 {
@@ -105,6 +105,8 @@ __published:	// IDE-managed Components
     TSpeedButton *SpeedButton5;
     TAction *InterHorizontalAction;
     TMenuItem *N2;
+    TAction *ResultCellsAction;
+    TMenuItem *N3;
     void __fastcall SpeedButton1Click(TObject *Sender);
     void __fastcall ComboBox1Change(TObject *Sender);
     void __fastcall SpeedButton3Click(TObject *Sender);
@@ -143,13 +145,14 @@ __published:	// IDE-managed Components
     void __fastcall SpeedButton5Click(TObject *Sender);
     void __fastcall InterHorizontalActionExecute(TObject *Sender);
     void __fastcall InterHorizontalActionUpdate(TObject *Sender);
+    void __fastcall ResultCellsActionExecute(TObject *Sender);
+    void __fastcall ResultCellsActionUpdate(TObject *Sender);
 private:	// User declarations
         TStringList*    m_imageFiles;
 
         int       m_ncid;
         awpImage* m_source;  // исходное изображение
         awpImage* m_azmuth;
-        awpImage* m_polar;
         double*   m_dist;
         awpImage* m_elev;
         void __fastcall DoOutPicture(int c);
@@ -174,6 +177,7 @@ private:	// User declarations
 
         TFlash          m_flashes[1000];
         int             m_flashes_count;
+        int             m_max_lenght;
 
         void __fastcall DrawSource(int channel);
         void __fastcall DrawSourceCone(int channel);
@@ -188,6 +192,7 @@ private:	// User declarations
         void __fastcall DrawInterCone3D(TCanvas* cnv);
         void __fastcall MakeSourceCone3D();
         void __fastcall MakeInterCone3D();
+        void __fastcall DrawResultCells();
 
         void __fastcall MakeInterPic(double H, double R, awpImage* img);
         void __fastcall FindAlfaMaxMin(double& amin, double& amax);
@@ -196,7 +201,7 @@ private:	// User declarations
 
         void __fastcall OpenFlashes(const char* lpFileName);
         void __fastcall DrawFlashes();
-
+        awpImage* GetInterCone(int index);
 
 public:		// User declarations
     __fastcall TForm2(TComponent* Owner);

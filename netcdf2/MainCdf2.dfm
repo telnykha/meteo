@@ -1,6 +1,6 @@
 object Form2: TForm2
-  Left = 385
-  Top = 131
+  Left = 484
+  Top = 113
   Width = 757
   Height = 591
   Caption = 'Form2'
@@ -16,11 +16,12 @@ object Form2: TForm2
   PixelsPerInch = 96
   TextHeight = 13
   object Splitter1: TSplitter
-    Left = 353
+    Left = 0
     Top = 41
     Width = 3
-    Height = 384
+    Height = 385
     Cursor = crHSplit
+    Visible = False
   end
   object Panel1: TPanel
     Left = 0
@@ -32,9 +33,10 @@ object Form2: TForm2
     OnResize = Panel1Resize
     object SpeedButton1: TSpeedButton
       Left = 4
-      Top = 8
-      Width = 23
-      Height = 22
+      Top = 4
+      Width = 32
+      Height = 32
+      Flat = True
       Glyph.Data = {
         76010000424D7601000000000000760000002800000020000000100000000100
         04000000000000010000120B0000120B00001000000000000000000000000000
@@ -52,11 +54,12 @@ object Form2: TForm2
       OnClick = SpeedButton1Click
     end
     object SpeedButton3: TSpeedButton
-      Left = 26
-      Top = 8
-      Width = 23
-      Height = 22
+      Left = 36
+      Top = 4
+      Width = 32
+      Height = 32
       AllowAllUp = True
+      Flat = True
       Glyph.Data = {
         76010000424D7601000000000000760000002800000020000000100000000100
         04000000000000010000120B0000120B00001000000000000000000000000000
@@ -74,44 +77,86 @@ object Form2: TForm2
       OnClick = SpeedButton3Click
     end
     object SpeedButton2: TSpeedButton
-      Left = 48
-      Top = 8
-      Width = 23
-      Height = 22
-      Caption = '<<'
+      Left = 68
+      Top = 4
+      Width = 32
+      Height = 32
+      Flat = True
+      Glyph.Data = {
+        76010000424D7601000000000000760000002800000020000000100000000100
+        04000000000000010000120B0000120B00001000000000000000000000000000
+        800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
+        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333333333333
+        333333333333333333FF3333333333333744333333333333F773333333333337
+        44473333333333F777F3333333333744444333333333F7733733333333374444
+        4433333333F77333733333333744444447333333F7733337F333333744444444
+        433333F77333333733333744444444443333377FFFFFFF7FFFFF999999999999
+        9999733777777777777333CCCCCCCCCC33333773FF333373F3333333CCCCCCCC
+        C333333773FF3337F333333333CCCCCCC33333333773FF373F3333333333CCCC
+        CC333333333773FF73F33333333333CCCCC3333333333773F7F3333333333333
+        CCC333333333333777FF33333333333333CC3333333333333773}
+      NumGlyphs = 2
       OnClick = SpeedButton2Click
     end
     object SpeedButton4: TSpeedButton
-      Left = 72
-      Top = 8
-      Width = 23
-      Height = 22
-      Caption = '>>'
+      Left = 100
+      Top = 4
+      Width = 32
+      Height = 32
+      Flat = True
+      Glyph.Data = {
+        76010000424D7601000000000000760000002800000020000000100000000100
+        04000000000000010000120B0000120B00001000000000000000000000000000
+        800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
+        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333333333333
+        33333FF3333333333333447333333333333377FFF33333333333744473333333
+        333337773FF3333333333444447333333333373F773FF3333333334444447333
+        33333373F3773FF3333333744444447333333337F333773FF333333444444444
+        733333373F3333773FF333334444444444733FFF7FFFFFFF77FF999999999999
+        999977777777777733773333CCCCCCCCCC3333337333333F7733333CCCCCCCCC
+        33333337F3333F773333333CCCCCCC3333333337333F7733333333CCCCCC3333
+        333333733F77333333333CCCCC333333333337FF7733333333333CCC33333333
+        33333777333333333333CC333333333333337733333333333333}
+      NumGlyphs = 2
       OnClick = SpeedButton4Click
     end
     object SpeedButton5: TSpeedButton
-      Left = 96
-      Top = 8
-      Width = 49
-      Height = 22
-      Caption = 'Play'
+      Left = 134
+      Top = 4
+      Width = 32
+      Height = 32
+      Flat = True
+      Glyph.Data = {
+        76010000424D7601000000000000760000002800000020000000100000000100
+        04000000000000010000130B0000130B00001000000000000000000000000000
+        800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
+        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333333333333
+        33333333333333333333EEEEEEEEEEEEEEE333FFFFFFFFFFFFF3E00000000000
+        00E337777777777777F3E0F77777777770E337F33333333337F3E0F333333333
+        70E337F3333F333337F3E0F33303333370E337F3337FF33337F3E0F333003333
+        70E337F33377FF3337F3E0F33300033370E337F333777FF337F3E0F333000033
+        70E337F33377773337F3E0F33300033370E337F33377733337F3E0F333003333
+        70E337F33377333337F3E0F33303333370E337F33373333337F3E0F333333333
+        70E337F33333333337F3E0FFFFFFFFFFF0E337FFFFFFFFFFF7F3E00000000000
+        00E33777777777777733EEEEEEEEEEEEEEE33333333333333333}
+      NumGlyphs = 2
       OnClick = SpeedButton5Click
     end
   end
   object FImage1: TFImage
-    Left = 0
+    Left = 3
     Top = 41
-    Width = 353
-    Height = 384
+    Width = 738
+    Height = 385
     Cursor = 1
     BorderStyle = bsFSingle
-    Align = alLeft
+    Align = alClient
     ParentColor = False
     OnMouseMove = FImage1MouseMove
   end
   object Panel2: TPanel
     Left = 0
-    Top = 425
+    Top = 426
     Width = 741
     Height = 88
     Align = alBottom
@@ -225,7 +270,7 @@ object Form2: TForm2
   end
   object StatusBar1: TStatusBar
     Left = 0
-    Top = 513
+    Top = 514
     Width = 741
     Height = 19
     Panels = <
@@ -236,18 +281,19 @@ object Form2: TForm2
     SimplePanel = False
   end
   object Panel3: TPanel
-    Left = 356
+    Left = 3
     Top = 41
-    Width = 385
-    Height = 384
+    Width = 738
+    Height = 385
     Align = alClient
     TabOrder = 4
+    Visible = False
     OnResize = Panel3Resize
     object PaintBox1: TPaintBox
       Left = 1
       Top = 1
-      Width = 383
-      Height = 382
+      Width = 736
+      Height = 383
       Align = alClient
       OnMouseDown = PaintBox1MouseDown
       OnMouseMove = PaintBox1MouseMove
@@ -303,9 +349,13 @@ object Form2: TForm2
       object N2: TMenuItem
         Action = InterHorizontalAction
       end
+      object N3: TMenuItem
+        Action = ResultCellsAction
+      end
     end
     object N3DView1: TMenuItem
       Caption = #1058#1088#1077#1093#1084#1077#1088#1085#1099#1081' '#1074#1080#1076
+      Visible = False
       object Source3DData1: TMenuItem
         Action = Source3dViewAction
       end
@@ -376,6 +426,12 @@ object Form2: TForm2
       Caption = #1048#1085#1090#1077#1088#1087#1086#1083#1103#1094#1080#1103' '#1075#1086#1088#1080#1079#1086#1085#1090#1072#1083#1100#1085#1086#1075#1086' '#1089#1088#1077#1079#1072
       OnExecute = InterHorizontalActionExecute
       OnUpdate = InterHorizontalActionUpdate
+    end
+    object ResultCellsAction: TAction
+      Category = 'View2D'
+      Caption = #1050#1086#1085#1074#1077#1082#1090#1080#1074#1085#1099#1077' '#1103#1095#1077#1081#1082#1080
+      OnExecute = ResultCellsActionExecute
+      OnUpdate = ResultCellsActionUpdate
     end
   end
   object Timer1: TTimer

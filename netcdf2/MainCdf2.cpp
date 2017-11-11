@@ -1,4 +1,3 @@
-
 //---------------------------------------------------------------------------
 
 #include <vcl.h>
@@ -30,11 +29,12 @@ __fastcall TForm2::TForm2(TComponent* Owner)
     m_elev   = NULL;
 
     m_mdown = false;
+    m_max_lenght = 250*1800 / 1000;
 
     m_2DViewOptions = eIntepolatedCone;
     m_3DViewOptions = e3dSourceData;
 
-    m_2DOptions.dist_x = 100;
+    m_2DOptions.dist_x = 150;
     m_2DOptions.step_ro = 2;
     m_2DOptions.step_fi = 2;
     m_2DOptions.smooth = false;
@@ -84,11 +84,33 @@ void __fastcall TForm2::SpeedButton1Click(TObject *Sender)
 
    ComboBox1->ItemIndex = 0;
    this->Draw2DScene();
-   this->MakeSourceCone3D();
-   this->MakeInterCone3D();
+//   this->MakeSourceCone3D();
+//   this->MakeInterCone3D();
    this->DrawScene();
    OpenFlashes("C:\\_alt\\++netcdf_1\\flashes.txt");
 }
+
+
+
+static void _bSaveAWPAsDAT(const char* lpFileName, awpImage* pImage)
+{
+   FILE* F = fopen(lpFileName, "w+t");
+   if (F != NULL)
+   {
+        //
+        AWPDOUBLE* pix = (AWPDOUBLE*)pImage->pPixels;
+        for (int y = 0; y < pImage->sSizeY; y++)
+        {
+            for (int x = 0; x < pImage->sSizeX; x++)
+            {
+               fprintf(F, "%f\n", pix[y*pImage->sSizeX + x]);
+            }
+
+        }
+        fclose(F);
+   }
+}
+
 
 void __fastcall TForm2::OpenNCFile(const char* lpFileName)
 {
@@ -131,6 +153,8 @@ void __fastcall TForm2::OpenNCFile(const char* lpFileName)
                    else if (str == "gateR")
                    {
                       w = len;
+                      m_max_lenght = 250*w / 1000;
+
                    }
 
              }
@@ -156,6 +180,7 @@ void __fastcall TForm2::OpenNCFile(const char* lpFileName)
           if (status != NC_NOERR)
               ShowMessage("ошибка!");
 
+          _bSaveAWPAsDAT("azmuth.txt", m_azmuth);
 
           nc_inq_varid(this->m_ncid, "distanceR", &varID);
           m_dist = (double*)malloc(w*sizeof(double));
@@ -544,7 +569,7 @@ void __fastcall TForm2::DrawVerticalArea()
     fi /= 180;
 
     awpImage* img = NULL;
-    int l = m_source->sSizeX*this->m_2DOptions.dist_x / 450;
+    int l = m_source->sSizeX*this->m_2DOptions.dist_x / m_max_lenght;
 
     int width   = l;
     int height  = l*sin(fi);
@@ -727,7 +752,7 @@ void __fastcall TForm2::DrawSourceCone(int channel)
       awpConvert(tmp, AWP_CONVERT_TO_BYTE_WITH_NORM);
       AWPBYTE* bb = (AWPBYTE*)tmp->pPixels;
       //
-      int width = 2*m_source->sSizeX*this->m_2DOptions.dist_x / 450 ;
+      int width = 2*m_source->sSizeX*this->m_2DOptions.dist_x / m_max_lenght ;
       int height = width;
       awpImage* polar = NULL;
 
@@ -739,7 +764,7 @@ void __fastcall TForm2::DrawSourceCone(int channel)
 
       for (int i = 0; i < tmp->sSizeY; i+= this->m_2DOptions.step_fi)
       {
-        for (int j = 0; j < tmp->sSizeX*this->m_2DOptions.dist_x / 450; j+= this->m_2DOptions.step_ro)
+        for (int j = 0; j < tmp->sSizeX*this->m_2DOptions.dist_x / m_max_lenght; j+= this->m_2DOptions.step_ro)
         {
             int x =  width / 2 + j*cos(3.14*a[i]/180);
             int y =  width / 2 + j*sin(3.14*a[i]/180);
@@ -780,7 +805,7 @@ void __fastcall TForm2::MakeSourceCone3D()
       {
         for (int i = 0; i < m_source->sSizeY; i+=this->m_2DOptions.step_fi)
         {
-          for (int j = 0; j < m_source->sSizeX*this->m_2DOptions.dist_x / 450; j+= this->m_2DOptions.step_ro)
+          for (int j = 0; j < m_source->sSizeX*this->m_2DOptions.dist_x / m_max_lenght; j+= this->m_2DOptions.step_ro)
           {
 
               double fi = aa[k*m_elev->sSizeX + i];
@@ -790,8 +815,8 @@ void __fastcall TForm2::MakeSourceCone3D()
               int x =   j*cos(3.14*a[i + m_azmuth->sSizeX*k]/180);
               int y =   j*sin(3.14*a[i + m_azmuth->sSizeX*k]/180);
 
-              p.x = (double)x / (this->m_2DOptions.dist_x / 450*width/2);
-              p.y = (double)y / (this->m_2DOptions.dist_x / 450*width/2);
+              p.x = (double)x / (this->m_2DOptions.dist_x / m_max_lenght*width/2);
+              p.y = (double)y / (this->m_2DOptions.dist_x / m_max_lenght*width/2);
               double d =  sqrt(p.x*p.x + p.y*p.y);
               p.z = (-1 + 10*d*sin(fi));
               double value = s[i*m_source->sSizeX*m_source->bChannels + j*m_source->bChannels + k];
@@ -819,7 +844,7 @@ void __fastcall TForm2::MakeSourceCone3D()
     {
       for (int i = 0; i < m_source->sSizeY; i+=this->m_2DOptions.step_fi)
       {
-        for (int j = 0; j < m_source->sSizeX*this->m_2DOptions.dist_x / 450; j+=this->m_2DOptions.step_ro)
+        for (int j = 0; j < m_source->sSizeX*this->m_2DOptions.dist_x / m_max_lenght; j+=this->m_2DOptions.step_ro)
         {
 
             double fi = aa[k*m_elev->sSizeX + i];
@@ -829,8 +854,8 @@ void __fastcall TForm2::MakeSourceCone3D()
             int x =   j*cos(3.14*a[i + m_azmuth->sSizeX*k]/180);
             int y =   j*sin(3.14*a[i + m_azmuth->sSizeX*k]/180);
 
-            p.x = (double)x / (this->m_2DOptions.dist_x / 450*width/2);
-            p.y = (double)y / (this->m_2DOptions.dist_x / 450*width/2);
+            p.x = (double)x / (this->m_2DOptions.dist_x / m_max_lenght*width/2);
+            p.y = (double)y / (this->m_2DOptions.dist_x / m_max_lenght*width/2);
             double d =  sqrt(p.x*p.x + p.y*p.y);
             p.z = (-1 + 10*d*sin(fi));
             double value = s[i*m_source->sSizeX*m_source->bChannels + j*m_source->bChannels + k];
@@ -941,21 +966,22 @@ void __fastcall TForm2::DrawSourceCone3D(TCanvas* cnv)
       }
 
 }
-
-void __fastcall TForm2::DrawSourceConeInter(int channel)
+awpImage* TForm2::GetInterCone(int index)
 {
+
     if (m_source == NULL)
-        return;
+        return NULL;
 
     awpImage* tmp = NULL;
-    awpGetChannel(m_source,  &tmp, channel);
+    if (awpGetChannel(m_source,  &tmp, index) != AWP_OK)
+        return NULL;
     double* a = (double*)m_azmuth->pPixels;
     double* t = (double*)tmp->pPixels;
     awpImage* res = NULL;
-    int idx  = ComboBox1->ItemIndex;
+    int idx  = index;
     double len = m_source->sSizeX;
     int len1   = m_source->sSizeX-1;
-    awpCreateImage(&res, 2*m_source->sSizeX*this->m_2DOptions.dist_x / 450, 2*m_source->sSizeX*this->m_2DOptions.dist_x / 450, 1, AWP_DOUBLE);
+    awpCreateImage(&res, 2*m_source->sSizeX*this->m_2DOptions.dist_x / m_max_lenght, 2*m_source->sSizeX*this->m_2DOptions.dist_x / m_max_lenght, 1, AWP_DOUBLE);
     double* r  = (double*)res->pPixels;
 
     awpPoint p1,p2,p3,p4, c[5];
@@ -965,7 +991,170 @@ void __fastcall TForm2::DrawSourceConeInter(int channel)
     contour.NumPoints = 5;
     contour.Direction = true;
     contour.Points = c;
-    int l = m_source->sSizeX*this->m_2DOptions.dist_x / 450;
+    int l = m_source->sSizeX*this->m_2DOptions.dist_x / m_max_lenght;
+    len1 = l;
+    for (int i = 0; i < m_azmuth->sSizeX-1; i++ )
+    {
+        for (int j = 0; j < l; j++)
+        {
+            //int x,y,x1,y1,x3,y3,x4,y4;  //
+            c[0].X = floor(len1 + len1*(m_dist[j] / m_dist[len1])*cos(3.14*a[i+ idx*m_azmuth->sSizeX]/180) + 0.5);
+            c[0].Y = floor(len1 + len1*(m_dist[j] / m_dist[len1] )*sin(3.14*a[i+ idx*m_azmuth->sSizeX]/180) + 0.5);
+
+            c[1].X = floor(len1 + len1*(m_dist[j] / m_dist[len1])*cos(3.14*a[i+ idx*m_azmuth->sSizeX + 1]/180) + 0.5);
+            c[1].Y = floor(len1 + len1*(m_dist[j] / m_dist[len1] )*sin(3.14*a[i+ idx*m_azmuth->sSizeX +1]/180) + 0.5);
+
+            c[2].X = floor(len1 + len1*(m_dist[j+1] / m_dist[len1])*cos(3.14*a[i+ idx*m_azmuth->sSizeX+1]/180) + 0.5);
+            c[2].Y = floor(len1 + len1*(m_dist[j+1] / m_dist[len1] )*sin(3.14*a[i+ idx*m_azmuth->sSizeX+1]/180) + 0.5);
+
+            c[3].X = floor(len1 + len1*(m_dist[j+1] / m_dist[len1])*cos(3.14*a[i+ idx*m_azmuth->sSizeX ]/180) + 0.5);
+            c[3].Y = floor(len1 + len1*(m_dist[j+1] / m_dist[len1] )*sin(3.14*a[i+ idx*m_azmuth->sSizeX]/180) + 0.5);
+            c[4] = c[0];
+
+            awpGetContourRect(&contour, &rect);
+            double v1, v2, v3, v4, v5, v6, v;
+
+            v1 = t[j+ i*tmp->sSizeX];
+            r[2*c[0].Y*(l) + c[0].X] = v1;
+            v2 = t[j+ (i+1)*tmp->sSizeX];
+            v3 = t[(j+1)+ (i+1)*tmp->sSizeX];
+            v4 = t[(j+1)+ i*tmp->sSizeX];
+
+            if (v1 == v2 && v1 == v3 && v1 == v4)
+                continue;
+
+               //    awpDrawPolygon(res, &contour, 0, 100, 0);
+
+            double l1,l2;
+            l1 = sqrt((c[1].X - c[0].X)*(c[1].X - c[0].X) + (c[1].Y - c[0].Y)*(c[1].Y - c[0].Y));
+            l2 = sqrt((c[3].X - c[2].X)*(c[3].X - c[2].X) + (c[3].Y - c[2].Y)*(c[3].Y - c[2].Y));
+
+
+            // нахождение minx и maxx
+            awpPoint pp;
+            for (int yy = rect.top; yy <= rect.bottom; yy++)
+            {
+                pp.Y = yy;
+                for (int xx = rect.left; xx <= rect.right; xx++)
+                {
+                  pp.X = xx;
+                  AWPBOOL result = false;
+                  awpIsPointInContour(&contour, &pp, &result);
+                  if (result == true)
+                  {
+                     double r1,r2, r3 , r4 , r5;
+                     r1 = sqrt((xx - c[0].X)*(xx - c[0].X)+(yy - c[0].Y)*(yy - c[0].Y));
+                     r2 = sqrt((xx - c[1].X)*(xx - c[1].X)+(yy - c[1].Y)*(yy - c[1].Y));
+
+                     r3 = (l1*l1 + r1*r1 - r2*r2) / (2*l1);
+
+                     r1 = sqrt((xx - c[2].X)*(xx - c[2].X)+(yy - c[2].Y)*(yy - c[2].Y));
+                     r2 = sqrt((xx - c[3].X)*(xx - c[3].X)+(yy - c[3].Y)*(yy - c[3].Y));
+
+                     r4 = (l2*l2+r1*r1 - r2*r2) / (2*l2);
+
+                     r1 = sqrt((xx - c[0].X)*(xx - c[0].X)+(yy - c[0].Y)*(yy - c[0].Y));
+                     if (r1*r1 - r3*r3 >= 0 )
+                         r5 = sqrt(r1*r1 - r3*r3 );
+                     else
+                         r5 = 0;
+                     // интерпол€ци€.
+                     v5 = r3*(v2 - v1) / l1 + v1;
+                     v6 = r4*(v4 - v3) / l2 + v3;
+                     v  =  v5 + r5*(v6 - v5) / l1;
+                     r[2*yy*l + xx] = v;
+                  }
+                  else
+                  {
+                    //r[2*yy*1832 + xx] = -32;
+                  }
+                }
+            }
+
+
+            awpPoint p1,p2;
+            p1.X = c[0].X;
+            p2.X = c[1].X;
+            p1.Y = c[0].Y;
+            p2.Y = c[1].Y;
+
+          // _awpDrawThickLine(res, p1,p2, 0, (v1+v2)/2, v1,v2);
+        }
+    }
+
+    for (int i = 0; i < res->sSizeX*res->sSizeY; i++)
+    {
+        if (r[i] < -32)
+            r[i] = -32;
+        if (r[i] > 97)
+            r[i] = 97;
+
+        r[i] += 32;
+        r[i] *=1.9;
+    }
+
+ //   awpImage* res1 = NULL;
+//    awpCopyImage(res, &res1);
+//    awpConvert(res1, AWP_CONVERT_TO_BYTE_WITH_NORM);
+
+
+/*
+    AWPBYTE* bres1 = (AWPBYTE*)res1->pPixels;
+    for (int i = 0; i < res->sSizeX*res->sSizeY; i++)
+    {
+        if (r[i] < 60.8)
+        {
+            bres1[3*i] = 0;
+            bres1[3*i+1] = 0;
+            bres1[3*i+2] = 255;
+        }
+        else  if (r[i] > 60.8)
+        {
+            bres1[3*i] = 0;
+            bres1[3*i+1] = r[i];
+            bres1[3*i+2] = 0;
+        }
+        else
+        {
+            bres1[3*i] = 64;
+            bres1[3*i+1] = 0;
+            bres1[3*i+2] = 0;
+        }
+
+    }
+   _AWP_SAFE_RELEASE_(res);
+   _AWP_SAFE_RELEASE_(tmp);
+
+*/
+   _AWP_SAFE_RELEASE_(tmp);
+    return res;
+}
+
+void __fastcall TForm2::DrawSourceConeInter(int channel)
+{
+    if (m_source == NULL)
+        return;
+
+    awpImage* tmp = NULL;//GetInterCone(channel);
+
+    awpGetChannel(m_source,  &tmp, channel);
+    double* a = (double*)m_azmuth->pPixels;
+    double* t = (double*)tmp->pPixels;
+    awpImage* res = NULL;
+    int idx  = ComboBox1->ItemIndex;
+    double len = m_source->sSizeX;
+    int len1   = m_source->sSizeX-1;
+    awpCreateImage(&res, 2*m_source->sSizeX*this->m_2DOptions.dist_x / m_max_lenght, 2*m_source->sSizeX*this->m_2DOptions.dist_x / m_max_lenght, 1, AWP_DOUBLE);
+    double* r  = (double*)res->pPixels;
+
+    awpPoint p1,p2,p3,p4, c[5];
+    awpRect rect;
+
+    awpContour contour;
+    contour.NumPoints = 5;
+    contour.Direction = true;
+    contour.Points = c;
+    int l = m_source->sSizeX*this->m_2DOptions.dist_x / m_max_lenght;
     len1 = l;
     for (int i = 0; i < m_azmuth->sSizeX-1; i++ )
     {
@@ -1132,7 +1321,7 @@ void __fastcall TForm2::DrawSourceConeInter(int channel)
                     p2.X = c->Points[k+1].X;
                     p1.Y = c->Points[k].Y;
                     p2.Y = c->Points[k+1].Y;
-                    awpDrawCLine(res1, p1, p2, 255, 255, 255, 2);
+                    awpDrawCLine(res1, p1, p2, 255, 255, 255, 1);
                 }
                 awpFreeContour(&c);
             }
@@ -1145,10 +1334,10 @@ void __fastcall TForm2::DrawSourceConeInter(int channel)
     FImage1->Bitmap->SetAWPImage(res1);
     FImage1->BestFit();
 
-   _AWP_SAFE_RELEASE_(res1);
-   _AWP_SAFE_RELEASE_(res);
-   _AWP_SAFE_RELEASE_(tmp);
 
+   _AWP_SAFE_RELEASE_(tmp);
+   _AWP_SAFE_RELEASE_(res);
+   _AWP_SAFE_RELEASE_(res1);
    DrawFlashes();
 }
 
@@ -1294,7 +1483,6 @@ void __fastcall TForm2::Draw3DPoint(TCanvas* cnv, T3DPoint& p)
         Canvas->Brush->Color;
 }
 
-//enum {SourceData, SourceCone, IntepolatedCone, SourceVirtical, InterpolatedVertical} EView2D;
 void __fastcall TForm2::Draw2DScene()
 {
     switch (m_2DViewOptions)
@@ -1315,10 +1503,48 @@ void __fastcall TForm2::Draw2DScene()
             DrawVerticalArea();
         break;
         case eInterpolatedHorizontal:
-
+           InterHorizontalActionExecute(NULL);
+        break;
+        case eResultCell:
+            DrawResultCells();
         break;
     }
 }
+
+void __fastcall TForm2::DrawResultCells()
+{
+    awpImage* img = GetInterCone(0);
+    AWPDOUBLE* pix = (AWPDOUBLE*)img->pPixels;
+
+    for (int i = 0; i < img->sSizeX*img->sSizeY; i++)
+    {
+      if (pix[i] < 60.8)
+          pix[i] = 1;
+      else
+          pix[i] = 0;
+    }
+    for (int i = 1; i < 4; i++)
+    {
+        awpImage* cone = GetInterCone(i);
+        if (cone == NULL)
+            continue;
+
+        AWPDOUBLE* pix1 = (AWPDOUBLE*)cone->pPixels;
+        for (int j = 0; j < cone->sSizeX*cone->sSizeY; j++)
+            pix[j] += pix1[j] < 60.8 ? 1 : 0;
+
+        _AWP_SAFE_RELEASE_(cone);
+    }
+    awpConvert(img, AWP_CONVERT_TO_BYTE_WITH_NORM);
+    awpImage* img1 = NULL;
+    awpCopyImage(img, &img1);
+    awpGaussianBlur(img, img1, 5);
+    FImage1->Bitmap->SetAWPImage(img1);
+    FImage1->BestFit();
+    _AWP_SAFE_RELEASE_(img);
+    _AWP_SAFE_RELEASE_(img1);
+}
+
 
 void __fastcall TForm2::SourceViewActionExecute(TObject *Sender)
 {
@@ -1424,9 +1650,9 @@ void __fastcall TForm2::OptionsActionExecute(TObject *Sender)
        m_planeOptions.Distance = OptionsDlg->CSpinEdit7->Value;
 
        this->Draw2DScene();
-       this->MakeSourceCone3D();
-       this->MakeInterCone3D();
-       this->DrawScene();
+//       this->MakeSourceCone3D();
+//       this->MakeInterCone3D();
+//       this->DrawScene();
   }
 }
 //---------------------------------------------------------------------------
@@ -1437,7 +1663,7 @@ void __fastcall TForm2::Source3dViewActionExecute(TObject *Sender)
 //
     this->m_3DViewOptions = e3dSourceData;
    // MakeSourceCone3D();
-    DrawScene();
+   // DrawScene();
 }
 //---------------------------------------------------------------------------
 
@@ -1451,7 +1677,7 @@ void __fastcall TForm2::HContours3dViewActionExecute(TObject *Sender)
 {
     this->m_3DViewOptions = e3dConeContours;
   //  this->MakeInterCone3D();
-    DrawScene();
+  //  DrawScene();
 }
 //---------------------------------------------------------------------------
 
@@ -1487,7 +1713,7 @@ void __fastcall TForm2::MakeInterCone3D()
       int idx  = ee;
       double len = m_source->sSizeX;
       int len1   = m_source->sSizeX-1;
-      awpCreateImage(&res, 2*m_source->sSizeX*this->m_2DOptions.dist_x / 450, 2*m_source->sSizeX*this->m_2DOptions.dist_x / 450, 1, AWP_DOUBLE);
+      awpCreateImage(&res, 2*m_source->sSizeX*this->m_2DOptions.dist_x / m_max_lenght, 2*m_source->sSizeX*this->m_2DOptions.dist_x / m_max_lenght, 1, AWP_DOUBLE);
       double* r  = (double*)res->pPixels;
       double* aa = (double*)this->m_elev->pPixels;
 
@@ -1499,7 +1725,7 @@ void __fastcall TForm2::MakeInterCone3D()
       contour.Direction = true;
       contour.Points = c;
 
-      int l = m_source->sSizeX*this->m_2DOptions.dist_x / 450;
+      int l = m_source->sSizeX*this->m_2DOptions.dist_x / m_max_lenght;
       len1 = l;
 
       for (int i = 0; i < m_azmuth->sSizeX-1; i++ )
@@ -1673,7 +1899,7 @@ void __fastcall TForm2::SpeedButton4Click(TObject *Sender)
         m_currentFrame = 0;
     this->OpenNCFile(m_imageFiles->Strings[m_currentFrame].c_str());
     ComboBox1->ItemIndex = 0;
-    this->Draw2DScene();
+   this->Draw2DScene();
 
 }
 //---------------------------------------------------------------------------
@@ -1700,7 +1926,6 @@ void __fastcall TForm2::Timer1Timer(TObject *Sender)
 void __fastcall TForm2::SpeedButton5Click(TObject *Sender)
 {
     Timer1->Enabled = !Timer1->Enabled;
-    SpeedButton5->Caption = Timer1->Enabled ? "Stop" : "Play";
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm2::FindAlfaMaxMin(double& amin, double& amax)
@@ -1822,11 +2047,30 @@ void __fastcall TForm2::MakeInterPic(double H, double R, awpImage* img)
 void __fastcall TForm2::InterHorizontalActionExecute(TObject *Sender)
 {
     m_2DViewOptions = eInterpolatedHorizontal;
-    awpImage* img = NULL;
-    awpCreateImage(&img, this->m_planeOptions.imageWidth, this->m_planeOptions.imageWidth, 3, AWP_BYTE);
-    double H = this->m_planeOptions.Height;
-    double D = 1000*this->m_planeOptions.Distance;
-    this->MakeInterPic(H, D, img);
+    awpImage* img = GetInterCone(0);
+    AWPDOUBLE* pix = (AWPDOUBLE*)img->pPixels;
+    for (int i = 1; i < 4; i++)
+    {
+        awpImage* cone = GetInterCone(i);
+        if (cone == NULL)
+            continue;
+
+        AWPDOUBLE* pix1 = (AWPDOUBLE*)cone->pPixels;
+        for (int j = 0; j < cone->sSizeX*cone->sSizeY; j++)
+            pix[j] += pix1[j];
+
+        _AWP_SAFE_RELEASE_(cone);
+    }
+    awpConvert(img, AWP_CONVERT_TO_BYTE_WITH_NORM);
+    {
+/*    AWPBYTE* pix = (AWPBYTE*)img->pPixels;
+      for (int j = 0; j < img->sSizeX*img->sSizeY; j++)
+      {
+          pix[j] = 255 - pix[j];
+          if (pix[j] < 200)
+            pix[j] = 0;
+      }*/
+     }
     FImage1->Bitmap->SetAWPImage(img);
     FImage1->BestFit();
     _AWP_SAFE_RELEASE_(img);
@@ -1894,4 +2138,17 @@ void __fastcall TForm2::DrawFlashes()
     FImage1->BestFit();
     awpReleaseImage(&img);
 }
+
+void __fastcall TForm2::ResultCellsActionExecute(TObject *Sender)
+{
+    m_2DViewOptions = eResultCell;
+    Draw2DScene();
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm2::ResultCellsActionUpdate(TObject *Sender)
+{
+//
+}
+//---------------------------------------------------------------------------
 
