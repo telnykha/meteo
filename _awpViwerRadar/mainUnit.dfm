@@ -1,6 +1,6 @@
 object mainForm: TmainForm
-  Left = 303
-  Top = 144
+  Left = 876
+  Top = 490
   Width = 959
   Height = 500
   Caption = 'awpViewer'

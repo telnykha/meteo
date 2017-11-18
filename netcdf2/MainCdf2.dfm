@@ -1,8 +1,8 @@
 object Form2: TForm2
-  Left = 484
-  Top = 113
-  Width = 757
-  Height = 591
+  Left = 508
+  Top = 134
+  Width = 934
+  Height = 641
   Caption = 'Form2'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -15,18 +15,10 @@ object Form2: TForm2
   OnResize = FormResize
   PixelsPerInch = 96
   TextHeight = 13
-  object Splitter1: TSplitter
-    Left = 0
-    Top = 41
-    Width = 3
-    Height = 385
-    Cursor = crHSplit
-    Visible = False
-  end
   object Panel1: TPanel
     Left = 0
     Top = 0
-    Width = 741
+    Width = 918
     Height = 41
     Align = alTop
     TabOrder = 0
@@ -144,10 +136,10 @@ object Form2: TForm2
     end
   end
   object FImage1: TFImage
-    Left = 3
+    Left = 0
     Top = 41
-    Width = 738
-    Height = 385
+    Width = 464
+    Height = 435
     Cursor = 1
     BorderStyle = bsFSingle
     Align = alClient
@@ -156,8 +148,8 @@ object Form2: TForm2
   end
   object Panel2: TPanel
     Left = 0
-    Top = 426
-    Width = 741
+    Top = 476
+    Width = 918
     Height = 88
     Align = alBottom
     BevelInner = bvLowered
@@ -270,8 +262,8 @@ object Form2: TForm2
   end
   object StatusBar1: TStatusBar
     Left = 0
-    Top = 514
-    Width = 741
+    Top = 564
+    Width = 918
     Height = 19
     Panels = <
       item
@@ -280,26 +272,42 @@ object Form2: TForm2
       end>
     SimplePanel = False
   end
-  object Panel3: TPanel
-    Left = 3
+  object ListView1: TListView
+    Left = 464
     Top = 41
-    Width = 738
-    Height = 385
-    Align = alClient
+    Width = 454
+    Height = 435
+    Align = alRight
+    Columns = <
+      item
+        Caption = #8470
+      end
+      item
+        Caption = #1055#1083#1086#1097#1072#1076#1100
+      end
+      item
+        Caption = #1055#1077#1088#1080#1084#1077#1090#1088
+      end
+      item
+        Caption = 'X - '#1062'.'#1084
+      end
+      item
+        Caption = 'Y - '#1094'.'#1084'.'
+      end
+      item
+        Caption = #1041#1086#1083#1100#1096#1072#1103' '#1087#1086#1083#1091#1086#1089#1100
+      end
+      item
+        Caption = #1052#1072#1083#1072#1103' '#1087#1086#1083#1091#1086#1089#1100
+      end
+      item
+        Caption = #1059#1075#1086#1083' '#1085#1072#1082#1083#1086#1085#1072
+      end
+      item
+        Caption = #1050#1086#1101#1092'. '#1092#1086#1088#1084#1099
+      end>
     TabOrder = 4
-    Visible = False
-    OnResize = Panel3Resize
-    object PaintBox1: TPaintBox
-      Left = 1
-      Top = 1
-      Width = 736
-      Height = 383
-      Align = alClient
-      OnMouseDown = PaintBox1MouseDown
-      OnMouseMove = PaintBox1MouseMove
-      OnMouseUp = PaintBox1MouseUp
-      OnPaint = PaintBox1Paint
-    end
+    ViewStyle = vsReport
   end
   object OpenDialog1: TOpenDialog
     Filter = 'netcdf files|*.nc'
@@ -308,7 +316,7 @@ object Form2: TForm2
     Top = 48
   end
   object SaveDialog1: TSaveDialog
-    Filter = 'png images|*.png'
+    Filter = 'png images|*.png|jpeg images|*.jpg|awp images|*.awp'
     Left = 40
     Top = 48
   end
@@ -320,6 +328,10 @@ object Form2: TForm2
       object Open1: TMenuItem
         Caption = #1054#1090#1082#1099#1090#1100' '#1092#1072#1081#1083'...'
         OnClick = SpeedButton1Click
+      end
+      object N4: TMenuItem
+        Caption = #1057#1086#1093#1088#1072#1085#1080#1090#1100' '#1080#1079#1086#1073#1088#1072#1078#1077#1085#1080#1077'...'
+        OnClick = N4Click
       end
       object N1: TMenuItem
         Caption = '-'

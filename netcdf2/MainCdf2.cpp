@@ -84,9 +84,6 @@ void __fastcall TForm2::SpeedButton1Click(TObject *Sender)
 
    ComboBox1->ItemIndex = 0;
    this->Draw2DScene();
-//   this->MakeSourceCone3D();
-//   this->MakeInterCone3D();
-   this->DrawScene();
    OpenFlashes("C:\\_alt\\++netcdf_1\\flashes.txt");
 }
 
@@ -239,135 +236,25 @@ void __fastcall TForm2::SpeedButton3Click(TObject *Sender)
 {
      if(SaveDialog1->Execute())
      {
-        FImage1->SaveToFile(SaveDialog1->FileName);
+        AnsiString FileName = SaveDialog1->FileName;
+        AnsiString strExt = ExtractFileExt(FileName);
+        if (strExt == "")
+        {
+            switch(SaveDialog1->FilterIndex)
+            {
+                case 1:
+                	FileName += ".png";
+                break;
+                case 2:
+                	FileName += ".jpg";
+                break;
+                case 3:
+                	FileName += ".awp";
+                break;
+            }
+        }
+        FImage1->SaveToFile(FileName);
      }
-}
-//---------------------------------------------------------------------------
-int _awpDrawLine(awpImage* pImage, awpPoint p1, awpPoint p2, AWPBYTE bChan, AWPDOUBLE dValue, double v1,double v2)
-{
-	AWPRESULT res;
-	AWPWORD t, distance;
-	AWPSHORT incx, incy;
-
-	AWPWORD startx=p1.X;
-	AWPWORD starty=p1.Y;
-	AWPWORD endx=p2.X;
-	AWPWORD endy=p2.Y;
-	AWPINT xerr = 0, yerr = 0, delta_x, delta_y;
-    double r1,r;
-
-	res = AWP_OK;
-	_CHECK_RESULT_(( res = awpCheckImage(pImage)))
- 	/*check the position*/
-	if (p1.X >= pImage->sSizeX || p1.Y >= pImage->sSizeY || p1.X < 0 || p1.Y < 0)
-   		_ERROR_EXIT_RES_(AWP_BADARG)
-	/*check the position*/
-	if (p2.X >= pImage->sSizeX || p2.Y >= pImage->sSizeY || p2.X < 0 || p2.Y < 0)
-   		_ERROR_EXIT_RES_(AWP_BADARG)
-	/*check the channel*/
-	if (bChan >= pImage->bChannels)
-		_ERROR_EXIT_RES_(AWP_BADARG)
-
-
-	delta_x = endx - startx;
-	delta_y = endy - starty;
-
-	if (delta_x > 0) incx = 1;
-	else if (delta_x == 0) incx = 0;
-	else incx = -1;
-
-	if (delta_y > 0) incy = 1;
-	else if (delta_y == 0) incy = 0;
-	else incy = -1;
-
-	delta_x = abs(delta_x);
-	delta_y = abs(delta_y);
-	if (delta_x > delta_y) distance = delta_x;
-	else distance = delta_y;
-
-    r = sqrt((p2.X - p1.X)*(p2.X - p1.X) + (p2.Y - p1.Y)*(p2.Y - p1.Y));
-
-	for (t = 0; t <= distance + 1; t ++)
-	{
-      if (startx < pImage->sSizeX && starty < pImage->sSizeY )
-      {
-        r1 = sqrt((startx - p1.X)*(startx - p1.X) + (starty - p1.Y)*(starty - p1.Y));
-
-        double v = r1*(v2-v1) / (r) + v1;
-
-        if (r == 0)
-            v =  dValue;
-		switch (pImage->dwType)
-		{
-			case AWP_BYTE:
-					_PIXEL(pImage, startx, starty, bChan, AWPBYTE) = (AWPBYTE)dValue;
-				break;
-			case AWP_SHORT:
-					_PIXEL(pImage, startx, starty, bChan, AWPSHORT) = (AWPSHORT)dValue;
-				break;
-			case AWP_FLOAT:
-					_PIXEL(pImage, startx, starty, bChan, AWPFLOAT) = (AWPFLOAT)dValue;
- 				break;
-			case AWP_DOUBLE:
-					_PIXEL(pImage, startx, starty, bChan, AWPDOUBLE) = v;
-				break;
-			default:
-				_ERROR_EXIT_RES_(AWP_BADARG)
-		}
-      }
-
-		xerr += delta_x;
-		yerr += delta_y;
-		if (xerr > (AWPINT)distance){xerr -= (AWPINT)distance; startx += (DWORD)incx;}
-		if (yerr > (AWPINT)distance){yerr -= (AWPINT)distance; starty += (DWORD)incy;}
-	}
-
-CLEANUP:
-    return res;
-}
-AWPRESULT _awpDrawPoint(awpImage* pImage, awpPoint p, AWPBYTE bChan, AWPDOUBLE dValue)
-{
-	AWPRESULT res;
-	AWPBYTE*	b;
-	SHORT*	s;
-	AWPFLOAT*  f;
-	AWPDOUBLE* d;
-	WORD  width; /*width of image line in elements*/
-	DWORD pos;
-	res = AWP_OK;
-	_CHECK_RESULT_(( res = awpCheckImage(pImage)))
-	/*check the position*/
-	if (p.X >= pImage->sSizeX || p.Y >= pImage->sSizeY)
-		_ERROR_EXIT_RES_(AWP_BADARG)
-	/*check the channel*/
-	if (bChan >= pImage->bChannels)
-		_ERROR_EXIT_RES_(AWP_BADARG)
-	/*pointer to the channel*/
-	width = pImage->bChannels*pImage->sSizeX;
-	pos = p.Y*width + p.X*pImage->bChannels + bChan;
-	switch (pImage->dwType)
-	{
-	case AWP_BYTE:
-			b = (AWPBYTE*)pImage->pPixels;
-			b[pos] = (AWPBYTE)dValue;
-		break;
-	case AWP_SHORT:
-			s = (SHORT*)pImage->pPixels;
-			s[pos] = (SHORT)dValue;
-		break;
-	case AWP_FLOAT:
-			f = (AWPFLOAT*)pImage->pPixels;
-			f[pos] = (AWPFLOAT)dValue;
- 		break;
-	case AWP_DOUBLE:
-			d = (AWPDOUBLE*)pImage->pPixels;
-			d[pos] = dValue;
-		break;
-	default:
-		_ERROR_EXIT_RES_(AWP_BADARG)
-	}
-CLEANUP:
-    return res;
 }
 /*awpDrawThickPointByte
 закрашивает окрестность точки p на изобажении, содержащем данные типа AWPBYTE*/
@@ -710,10 +597,7 @@ void __fastcall TForm2::DrawVerticalArea()
             }
             else if (value > 63)
             {
-//                awpDrawCEllipse(img, p, 1, 1, 0, value, value, value, 0);
-                 // _awpDrawThickLine(img, p,p1, 0, 0, value,value1);
                   _awpDrawThickLine(img, p,p1, 1, 0, value,value1);
-                //  _awpDrawThickLine(img, p,p1, 2, 0, value,value1);
             }
             else
                _awpDrawThickLine(img, p,p1, 0, 0, 64,64);
@@ -1287,8 +1171,8 @@ void __fastcall TForm2::DrawSourceConeInter(int channel)
     awpConvert(res, AWP_CONVERT_TO_BYTE);
     if (this->m_2DOptions.smooth)
     {
-        awpGaussianBlur(res, res, 1.5);
-        awpGaussianBlur(res1, res1, 1.5);
+        awpGaussianBlur(res, res, 2);
+        awpGaussianBlur(res1, res1, 2);
     }
     if (this->m_2DOptions.contours)
     {
@@ -1300,7 +1184,7 @@ void __fastcall TForm2::DrawSourceConeInter(int channel)
         }
         int num = 0;
         awpStrokeObj* obj = NULL;
-        awpGetStrokes(res, &num, &obj, 200, NULL);
+        awpGetStrokes(res, &num, &obj, 10, NULL);
         for (int i = 0; i < num; i++)
         {
             awpRect rect;
@@ -1390,46 +1274,7 @@ void __fastcall TForm2::FImage1MouseMove(TObject *Sender,
     StatusBar1->Panels->Items[0]->Text = "x = " + IntToStr(x) + " y = " + IntToStr(y) + " r = " + FormatFloat(".000", dist/1000) + " psi = " + FormatFloat(".00", psi);
 }
 //---------------------------------------------------------------------------
-void __fastcall TForm2::DrawScene()
-{
-	Graphics::TBitmap* bmp = new Graphics::TBitmap();
-	bmp->Width = ClientWidth;
-	bmp->Height= ClientHeight;
 
-	TCanvas* cnv = bmp->Canvas;
-	TRect rect;  rect.left = 0; rect.top = 0;
-    rect.Bottom = ClientHeight;
-    rect.right =  ClientWidth;
-
-	cnv->Brush->Color = clBlack;
-	cnv->FillRect(rect);
-
-	TCube cube(&t);
- 	cube.Draw(cnv);
-    switch(m_3DViewOptions)
-    {
-        case e3dSourceData:
-            DrawSourceCone3D(cnv);
-        break;
-
-        case e3dConeContours:
-            DrawInterCone3D(cnv);
-        break;
-    }
-
-
-	PaintBox1->Canvas->Draw(0,0,bmp);
-	delete bmp;
-
-}
-
-
-
-void __fastcall TForm2::PaintBox1Paint(TObject *Sender)
-{
-    DrawScene();
-}
-//---------------------------------------------------------------------------
 
 void __fastcall TForm2::PaintBox1MouseDown(TObject *Sender,
       TMouseButton Button, TShiftState Shift, int X, int Y)
@@ -1440,37 +1285,8 @@ void __fastcall TForm2::PaintBox1MouseDown(TObject *Sender,
 }
 //---------------------------------------------------------------------------
 
-void __fastcall TForm2::PaintBox1MouseMove(TObject *Sender,
-      TShiftState Shift, int X, int Y)
-{
-	 if (m_mdown)
-	 {
-		m_dx -= X;
-		m_dy -= Y;
-		t.ay = t.ay + m_dy;
-		t.az = t.az + m_dx;
-		this->DrawScene();
-		m_dx = X;
-		m_dy = Y;
-	 }
-}
-//---------------------------------------------------------------------------
 
-void __fastcall TForm2::PaintBox1MouseUp(TObject *Sender,
-      TMouseButton Button, TShiftState Shift, int X, int Y)
-{
-	m_mdown = false;
-}
-//---------------------------------------------------------------------------
 
-void __fastcall TForm2::Panel3Resize(TObject *Sender)
-{
-	t.sx = 0.5*PaintBox1->ClientWidth;
-	t.sy = 0.5*PaintBox1->ClientHeight;
-	this->DrawScene();
-    FImage1->BestFit();
-}
-//---------------------------------------------------------------------------
 void __fastcall TForm2::Draw3DPoint(TCanvas* cnv, T3DPoint& p)
 {
 		TPoint p1;
@@ -1510,6 +1326,145 @@ void __fastcall TForm2::Draw2DScene()
         break;
     }
 }
+typedef struct palEntry
+{
+	double r;
+	double g;
+	double b;
+}pe;
+
+const palEntry HeatmapPal[128] =
+{
+	{0.0,	0.0,	74.0},
+	{ 0.0,	0.0,	78.0 },
+	{ 0.0,	0.0,	78.0 },
+	{ 0.0,	0.0,	78.0 },
+	{ 0.0,	0.0,	82.0 },
+	{ 0.0,	0.0,	86.0 },
+	{ 0.0,	0.0,	90.0 },
+	{ 0.0,	0.0,	94.0 },
+	{ 0.0,	0.0,	98.0 },
+	{ 0.0,	0.0,	102.0 },
+	{ 0.0,	0.0,	106.0 },
+	{ 0.0,	0.0,	110.0 },
+	{ 0.0,	0.0,	114.0 },
+	{ 0.0,	0.0,	118.0 },
+	{ 0.0,	0.0,	122.0 },
+	{ 0.0,	0.0,	126.0 },
+	{ 0.0,	2.0,	128.0 },
+	{ 0.0,	6.0,	128.0 },
+	{ 0.0,	10.0,	128.0 },
+	{ 0.0,	14.0,	128.0 },
+	{ 0.0,	18.0,	128.0 },
+	{ 0.0,	22.0,	128.0 },
+	{ 0.0,	26.0,	128.0 },
+	{ 0.0,	30.0,	128.0 },
+	{ 0.0,	34.0,	128.0 },
+	{ 0.0,	38.0,	128.0 },
+	{ 0.0,	42.0,	128.0 },
+	{ 0.0,	46.0,	128.0 },
+	{ 0.0,	50.0,	128.0 },
+	{ 0.0,	54.0,	128.0 },
+	{ 0.0,	58.0,	128.0 },
+	{ 0.0,	62.0,	128.0 },
+	{ 0.0,	66.0,	128.0 },
+	{ 0.0,	70.0,	128.0 },
+	{ 0.0,	74.0,	128.0 },
+	{ 0.0,	78.0,	128.0 },
+	{ 0.0,	82.0,	128.0 },
+	{ 0.0,	86.0,	128.0 },
+	{ 0.0,	90.0,	128.0 },
+	{ 0.0,	94.0,	128.0 },
+	{ 0.0,	98.0,	128.0 },
+	{ 0.0,	102.0,	128.0 },
+	{ 0.0,	106.0,	128.0 },
+	{ 0.0,	110.0,	128.0 },
+	{ 0.0,	114.0,	128.0 },
+	{ 0.0,	118.0,	128.0 },
+	{ 0.0,	122.0,	128.0 },
+	{ 0.0,	126.0,	128.0 },
+	{ 2.0,	128.0,	126.0 },
+	{ 6.0,	128.0,	122.0 },
+	{ 10.0,	128.0,	118.0 },
+	{ 14.0,	128.0,	114.0 },
+	{ 18.0,	128.0,	110.0 },
+	{ 22.0,	128.0,	106.0 },
+	{ 26.0,	128.0,	102.0 },
+	{ 30.0,	128.0,	98.0 },
+	{ 34.0,	128.0,	94.0 },
+	{ 38.0,	128.0,	90.0 },
+	{ 42.0,	128.0,	86.0 },
+	{ 46.0,	128.0,	82.0 },
+	{ 50.0,	128.0,	78.0 },
+	{ 54.0,	128.0,	74.0 },
+	{ 58.0,	128.0,	70.0 },
+	{ 62.0,	128.0,	66.0 },
+	{ 66.0,	128.0,	62.0 },
+	{ 70.0,	128.0,	58.0 },
+	{ 74.0,	128.0,	54.0 },
+	{ 78.0,	128.0,	50.0 },
+	{ 82.0,	128.0,	46.0 },
+	{ 86.0,	128.0,	42.0 },
+	{ 90.0,	128.0,	38.0 },
+	{ 94.0,	128.0,	34.0 },
+	{ 98.0,	128.0,	30.0 },
+	{ 102.0,	128.0,	26.0 },
+	{ 106.0,	128.0,	22.0 },
+	{ 110.0,	128.0,	18.0 },
+	{ 114.0,	128.0,	14.0 },
+	{ 118.0,	128.0,	10.0 },
+	{ 122.0,	128.0,	6.0 },
+	{ 126.0,	128.0,	2.0 },
+	{ 128.0,	126.0,	0.0 },
+	{ 128.0,	122.0,	0.0 },
+	{ 128.0,	118.0,	0.0 },
+	{ 128.0,	114.0,	0.0 },
+	{ 128.0,	110.0,	0.0 },
+	{ 128.0,	106.0,	0.0 },
+	{ 128.0,	102.0,	0.0 },
+	{ 128.0,	98.0,	0.0 },
+	{ 128.0,	94.0,	0.0 },
+	{ 128.0,	90.0,	0.0 },
+	{ 128.0,	86.0,	0.0 },
+	{ 128.0,	82.0,	0.0 },
+	{ 128.0,	78.0,	0.0 },
+	{ 128.0,	74.0,	0.0 },
+	{ 128.0,	70.0,	0.0 },
+	{ 128.0,	66.0,	0.0 },
+	{ 128.0,	62.0,	0.0 },
+	{ 128.0,	58.0,	0.0 },
+	{ 128.0,	54.0,	0.0 },
+	{ 128.0,	50.0,	0.0 },
+	{ 128.0,	46.0,	0.0 },
+	{ 128.0,	42.0,	0.0 },
+	{ 128.0,	38.0,	0.0 },
+	{ 128.0,	34.0,	0.0 },
+	{ 128.0,	30.0,	0.0 },
+	{ 128.0,	26.0,	0.0 },
+	{ 128.0,	22.0,	0.0 },
+	{ 128.0,	18.0,	0.0 },
+	{ 128.0,	14.0,	0.0 },
+	{ 128.0,	10.0,	0.0 },
+	{ 128.0,	6.0,	0.0 },
+	{ 128.0,	2.0,	0.0 },
+	{ 126.0,	0.0,	0.0 },
+	{ 122.0,	0.0,	0.0 },
+	{ 118.0,	0.0,	0.0 },
+	{ 114.0,	0.0,	0.0 },
+	{ 110.0,	0.0,	0.0 },
+	{ 106.0,	0.0,	0.0 },
+	{ 102.0,	0.0,	0.0 },
+	{ 98.0,	0.0,	0.0 },
+	{ 94.0,	0.0,	0.0 },
+	{ 90.0,	0.0,	0.0 },
+	{ 86.0,	0.0,	0.0 },
+	{ 82.0,	0.0,	0.0 },
+	{ 78.0,	0.0,	0.0 },
+	{ 74.0,	0.0,	0.0 },
+	{ 70.0,	0.0,	0.0 },
+	{ 66.0,	0.0,	0.0 }
+};
+
 
 void __fastcall TForm2::DrawResultCells()
 {
@@ -1539,10 +1494,28 @@ void __fastcall TForm2::DrawResultCells()
     awpImage* img1 = NULL;
     awpCopyImage(img, &img1);
     awpGaussianBlur(img, img1, 5);
-    FImage1->Bitmap->SetAWPImage(img1);
+
+    // поиск объектов.
+    FindObjects(img1);
+
+    awpImage* img2 = NULL;
+    awpCreateImage(&img2, img1->sSizeX, img1->sSizeY, 3, AWP_BYTE);
+
+    AWPBYTE* bb1 = (AWPBYTE*)img1->pPixels;
+    AWPBYTE* bb2 = (AWPBYTE*)img2->pPixels;
+    for (int j = 0; j < img1->sSizeX*img1->sSizeY; j++)
+    {
+        bb2[3*j] = 2*HeatmapPal[128-bb1[j]/2].r;
+        bb2[3*j+1] = 2*HeatmapPal[128-bb1[j]/2].g;
+        bb2[3*j+2] = 2*HeatmapPal[128-bb1[j]/2].b;
+    }
+
+    FImage1->Bitmap->SetAWPImage(img2);
     FImage1->BestFit();
     _AWP_SAFE_RELEASE_(img);
     _AWP_SAFE_RELEASE_(img1);
+    _AWP_SAFE_RELEASE_(img2);
+
 }
 
 
@@ -1615,7 +1588,7 @@ void __fastcall TForm2::InterVerticalActionUpdate(TObject *Sender)
 
 void __fastcall TForm2::Panel1Resize(TObject *Sender)
 {
-    Draw2DScene();    
+  //  Draw2DScene();
 }
 //---------------------------------------------------------------------------
 
@@ -1650,9 +1623,6 @@ void __fastcall TForm2::OptionsActionExecute(TObject *Sender)
        m_planeOptions.Distance = OptionsDlg->CSpinEdit7->Value;
 
        this->Draw2DScene();
-//       this->MakeSourceCone3D();
-//       this->MakeInterCone3D();
-//       this->DrawScene();
   }
 }
 //---------------------------------------------------------------------------
@@ -2151,4 +2121,66 @@ void __fastcall TForm2::ResultCellsActionUpdate(TObject *Sender)
 //
 }
 //---------------------------------------------------------------------------
+
+void __fastcall TForm2::N4Click(TObject *Sender)
+{
+    SpeedButton3Click(NULL);
+}
+//---------------------------------------------------------------------------
+void __fastcall TForm2::FindObjects(awpImage*  img1)
+{
+  	ListView1->Clear();
+
+    int num = 0;
+    awpStrokeObj* obj = NULL;
+    awpGetStrokes(img1, &num, &obj, 10, NULL);
+    for (int i = 0; i < num; i++)
+    {
+        awpRect rect;
+        awpCalcObjRect(&obj[i], &rect);
+        int w = rect.right - rect.left;
+        int h = rect.bottom - rect.top;
+        if (w*h > 128)
+        {
+            int s;
+            // площадь
+            awpStrObjSquare(&obj[i], &s);
+            TListItem* item = ListView1->Items->Add();
+            item->Caption = IntToStr(i);
+            item->SubItems->Add(s);
+            //периметр
+            awpContour* c = NULL;
+             awpCreateContour(&c, obj[i].Num*2, true);
+            awpGetObjCountour(&obj[i], c);
+            if (c == NULL)
+                continue;
+            double d;
+            awpGetContPerim(c, &d);
+            awpFreeContour(&c);
+            item->SubItems->Add(d);
+            // цм
+            awpPoint p;
+            awpGetObjCentroid(img1, &obj[i], &p);
+            item->SubItems->Add(p.X);
+            item->SubItems->Add(p.Y);
+            // эллипс
+            double teta;
+            double mi;
+            double ma;
+            awpGetObjOrientation(img1, &obj[i],&teta, &mi, &ma);
+            item->SubItems->Add(ma);
+            item->SubItems->Add(mi);
+            item->SubItems->Add(teta);
+            // коэф. формы
+            item->SubItems->Add(sqrt((double)s)/d);
+
+
+
+        }
+    }
+    awpFreeStrokes(num, &obj);
+
+    //ShowMessage("void __fastcall TForm2::FindObject(img1)");
+}
+
 

@@ -78,9 +78,6 @@ __published:	// IDE-managed Components
     TFastLineSeries *Series1;
     TChart *Chart2;
     TFastLineSeries *FastLineSeries1;
-    TSplitter *Splitter1;
-    TPanel *Panel3;
-    TPaintBox *PaintBox1;
     TActionList *ActionList1;
     TAction *SourceViewAction;
     TAction *SourceConeViewAction;
@@ -107,6 +104,8 @@ __published:	// IDE-managed Components
     TMenuItem *N2;
     TAction *ResultCellsAction;
     TMenuItem *N3;
+    TMenuItem *N4;
+    TListView *ListView1;
     void __fastcall SpeedButton1Click(TObject *Sender);
     void __fastcall ComboBox1Change(TObject *Sender);
     void __fastcall SpeedButton3Click(TObject *Sender);
@@ -115,14 +114,8 @@ __published:	// IDE-managed Components
     void __fastcall ComboBox2Change(TObject *Sender);
     void __fastcall FImage1MouseMove(TObject *Sender, TShiftState Shift,
           int X, int Y);
-    void __fastcall PaintBox1Paint(TObject *Sender);
     void __fastcall PaintBox1MouseDown(TObject *Sender,
           TMouseButton Button, TShiftState Shift, int X, int Y);
-    void __fastcall PaintBox1MouseMove(TObject *Sender, TShiftState Shift,
-          int X, int Y);
-    void __fastcall PaintBox1MouseUp(TObject *Sender, TMouseButton Button,
-          TShiftState Shift, int X, int Y);
-    void __fastcall Panel3Resize(TObject *Sender);
     void __fastcall SourceViewActionExecute(TObject *Sender);
     void __fastcall SourceConeViewActionExecute(TObject *Sender);
     void __fastcall SourceConeViewActionUpdate(TObject *Sender);
@@ -147,6 +140,7 @@ __published:	// IDE-managed Components
     void __fastcall InterHorizontalActionUpdate(TObject *Sender);
     void __fastcall ResultCellsActionExecute(TObject *Sender);
     void __fastcall ResultCellsActionUpdate(TObject *Sender);
+    void __fastcall N4Click(TObject *Sender);
 private:	// User declarations
         TStringList*    m_imageFiles;
 
@@ -155,6 +149,8 @@ private:	// User declarations
         awpImage* m_azmuth;
         double*   m_dist;
         awpImage* m_elev;
+        awpImage* m_ConeInter; // »нтерпол€ци€ на конусе
+
         void __fastcall DoOutPicture(int c);
         int mr,mpsi;
 
@@ -186,7 +182,6 @@ private:	// User declarations
         void __fastcall Draw2DScene();
 
         void __fastcall DrawVerticalArea();
-        void __fastcall DrawScene();
         void __fastcall Draw3DPoint(TCanvas* cnv, T3DPoint& p);
         void __fastcall DrawSourceCone3D(TCanvas* cnv);
         void __fastcall DrawInterCone3D(TCanvas* cnv);
@@ -202,6 +197,8 @@ private:	// User declarations
         void __fastcall OpenFlashes(const char* lpFileName);
         void __fastcall DrawFlashes();
         awpImage* GetInterCone(int index);
+
+        void __fastcall FindObjects(awpImage* image);
 
 public:		// User declarations
     __fastcall TForm2(TComponent* Owner);

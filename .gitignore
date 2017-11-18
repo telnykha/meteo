@@ -56,3 +56,5 @@ netCDFLib/bin/netcdf2.exe
 *.~bpr
 *.dll
 *.exe
+_awpViwerRadar/awpViewer.exe
+_awpViwerRadar/awpViewer.exe
