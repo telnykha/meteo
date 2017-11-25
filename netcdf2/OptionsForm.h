@@ -36,6 +36,12 @@ __published:
     TCSpinEdit *CSpinEdit6;
     TLabel *Label7;
     TCSpinEdit *CSpinEdit7;
+    TTabSheet *TabSheet2;
+    TCheckBox *CheckBox4;
+    TCheckBox *CheckBox5;
+    TCheckBox *CheckBox6;
+    TRadioGroup *RadioGroup1;
+    void __fastcall RadioGroup1Click(TObject *Sender);
 private:
 public:
 	virtual __fastcall TOptionsDlg(TComponent *Owner);

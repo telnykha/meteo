@@ -198,7 +198,7 @@ private:	// User declarations
         void __fastcall DrawFlashes();
         awpImage* GetInterCone(int index);
 
-        void __fastcall FindObjects(awpImage* image);
+        void __fastcall FindObjects(awpImage* image,awpImage*   image2);
 
 public:		// User declarations
     __fastcall TForm2(TComponent* Owner);

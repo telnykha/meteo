@@ -13,3 +13,22 @@ __fastcall TOptionsDlg::TOptionsDlg(TComponent *Owner)
 {
 }
 //----------------------------------------------------------------------------
+
+
+void __fastcall TOptionsDlg::RadioGroup1Click(TObject *Sender)
+{
+if (RadioGroup1->ItemIndex==1)
+    {  CheckBox4->Enabled=true;
+       CheckBox5->Enabled=true;
+       CheckBox6->Enabled=true;
+    }
+    else
+    {
+      CheckBox4->Enabled=false;
+      CheckBox5->Enabled=false;
+      CheckBox6->Enabled=false;
+    }
+
+}
+//---------------------------------------------------------------------------
+

@@ -1184,7 +1184,7 @@ void __fastcall TForm2::DrawSourceConeInter(int channel)
         }
         int num = 0;
         awpStrokeObj* obj = NULL;
-        awpGetStrokes(res, &num, &obj, 10, NULL);
+        awpGetStrokes(res, &num, &obj, 250, NULL);//порог бинаризации (250)
         for (int i = 0; i < num; i++)
         {
             awpRect rect;
@@ -1495,20 +1495,32 @@ void __fastcall TForm2::DrawResultCells()
     awpCopyImage(img, &img1);
     awpGaussianBlur(img, img1, 5);
 
-    // поиск объектов.
-    FindObjects(img1);
-
     awpImage* img2 = NULL;
     awpCreateImage(&img2, img1->sSizeX, img1->sSizeY, 3, AWP_BYTE);
-
     AWPBYTE* bb1 = (AWPBYTE*)img1->pPixels;
     AWPBYTE* bb2 = (AWPBYTE*)img2->pPixels;
-    for (int j = 0; j < img1->sSizeX*img1->sSizeY; j++)
+
+    if (OptionsDlg->RadioGroup1->ItemIndex==0)
     {
-        bb2[3*j] = 2*HeatmapPal[128-bb1[j]/2].r;
-        bb2[3*j+1] = 2*HeatmapPal[128-bb1[j]/2].g;
-        bb2[3*j+2] = 2*HeatmapPal[128-bb1[j]/2].b;
+      for (int j = 0; j < img1->sSizeX*img1->sSizeY; j++)
+      {
+          bb2[3*j] = 2*HeatmapPal[128-bb1[j]/2].r;
+          bb2[3*j+1] = 2*HeatmapPal[128-bb1[j]/2].g;
+          bb2[3*j+2] = 2*HeatmapPal[128-bb1[j]/2].b;
+      }
     }
+    else
+    {
+      for (int j = 0; j < img1->sSizeX*img1->sSizeY; j++)
+        {
+            bb2[3*j] = bb1[j];
+            bb2[3*j+1] = bb1[j];
+            bb2[3*j+2] = bb1[j];
+        }
+    }
+    // поиск объектов.
+    FindObjects(img1, img2);
+
 
     FImage1->Bitmap->SetAWPImage(img2);
     FImage1->BestFit();
@@ -2127,13 +2139,13 @@ void __fastcall TForm2::N4Click(TObject *Sender)
     SpeedButton3Click(NULL);
 }
 //---------------------------------------------------------------------------
-void __fastcall TForm2::FindObjects(awpImage*  img1)
+void __fastcall TForm2::FindObjects(awpImage*  img1, awpImage*  img2)
 {
   	ListView1->Clear();
 
     int num = 0;
     awpStrokeObj* obj = NULL;
-    awpGetStrokes(img1, &num, &obj, 10, NULL);
+    awpGetStrokes(img1, &num, &obj, 64, NULL);
     for (int i = 0; i < num; i++)
     {
         awpRect rect;
@@ -2155,30 +2167,36 @@ void __fastcall TForm2::FindObjects(awpImage*  img1)
             if (c == NULL)
                 continue;
             double d;
+             awpDrawCPolygon(img2,c, 0,255,0,1);
             awpGetContPerim(c, &d);
             awpFreeContour(&c);
             item->SubItems->Add(d);
             // цм
             awpPoint p;
             awpGetObjCentroid(img1, &obj[i], &p);
+            if(OptionsDlg->CheckBox4->Checked)
+            {
+                awpDrawCPoint(img2, p, 0,0,255, 3);
+            }
+
             item->SubItems->Add(p.X);
             item->SubItems->Add(p.Y);
             // эллипс
             double teta;
             double mi;
             double ma;
-            awpGetObjOrientation(img1, &obj[i],&teta, &mi, &ma);
+            awpGetObjOrientation(img1, &obj[i],&teta, &mi, &ma); ///нодо смотреть и исправить и посмотреть как рисуются элипсы
+            awpDrawCEllipse(img2, p, mi,ma, teta, 0,0,255, 1);
             item->SubItems->Add(ma);
             item->SubItems->Add(mi);
             item->SubItems->Add(teta);
             // коэф. формы
             item->SubItems->Add(sqrt((double)s)/d);
-
-
-
         }
     }
     awpFreeStrokes(num, &obj);
+
+
 
     //ShowMessage("void __fastcall TForm2::FindObject(img1)");
 }

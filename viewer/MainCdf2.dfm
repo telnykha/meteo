@@ -1,40 +1,40 @@
 object Form2: TForm2
-  Left = 78
-  Top = 241
+  Left = 887
+  Top = 534
   Width = 801
   Height = 595
   Caption = 'Form2'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
-  Font.Height = -11
+  Font.Height = -14
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   Menu = MainMenu1
   OldCreateOrder = False
   OnResize = FormResize
-  PixelsPerInch = 96
-  TextHeight = 13
+  PixelsPerInch = 120
+  TextHeight = 16
   object Splitter1: TSplitter
     Left = 0
-    Top = 41
-    Width = 3
-    Height = 388
+    Top = 50
+    Width = 4
+    Height = 348
     Cursor = crHSplit
   end
   object Panel1: TPanel
     Left = 0
     Top = 0
-    Width = 785
-    Height = 41
+    Width = 783
+    Height = 50
     Align = alTop
     TabOrder = 0
     OnResize = Panel1Resize
     object SpeedButton1: TSpeedButton
-      Left = 4
-      Top = 8
-      Width = 23
-      Height = 22
+      Left = 5
+      Top = 10
+      Width = 28
+      Height = 27
       Glyph.Data = {
         76010000424D7601000000000000760000002800000020000000100000000100
         04000000000000010000120B0000120B00001000000000000000000000000000
@@ -52,10 +52,10 @@ object Form2: TForm2
       OnClick = SpeedButton1Click
     end
     object SpeedButton3: TSpeedButton
-      Left = 26
-      Top = 8
-      Width = 23
-      Height = 22
+      Left = 32
+      Top = 10
+      Width = 28
+      Height = 27
       AllowAllUp = True
       Glyph.Data = {
         76010000424D7601000000000000760000002800000020000000100000000100
@@ -74,35 +74,35 @@ object Form2: TForm2
       OnClick = SpeedButton3Click
     end
     object SpeedButton2: TSpeedButton
-      Left = 48
-      Top = 8
-      Width = 23
-      Height = 22
+      Left = 59
+      Top = 10
+      Width = 28
+      Height = 27
       Caption = '<<'
       OnClick = SpeedButton2Click
     end
     object SpeedButton4: TSpeedButton
-      Left = 72
-      Top = 8
-      Width = 23
-      Height = 22
+      Left = 89
+      Top = 10
+      Width = 28
+      Height = 27
       Caption = '>>'
       OnClick = SpeedButton4Click
     end
     object SpeedButton5: TSpeedButton
-      Left = 96
-      Top = 8
-      Width = 49
-      Height = 22
+      Left = 118
+      Top = 10
+      Width = 60
+      Height = 27
       Caption = 'Play'
       OnClick = SpeedButton5Click
     end
   end
   object FImage1: TFImage
-    Left = 3
-    Top = 41
-    Width = 782
-    Height = 388
+    Left = 4
+    Top = 50
+    Width = 779
+    Height = 348
     Cursor = 1
     BorderStyle = bsFSingle
     Align = alClient
@@ -111,36 +111,36 @@ object Form2: TForm2
   end
   object Panel2: TPanel
     Left = 0
-    Top = 429
-    Width = 785
-    Height = 88
+    Top = 398
+    Width = 783
+    Height = 108
     Align = alBottom
     BevelInner = bvLowered
     BevelOuter = bvNone
     TabOrder = 2
     object Label3: TLabel
-      Left = 456
-      Top = 44
-      Width = 42
-      Height = 13
+      Left = 561
+      Top = 54
+      Width = 50
+      Height = 16
       Caption = 'Azmuth'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
-      Font.Height = -11
+      Font.Height = -15
       Font.Name = 'MS Sans Serif'
       Font.Style = [fsBold]
       ParentFont = False
       WordWrap = True
     end
     object Label1: TLabel
-      Left = 452
-      Top = 8
-      Width = 54
-      Height = 13
+      Left = 556
+      Top = 10
+      Width = 66
+      Height = 16
       Caption = 'Elevation'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
-      Font.Height = -11
+      Font.Height = -15
       Font.Name = 'MS Sans Serif'
       Font.Style = [fsBold]
       ParentFont = False
@@ -149,8 +149,8 @@ object Form2: TForm2
     object Chart1: TChart
       Left = 1
       Top = 1
-      Width = 224
-      Height = 86
+      Width = 276
+      Height = 106
       BackWall.Brush.Color = clWhite
       BackWall.Brush.Style = bsClear
       Title.Text.Strings = (
@@ -175,10 +175,10 @@ object Form2: TForm2
       end
     end
     object Chart2: TChart
-      Left = 225
+      Left = 277
       Top = 1
-      Width = 224
-      Height = 86
+      Width = 276
+      Height = 106
       BackWall.Brush.Color = clWhite
       BackWall.Brush.Style = bsClear
       Title.Text.Strings = (
@@ -203,38 +203,38 @@ object Form2: TForm2
       end
     end
     object ComboBox1: TComboBox
-      Left = 512
-      Top = 8
-      Width = 73
-      Height = 21
+      Left = 630
+      Top = 10
+      Width = 90
+      Height = 24
       Style = csDropDownList
-      ItemHeight = 13
+      ItemHeight = 16
       TabOrder = 2
       OnChange = ComboBox1Change
     end
     object ComboBox2: TComboBox
-      Left = 512
-      Top = 40
-      Width = 73
-      Height = 21
+      Left = 630
+      Top = 49
+      Width = 90
+      Height = 24
       Style = csDropDownList
-      ItemHeight = 13
+      ItemHeight = 16
       TabOrder = 3
       OnChange = ComboBox2Change
     end
     object Panel4: TPanel
-      Left = 599
+      Left = 554
       Top = 1
-      Width = 185
-      Height = 86
+      Width = 228
+      Height = 106
       Align = alRight
       TabOrder = 4
     end
   end
   object StatusBar1: TStatusBar
     Left = 0
-    Top = 517
-    Width = 785
+    Top = 506
+    Width = 783
     Height = 19
     Panels = <
       item
@@ -244,10 +244,10 @@ object Form2: TForm2
     SimplePanel = False
   end
   object Panel3: TPanel
-    Left = 3
-    Top = 41
-    Width = 782
-    Height = 388
+    Left = 4
+    Top = 50
+    Width = 779
+    Height = 348
     Align = alClient
     TabOrder = 4
     Visible = False
@@ -255,8 +255,8 @@ object Form2: TForm2
     object PaintBox1: TPaintBox
       Left = 1
       Top = 1
-      Width = 780
-      Height = 386
+      Width = 777
+      Height = 346
       Align = alClient
       OnMouseDown = PaintBox1MouseDown
       OnMouseMove = PaintBox1MouseMove
