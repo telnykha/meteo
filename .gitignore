@@ -60,3 +60,5 @@ _awpViwerRadar/awpViewer.exe
 _awpViwerRadar/awpViewer.exe
 *.~~cpp
 *.nc
+*.~bpf
+*.~dsk
