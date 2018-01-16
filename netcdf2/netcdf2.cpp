@@ -3,8 +3,8 @@
 #include <vcl.h>
 #pragma hdrstop
 //---------------------------------------------------------------------------
-USEFORM("MainCdf2.cpp", Form2);
 USEFORM("OptionsForm.cpp", OptionsDlg);
+USEFORM("MainCdf2.cpp", Form2);
 //---------------------------------------------------------------------------
 WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 {
@@ -12,8 +12,8 @@ WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
     {
          Application->Initialize();
          Application->CreateForm(__classid(TForm2), &Form2);
-         Application->CreateForm(__classid(TOptionsDlg), &OptionsDlg);
-         Application->Run();
+		Application->CreateForm(__classid(TOptionsDlg), &OptionsDlg);
+		Application->Run();
     }
     catch (Exception &exception)
     {

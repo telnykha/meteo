@@ -67,7 +67,8 @@ void __fastcall TForm2::SpeedButton1Click(TObject *Sender)
     {
         if (OpenDialog1->Files->Count == 1)
         {
-            this->OpenNCFile(OpenDialog1->FileName.c_str());
+            AnsiString _ansi = OpenDialog1->FileName.c_str();
+            this->OpenNCFile(_ansi.c_str());
         }
         else
         {
@@ -78,7 +79,8 @@ void __fastcall TForm2::SpeedButton1Click(TObject *Sender)
                 this->m_imageFiles->Add(OpenDialog1->Files->Strings[i]);
             }
             m_currentFrame = 0;
-            this->OpenNCFile(this->m_imageFiles->Strings[m_currentFrame].c_str());
+            AnsiString _ansi = m_imageFiles->Strings[m_currentFrame].c_str();
+            this->OpenNCFile(_ansi.c_str());
         }
     } // opendialog
 
@@ -1879,7 +1881,8 @@ void __fastcall TForm2::SpeedButton4Click(TObject *Sender)
     m_currentFrame++;
     if (m_currentFrame >= this->m_imageFiles->Count)
         m_currentFrame = 0;
-    this->OpenNCFile(m_imageFiles->Strings[m_currentFrame].c_str());
+    AnsiString _ansi = m_imageFiles->Strings[m_currentFrame].c_str();
+    this->OpenNCFile(_ansi.c_str());
     ComboBox1->ItemIndex = 0;
    this->Draw2DScene();
 
@@ -1891,7 +1894,8 @@ void __fastcall TForm2::SpeedButton2Click(TObject *Sender)
     m_currentFrame--;
     if (m_currentFrame < 0)
         m_currentFrame = this->m_imageFiles->Count - 1;
-    this->OpenNCFile(m_imageFiles->Strings[m_currentFrame].c_str());
+    AnsiString _ansi = m_imageFiles->Strings[m_currentFrame].c_str();
+    this->OpenNCFile(_ansi.c_str());
     ComboBox1->ItemIndex = 0;
     this->Draw2DScene();
 }

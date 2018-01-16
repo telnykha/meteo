@@ -13,13 +13,16 @@
 #include <ExtCtrls.hpp>
 #include <Menus.hpp>
 #include <ComCtrls.hpp>
-#include <Chart.hpp>
-#include <Series.hpp>
-#include <TeEngine.hpp>
-#include <TeeProcs.hpp>
+#include <VCLTee.Chart.hpp>
+#include <VclTee.TeeGDIPlus.hpp>
+#include <VCLTee.TeEngine.hpp>
+#include <VCLTee.TeeProcs.hpp>
+#include <VCLTee.Series.hpp>
 
 #include "Cube3D.h"
 #include <ActnList.hpp>
+#include <System.Actions.hpp>
+#include <VclTee.TeeGDIPlus.hpp>
 enum EView2D {eSourceData, eSourceCone, eIntepolatedCone, eSourceVirtical, eInterpolatedVertical, eInterpolatedHorizontal, eResultCell} ;
 enum EView3D {e3dSourceData, e3dConeContours};
 typedef struct

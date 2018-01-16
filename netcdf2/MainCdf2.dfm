@@ -1,33 +1,41 @@
 object Form2: TForm2
   Left = 715
   Top = 195
-  Width = 934
-  Height = 641
   Caption = 'Form2'
+  ClientHeight = 583
+  ClientWidth = 918
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
-  Font.Height = -14
+  Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   Menu = MainMenu1
   OldCreateOrder = False
   OnResize = FormResize
-  PixelsPerInch = 120
-  TextHeight = 16
+  PixelsPerInch = 96
+  TextHeight = 13
   object Panel1: TPanel
     Left = 0
     Top = 0
-    Width = 916
-    Height = 50
+    Width = 918
+    Height = 41
+    Margins.Left = 2
+    Margins.Top = 2
+    Margins.Right = 2
+    Margins.Bottom = 2
     Align = alTop
     TabOrder = 0
     OnResize = Panel1Resize
     object SpeedButton1: TSpeedButton
-      Left = 5
-      Top = 5
-      Width = 39
-      Height = 39
+      Left = 4
+      Top = 4
+      Width = 32
+      Height = 32
+      Margins.Left = 2
+      Margins.Top = 2
+      Margins.Right = 2
+      Margins.Bottom = 2
       Flat = True
       Glyph.Data = {
         76010000424D7601000000000000760000002800000020000000100000000100
@@ -46,10 +54,14 @@ object Form2: TForm2
       OnClick = SpeedButton1Click
     end
     object SpeedButton3: TSpeedButton
-      Left = 44
-      Top = 5
-      Width = 40
-      Height = 39
+      Left = 36
+      Top = 4
+      Width = 32
+      Height = 32
+      Margins.Left = 2
+      Margins.Top = 2
+      Margins.Right = 2
+      Margins.Bottom = 2
       AllowAllUp = True
       Flat = True
       Glyph.Data = {
@@ -69,10 +81,14 @@ object Form2: TForm2
       OnClick = SpeedButton3Click
     end
     object SpeedButton2: TSpeedButton
-      Left = 84
-      Top = 5
-      Width = 39
-      Height = 39
+      Left = 68
+      Top = 4
+      Width = 32
+      Height = 32
+      Margins.Left = 2
+      Margins.Top = 2
+      Margins.Right = 2
+      Margins.Bottom = 2
       Flat = True
       Glyph.Data = {
         76010000424D7601000000000000760000002800000020000000100000000100
@@ -91,10 +107,14 @@ object Form2: TForm2
       OnClick = SpeedButton2Click
     end
     object SpeedButton4: TSpeedButton
-      Left = 123
-      Top = 5
-      Width = 39
-      Height = 39
+      Left = 100
+      Top = 4
+      Width = 32
+      Height = 32
+      Margins.Left = 2
+      Margins.Top = 2
+      Margins.Right = 2
+      Margins.Bottom = 2
       Flat = True
       Glyph.Data = {
         76010000424D7601000000000000760000002800000020000000100000000100
@@ -113,10 +133,14 @@ object Form2: TForm2
       OnClick = SpeedButton4Click
     end
     object SpeedButton5: TSpeedButton
-      Left = 165
-      Top = 5
-      Width = 39
-      Height = 39
+      Left = 134
+      Top = 4
+      Width = 32
+      Height = 32
+      Margins.Left = 2
+      Margins.Top = 2
+      Margins.Right = 2
+      Margins.Bottom = 2
       Flat = True
       Glyph.Data = {
         76010000424D7601000000000000760000002800000020000000100000000100
@@ -137,10 +161,14 @@ object Form2: TForm2
   end
   object FImage1: TFImage
     Left = 0
-    Top = 50
-    Width = 357
-    Height = 394
+    Top = 41
+    Width = 464
+    Height = 435
     Cursor = 1
+    Margins.Left = 2
+    Margins.Top = 2
+    Margins.Right = 2
+    Margins.Bottom = 2
     BorderStyle = bsFSingle
     Align = alClient
     ParentColor = False
@@ -148,36 +176,48 @@ object Form2: TForm2
   end
   object Panel2: TPanel
     Left = 0
-    Top = 444
-    Width = 916
-    Height = 108
+    Top = 476
+    Width = 918
+    Height = 88
+    Margins.Left = 2
+    Margins.Top = 2
+    Margins.Right = 2
+    Margins.Bottom = 2
     Align = alBottom
     BevelInner = bvLowered
     BevelOuter = bvNone
     TabOrder = 2
     object Label3: TLabel
-      Left = 561
-      Top = 54
-      Width = 50
-      Height = 16
+      Left = 456
+      Top = 44
+      Width = 42
+      Height = 13
+      Margins.Left = 2
+      Margins.Top = 2
+      Margins.Right = 2
+      Margins.Bottom = 2
       Caption = 'Azmuth'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
-      Font.Height = -15
+      Font.Height = -12
       Font.Name = 'MS Sans Serif'
       Font.Style = [fsBold]
       ParentFont = False
       WordWrap = True
     end
     object Label1: TLabel
-      Left = 556
-      Top = 10
-      Width = 66
-      Height = 16
+      Left = 452
+      Top = 8
+      Width = 54
+      Height = 13
+      Margins.Left = 2
+      Margins.Top = 2
+      Margins.Right = 2
+      Margins.Bottom = 2
       Caption = 'Elevation'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
-      Font.Height = -15
+      Font.Height = -12
       Font.Name = 'MS Sans Serif'
       Font.Style = [fsBold]
       ParentFont = False
@@ -186,134 +226,136 @@ object Form2: TForm2
     object Chart1: TChart
       Left = 1
       Top = 1
-      Width = 276
-      Height = 106
-      BackWall.Brush.Color = clWhite
+      Width = 224
+      Height = 86
+      Margins.Left = 2
+      Margins.Top = 2
+      Margins.Right = 2
+      Margins.Bottom = 2
       BackWall.Brush.Style = bsClear
+      Legend.Visible = False
       Title.Text.Strings = (
         'Azmuth')
-      Legend.Visible = False
       View3D = False
       Align = alLeft
       TabOrder = 0
+      DefaultCanvas = 'TGDIPlusCanvas'
+      ColorPaletteIndex = 13
       object Series1: TFastLineSeries
-        Marks.ArrowLength = 8
-        Marks.Visible = False
         SeriesColor = clRed
         LinePen.Color = clRed
-        XValues.DateTime = False
         XValues.Name = 'X'
-        XValues.Multiplier = 1
         XValues.Order = loAscending
-        YValues.DateTime = False
         YValues.Name = 'Y'
-        YValues.Multiplier = 1
         YValues.Order = loNone
       end
     end
     object Chart2: TChart
-      Left = 277
+      Left = 225
       Top = 1
-      Width = 276
-      Height = 106
-      BackWall.Brush.Color = clWhite
+      Width = 224
+      Height = 86
+      Margins.Left = 2
+      Margins.Top = 2
+      Margins.Right = 2
+      Margins.Bottom = 2
       BackWall.Brush.Style = bsClear
+      Legend.Visible = False
       Title.Text.Strings = (
         'Elevation')
-      Legend.Visible = False
       View3D = False
       Align = alLeft
       TabOrder = 1
+      DefaultCanvas = 'TGDIPlusCanvas'
+      ColorPaletteIndex = 13
       object FastLineSeries1: TFastLineSeries
-        Marks.ArrowLength = 8
-        Marks.Visible = False
         SeriesColor = clRed
         LinePen.Color = clRed
-        XValues.DateTime = False
         XValues.Name = 'X'
-        XValues.Multiplier = 1
         XValues.Order = loAscending
-        YValues.DateTime = False
         YValues.Name = 'Y'
-        YValues.Multiplier = 1
         YValues.Order = loNone
       end
     end
     object ComboBox1: TComboBox
-      Left = 630
-      Top = 10
-      Width = 90
-      Height = 24
+      Left = 512
+      Top = 8
+      Width = 73
+      Height = 21
+      Margins.Left = 2
+      Margins.Top = 2
+      Margins.Right = 2
+      Margins.Bottom = 2
       Style = csDropDownList
-      ItemHeight = 16
       TabOrder = 2
       OnChange = ComboBox1Change
     end
     object ComboBox2: TComboBox
-      Left = 630
-      Top = 49
-      Width = 90
-      Height = 24
+      Left = 512
+      Top = 40
+      Width = 73
+      Height = 21
+      Margins.Left = 2
+      Margins.Top = 2
+      Margins.Right = 2
+      Margins.Bottom = 2
       Style = csDropDownList
-      ItemHeight = 16
       TabOrder = 3
       OnChange = ComboBox2Change
     end
   end
   object StatusBar1: TStatusBar
     Left = 0
-    Top = 552
-    Width = 916
+    Top = 564
+    Width = 918
     Height = 19
+    Margins.Left = 2
+    Margins.Top = 2
+    Margins.Right = 2
+    Margins.Bottom = 2
     Panels = <
       item
         Text = 'x = y = r = psi = '
         Width = 50
       end>
-    SimplePanel = False
   end
   object ListView1: TListView
-    Left = 357
-    Top = 50
-    Width = 559
-    Height = 394
+    Left = 464
+    Top = 41
+    Width = 454
+    Height = 435
+    Margins.Left = 2
+    Margins.Top = 2
+    Margins.Right = 2
+    Margins.Bottom = 2
     Align = alRight
     Columns = <
       item
         Caption = #8470
-        Width = 62
       end
       item
         Caption = #1055#1083#1086#1097#1072#1076#1100
-        Width = 62
       end
       item
         Caption = #1055#1077#1088#1080#1084#1077#1090#1088
-        Width = 62
       end
       item
         Caption = 'X - '#1062'.'#1084
-        Width = 62
       end
       item
         Caption = 'Y - '#1094'.'#1084'.'
-        Width = 62
       end
       item
         Caption = #1041#1086#1083#1100#1096#1072#1103' '#1087#1086#1083#1091#1086#1089#1100
-        Width = 62
       end
       item
         Caption = #1052#1072#1083#1072#1103' '#1087#1086#1083#1091#1086#1089#1100
-        Width = 62
       end
       item
         Caption = #1059#1075#1086#1083' '#1085#1072#1082#1083#1086#1085#1072
-        Width = 62
       end
       item
         Caption = #1050#1086#1101#1092'. '#1092#1086#1088#1084#1099
-        Width = 62
       end>
     TabOrder = 4
     ViewStyle = vsReport

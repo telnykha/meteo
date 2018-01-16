@@ -62,3 +62,4 @@ _awpViwerRadar/awpViewer.exe
 *.nc
 *.~bpf
 *.~dsk
+netcdf2/__history/*.*
