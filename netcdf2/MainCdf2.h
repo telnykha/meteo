@@ -14,15 +14,15 @@
 #include <Menus.hpp>
 #include <ComCtrls.hpp>
 #include <VCLTee.Chart.hpp>
+#include <VCLTee.Series.hpp>
 #include <VclTee.TeeGDIPlus.hpp>
 #include <VCLTee.TeEngine.hpp>
 #include <VCLTee.TeeProcs.hpp>
-#include <VCLTee.Series.hpp>
+#include "nc_XML_Import.h"
 
 #include "Cube3D.h"
 #include <ActnList.hpp>
 #include <System.Actions.hpp>
-#include <VclTee.TeeGDIPlus.hpp>
 enum EView2D {eSourceData, eSourceCone, eIntepolatedCone, eSourceVirtical, eInterpolatedVertical, eInterpolatedHorizontal, eResultCell} ;
 enum EView3D {e3dSourceData, e3dConeContours};
 typedef struct
@@ -45,15 +45,6 @@ typedef struct
     int         num;
     T3DPoint*   pts;
 }T3DContour;
-
-typedef struct
-{
-    TDateTime time;
-    double lat;
-    double lon;
-    int    num;
-}TFlash;
-
 //---------------------------------------------------------------------------
 class TForm2 : public TForm
 {
@@ -109,6 +100,8 @@ __published:	// IDE-managed Components
     TMenuItem *N3;
     TMenuItem *N4;
     TListView *ListView1;
+    TComboBox *ComboBox3;
+	TPaintBox *PaintBox1;
     void __fastcall SpeedButton1Click(TObject *Sender);
     void __fastcall ComboBox1Change(TObject *Sender);
     void __fastcall SpeedButton3Click(TObject *Sender);
@@ -144,17 +137,19 @@ __published:	// IDE-managed Components
     void __fastcall ResultCellsActionExecute(TObject *Sender);
     void __fastcall ResultCellsActionUpdate(TObject *Sender);
     void __fastcall N4Click(TObject *Sender);
+    void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
+    void __fastcall ComboBox3Change(TObject *Sender);
+	void __fastcall PaintBox1MouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
+
 private:	// User declarations
-        TStringList*    m_imageFiles;
+       	UnicodeString m_strDataPath;
 
         int       m_ncid;
         awpImage* m_source;  // исходное изображение
         awpImage* m_azmuth;
         double*   m_dist;
         awpImage* m_elev;
-        awpImage* m_ConeInter; // »нтерпол€ци€ на конусе
 
-        void __fastcall DoOutPicture(int c);
         int mr,mpsi;
 
         T3DTransform 		t;
@@ -174,9 +169,11 @@ private:	// User declarations
         T3DContour*     m_3DContours;
         int             m_num3DContours;
 
-        TFlash          m_flashes[1000];
-        int             m_flashes_count;
         int             m_max_lenght;
+
+        TList          *FList;
+        double         RLat; //координаты радара
+        double         RLon; // координаты радара
 
         void __fastcall DrawSource(int channel);
         void __fastcall DrawSourceCone(int channel);
@@ -191,14 +188,13 @@ private:	// User declarations
         void __fastcall MakeSourceCone3D();
         void __fastcall MakeInterCone3D();
         void __fastcall DrawResultCells();
+		void __fastcall DrawScene();
 
         void __fastcall MakeInterPic(double H, double R, awpImage* img);
         void __fastcall FindAlfaMaxMin(double& amin, double& amax);
         awpPoint __fastcall FindFiTheta(double fi, double theta);
         void __fastcall OpenNCFile(const char* lpFileName);
-
-        void __fastcall OpenFlashes(const char* lpFileName);
-        void __fastcall DrawFlashes();
+        void __fastcall DrawFlashes1(awpImage* image);
         awpImage* GetInterCone(int index);
 
         void __fastcall FindObjects(awpImage* image,awpImage*   image2);

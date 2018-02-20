@@ -24,6 +24,7 @@ TForm2 *Form2;
 __fastcall TForm2::TForm2(TComponent* Owner)
     : TForm(Owner)
 {
+    FList=new TList ();
     m_azmuth = NULL;
     m_dist   = NULL;
     m_elev   = NULL;
@@ -32,7 +33,7 @@ __fastcall TForm2::TForm2(TComponent* Owner)
     m_max_lenght = 250*1800 / 1000;
 
     m_2DViewOptions = eIntepolatedCone;
-    m_3DViewOptions = e3dSourceData;
+    m_3DViewOptions = e3dConeContours;
 
     m_2DOptions.dist_x = 150;
     m_2DOptions.step_ro = 2;
@@ -49,44 +50,33 @@ __fastcall TForm2::TForm2(TComponent* Owner)
     m_planeOptions.imageWidth = 512;
     m_planeOptions.Height = 3000;
     m_planeOptions.Distance = 150;
-
-    m_imageFiles = new TStringList();
-
+    m_strDataPath = L"";
 }
 //---------------------------------------------------------------------------
 
 void __fastcall TForm2::SpeedButton1Click(TObject *Sender)
 {
-    if (m_ncid != 0)
-    {
-        nc_close(m_ncid);
-        m_ncid = 0;
-    }
-
     if (OpenDialog1->Execute())
     {
-        if (OpenDialog1->Files->Count == 1)
-        {
-            AnsiString _ansi = OpenDialog1->FileName.c_str();
-            this->OpenNCFile(_ansi.c_str());
-        }
-        else
-        {
-            // заполним спискок имен файлов и откроем первый из них.
-            this->m_imageFiles->Clear();
-            for (int i = 0; i < OpenDialog1->Files->Count; i++)
-            {
-                this->m_imageFiles->Add(OpenDialog1->Files->Strings[i]);
-            }
-            m_currentFrame = 0;
-            AnsiString _ansi = m_imageFiles->Strings[m_currentFrame].c_str();
-            this->OpenNCFile(_ansi.c_str());
-        }
-    } // opendialog
+
+       AnsiString RadarName, RadarType;
+       this->m_strDataPath = ExtractFilePath(OpenDialog1->FileName);
+       m_strDataPath += L"\\";
+       FList->Clear();
+       ReadXML (OpenDialog1->FileName,  FList,RadarName, RadarType,RLat,RLon);
+       ComboBox3->Items->Clear();
+       for(int i = 0; i < FList->Count; i++)
+       {
+           MREvent* e = ( MREvent*)FList->Items[i];
+           ComboBox3->Items->Add(e->FileName);
+       }
+       ComboBox3->ItemIndex = 0;
+       ComboBox3Change(NULL);
+       return;
+    }
 
    ComboBox1->ItemIndex = 0;
    this->Draw2DScene();
-   OpenFlashes("C:\\_alt\\++netcdf_1\\flashes.txt");
 }
 
 
@@ -113,111 +103,125 @@ static void _bSaveAWPAsDAT(const char* lpFileName, awpImage* pImage)
 
 void __fastcall TForm2::OpenNCFile(const char* lpFileName)
 {
-              int status = NC_NOERR;
-              int ncid   = 0;
-              AnsiString FileName = lpFileName;
-              status = nc_open(lpFileName, 0, &m_ncid);
-              if (status != NC_NOERR)
-                  ShowMessage("не могу открыть файл " + FileName);
-              int  ndims, nvars, ngatts, unlimdimid;
-              status = nc_inq(m_ncid, &ndims, &nvars, &ngatts, &unlimdimid);
-              if (status != NC_NOERR)
-                  ShowMessage("не могу открыть файл " + FileName);
-              int varID;
-              nc_inq_varid(this->m_ncid, "Reflectivity", &varID);
+    if (m_ncid != 0)
+    {
+        nc_close(m_ncid);
+        m_ncid = 0;
+    }
+    _AWP_SAFE_RELEASE_(m_source);
+    _AWP_SAFE_RELEASE_(m_azmuth);
+    _AWP_SAFE_RELEASE_(m_elev);
+    if (m_dist != NULL)
+    {
+        free(m_dist);
+        m_dist = NULL;
+    }
+
+    int status = NC_NOERR;
+    int ncid   = 0;
+    AnsiString FileName = lpFileName;
+    status = nc_open(lpFileName, 0, &m_ncid);
+    if (status != NC_NOERR)
+        ShowMessage("не могу открыть файл " + FileName);
+
+    int  ndims, nvars, ngatts, unlimdimid;
+    status = nc_inq(m_ncid, &ndims, &nvars, &ngatts, &unlimdimid);
+    if (status != NC_NOERR)
+        ShowMessage("не могу открыть файл " + FileName);
+    int varID;
+    nc_inq_varid(this->m_ncid, "Reflectivity", &varID);
 
 
-              nc_type xtypep;
-              int ndimsp;
-              int dimidsp[128];
-              int nattsp;
-              nc_inq_var(this->m_ncid,  varID, NULL, &xtypep, &ndimsp, dimidsp, &nattsp);
+    nc_type xtypep;
+    int ndimsp;
+    int dimidsp[128];
+    int nattsp;
+    nc_inq_var(this->m_ncid,  varID, NULL, &xtypep, &ndimsp, dimidsp, &nattsp);
 
-              char buf[NC_MAX_NAME+1];
-              int w, h, c;
-              for (int i = 0; i < ndimsp; i++)
-              {
-                 size_t len;
-                 nc_inq_dim(this->m_ncid,dimidsp[i], buf, &len);
-                 AnsiString str = buf;
+    char buf[NC_MAX_NAME+1];
+    int w, h, c;
+    for (int i = 0; i < ndimsp; i++)
+    {
+       size_t len;
+       nc_inq_dim(this->m_ncid,dimidsp[i], buf, &len);
+       AnsiString str = buf;
 
-                   if (str == "scanR")
-                   {
-                      c = len;
-                   }
-                   else if (str == "radialR")
-                   {
-                      h = len;
-                   }
-                   else if (str == "gateR")
-                   {
-                      w = len;
-                      m_max_lenght = 250*w / 1000;
+         if (str == "scanR")
+         {
+            c = len;
+         }
+         else if (str == "radialR")
+         {
+            h = len;
+         }
+         else if (str == "gateR")
+         {
+            w = len;
+            m_max_lenght = 250*w / 1000;
 
-                   }
+         }
 
-             }
-
-          _AWP_SAFE_RELEASE_(m_source);
-          _AWP_SAFE_RELEASE_(m_azmuth);
-
-          awpCreateImage(&m_source, w,h,c, AWP_DOUBLE);
-          double* p = (double*)m_source->pPixels;
-
-          size_t start[3] = {0,0,0};
-          size_t count[3]  = {c,h,w};
-          double* data = (double*)malloc(c*h*w*sizeof(double));
-          status = nc_get_vara_double(this->m_ncid, varID, start, count, data);
-          if (status != NC_NOERR)
-              ShowMessage("ошибка!");
-
-          nc_inq_varid(this->m_ncid, "azimuthR", &varID);
-
-          awpCreateImage(&m_azmuth, h, c, 1, AWP_DOUBLE);
-          double* dd = (double*)m_azmuth->pPixels;
-          status = nc_get_var_double(this->m_ncid, varID, dd);
-          if (status != NC_NOERR)
-              ShowMessage("ошибка!");
-
-          _bSaveAWPAsDAT("azmuth.txt", m_azmuth);
-
-          nc_inq_varid(this->m_ncid, "distanceR", &varID);
-          m_dist = (double*)malloc(w*sizeof(double));
-          status = nc_get_var_double(this->m_ncid, varID, m_dist);
-          if (status != NC_NOERR)
-              ShowMessage("ошибка!");
+   }
 
 
-          nc_inq_varid(this->m_ncid, "elevationR", &varID);
-          awpCreateImage(&m_elev, h, c, 1, AWP_DOUBLE);
-          dd = (double*)m_elev->pPixels;
-          status = nc_get_var_double(this->m_ncid, varID, dd);
-          if (status != NC_NOERR)
-              ShowMessage("ошибка!");
+    awpCreateImage(&m_source, w,h,c, AWP_DOUBLE);
+    double* p = (double*)m_source->pPixels;
 
 
-          ComboBox1->Clear();
-          for (int i = 0; i < c; i++)
-              ComboBox1->AddItem(FormatFloat("00.00", dd[i*m_elev->sSizeX]), NULL);
+    size_t start[3] = {0,0,0};
+    size_t count[3]  = {c,h,w};
+    double* data = (double*)malloc(c*h*w*sizeof(double));
+    status = nc_get_vara_double(this->m_ncid, varID, start, count, data);
+    if (status != NC_NOERR)
+        ShowMessage("ошибка!");
 
-          for (int r = 0;r < w; r++)
-          {
-              for (int a = 0; a < h; a++)
-              {
-                 for (int cc = 0;cc < c; cc++)
-                  {
-                      p[r*c + cc+ c*w*a] = data[cc*w*h + (r + w*a)];
-                  }
-              }
-          }
 
-          free(data);
+    nc_inq_varid(this->m_ncid, "azimuthR", &varID);
+
+    awpCreateImage(&m_azmuth, h, c, 1, AWP_DOUBLE);
+    double* dd = (double*)m_azmuth->pPixels;
+    status = nc_get_var_double(this->m_ncid, varID, dd);
+    if (status != NC_NOERR)
+        ShowMessage("ошибка!");
+
+    _bSaveAWPAsDAT("azmuth.txt", m_azmuth);
+
+    nc_inq_varid(this->m_ncid, "distanceR", &varID);
+    m_dist = (double*)malloc(w*sizeof(double));
+    status = nc_get_var_double(this->m_ncid, varID, m_dist);
+    if (status != NC_NOERR)
+        ShowMessage("ошибка!");
+
+
+    nc_inq_varid(this->m_ncid, "elevationR", &varID);
+    awpCreateImage(&m_elev, h, c, 1, AWP_DOUBLE);
+    dd = (double*)m_elev->pPixels;
+    status = nc_get_var_double(this->m_ncid, varID, dd);
+    if (status != NC_NOERR)
+        ShowMessage("ошибка!");
+
+    ComboBox1->Clear();
+    for (int i = 0; i < c; i++)
+        ComboBox1->AddItem(FormatFloat("00.00", dd[i*m_elev->sSizeX]), NULL);
+
+    for (int r = 0;r < w; r++)
+    {
+        for (int a = 0; a < h; a++)
+        {
+           for (int cc = 0;cc < c; cc++)
+            {
+                p[r*c + cc+ c*w*a] = data[cc*w*h + (r + w*a)];
+            }
+        }
+    }
+
+    free(data);
+   
 }
 
 //---------------------------------------------------------------------------
 void __fastcall TForm2::ComboBox1Change(TObject *Sender)
 {
-//    DoOutPicture(ComboBox1->ItemIndex);
     ComboBox2->Clear();
     double* a = (double*)this->m_azmuth->pPixels;
     this->Series1->Clear();
@@ -227,11 +231,6 @@ void __fastcall TForm2::ComboBox1Change(TObject *Sender)
         this->Series1->Add(a[ComboBox1->ItemIndex*m_azmuth->sSizeX+i]);
     }
     Draw2DScene();
-}
-//---------------------------------------------------------------------------
-void __fastcall TForm2::DoOutPicture(int c)
-{
-
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm2::SpeedButton3Click(TObject *Sender)
@@ -768,6 +767,7 @@ void __fastcall TForm2::DrawInterCone3D(TCanvas* cnv)
 {
       if (m_source == NULL)
         return;
+        MakeSourceCone3D();
       if (this->m_3DContours == NULL || this->m_num3DContours == 0)
         return;
 
@@ -883,7 +883,6 @@ awpImage* TForm2::GetInterCone(int index)
     {
         for (int j = 0; j < l; j++)
         {
-            //int x,y,x1,y1,x3,y3,x4,y4;  //
             c[0].X = floor(len1 + len1*(m_dist[j] / m_dist[len1])*cos(3.14*a[i+ idx*m_azmuth->sSizeX]/180) + 0.5);
             c[0].Y = floor(len1 + len1*(m_dist[j] / m_dist[len1] )*sin(3.14*a[i+ idx*m_azmuth->sSizeX]/180) + 0.5);
 
@@ -909,11 +908,11 @@ awpImage* TForm2::GetInterCone(int index)
             if (v1 == v2 && v1 == v3 && v1 == v4)
                 continue;
 
-               //    awpDrawPolygon(res, &contour, 0, 100, 0);
+            ///awpDrawPolygon(res, &contour, 0, 100, 0);
 
             double l1,l2;
-            l1 = sqrt((c[1].X - c[0].X)*(c[1].X - c[0].X) + (c[1].Y - c[0].Y)*(c[1].Y - c[0].Y));
-            l2 = sqrt((c[3].X - c[2].X)*(c[3].X - c[2].X) + (c[3].Y - c[2].Y)*(c[3].Y - c[2].Y));
+            l1 = 1+sqrt((c[1].X - c[0].X)*(c[1].X - c[0].X) + (c[1].Y - c[0].Y)*(c[1].Y - c[0].Y));
+            l2 = 1+sqrt((c[3].X - c[2].X)*(c[3].X - c[2].X) + (c[3].Y - c[2].Y)*(c[3].Y - c[2].Y));
 
 
             // нахождение minx и maxx
@@ -950,21 +949,8 @@ awpImage* TForm2::GetInterCone(int index)
                      v  =  v5 + r5*(v6 - v5) / l1;
                      r[2*yy*l + xx] = v;
                   }
-                  else
-                  {
-                    //r[2*yy*1832 + xx] = -32;
-                  }
                 }
             }
-
-
-            awpPoint p1,p2;
-            p1.X = c[0].X;
-            p2.X = c[1].X;
-            p1.Y = c[0].Y;
-            p2.Y = c[1].Y;
-
-          // _awpDrawThickLine(res, p1,p2, 0, (v1+v2)/2, v1,v2);
         }
     }
 
@@ -978,47 +964,13 @@ awpImage* TForm2::GetInterCone(int index)
         r[i] += 32;
         r[i] *=1.9;
     }
-
- //   awpImage* res1 = NULL;
-//    awpCopyImage(res, &res1);
-//    awpConvert(res1, AWP_CONVERT_TO_BYTE_WITH_NORM);
-
-
-/*
-    AWPBYTE* bres1 = (AWPBYTE*)res1->pPixels;
-    for (int i = 0; i < res->sSizeX*res->sSizeY; i++)
-    {
-        if (r[i] < 60.8)
-        {
-            bres1[3*i] = 0;
-            bres1[3*i+1] = 0;
-            bres1[3*i+2] = 255;
-        }
-        else  if (r[i] > 60.8)
-        {
-            bres1[3*i] = 0;
-            bres1[3*i+1] = r[i];
-            bres1[3*i+2] = 0;
-        }
-        else
-        {
-            bres1[3*i] = 64;
-            bres1[3*i+1] = 0;
-            bres1[3*i+2] = 0;
-        }
-
-    }
-   _AWP_SAFE_RELEASE_(res);
-   _AWP_SAFE_RELEASE_(tmp);
-
-*/
    _AWP_SAFE_RELEASE_(tmp);
     return res;
 }
 
 void __fastcall TForm2::DrawSourceConeInter(int channel)
 {
-    if (m_source == NULL)
+    if (m_source == NULL || channel < 0)
         return;
 
     awpImage* tmp = NULL;//GetInterCone(channel);
@@ -1077,8 +1029,8 @@ void __fastcall TForm2::DrawSourceConeInter(int channel)
                //    awpDrawPolygon(res, &contour, 0, 100, 0);
 
             double l1,l2;
-            l1 = sqrt((c[1].X - c[0].X)*(c[1].X - c[0].X) + (c[1].Y - c[0].Y)*(c[1].Y - c[0].Y));
-            l2 = sqrt((c[3].X - c[2].X)*(c[3].X - c[2].X) + (c[3].Y - c[2].Y)*(c[3].Y - c[2].Y));
+            l1 = 1+sqrt((c[1].X - c[0].X)*(c[1].X - c[0].X) + (c[1].Y - c[0].Y)*(c[1].Y - c[0].Y));
+            l2 = 1+sqrt((c[3].X - c[2].X)*(c[3].X - c[2].X) + (c[3].Y - c[2].Y)*(c[3].Y - c[2].Y));
 
 
             // нахождение minx и maxx
@@ -1128,8 +1080,6 @@ void __fastcall TForm2::DrawSourceConeInter(int channel)
             p2.X = c[1].X;
             p1.Y = c[0].Y;
             p2.Y = c[1].Y;
-
-          // _awpDrawThickLine(res, p1,p2, 0, (v1+v2)/2, v1,v2);
         }
     }
 
@@ -1173,8 +1123,8 @@ void __fastcall TForm2::DrawSourceConeInter(int channel)
     awpConvert(res, AWP_CONVERT_TO_BYTE);
     if (this->m_2DOptions.smooth)
     {
-        awpGaussianBlur(res, res, 2);
-        awpGaussianBlur(res1, res1, 2);
+        awpGaussianBlur(res, res, 1.5);
+        awpGaussianBlur(res1, res1, 1.5);
     }
     if (this->m_2DOptions.contours)
     {
@@ -1216,7 +1166,7 @@ void __fastcall TForm2::DrawSourceConeInter(int channel)
 
 
     }
-
+    DrawFlashes1(res1);
     FImage1->Bitmap->SetAWPImage(res1);
     FImage1->BestFit();
 
@@ -1224,7 +1174,6 @@ void __fastcall TForm2::DrawSourceConeInter(int channel)
    _AWP_SAFE_RELEASE_(tmp);
    _AWP_SAFE_RELEASE_(res);
    _AWP_SAFE_RELEASE_(res1);
-   DrawFlashes();
 }
 
 
@@ -1255,24 +1204,25 @@ void __fastcall TForm2::FImage1MouseMove(TObject *Sender,
 {
     if (m_dist == NULL)
         return;
+    int x,y, h, r;
+	double dist, psi;
 
-    int x,y, h;
     x = FImage1->GetImageX(X);
     y = FImage1->GetImageY(Y);
     h = FImage1->Bitmap->Height;
-    int r = (int)sqrt(x*x + (h-y)*(h-y));
-    double dist = this->m_dist[r];
-    double psi  = 0;
-    if (x == 0)
-        psi = 90;
-    else
-    {
-        psi = 180*atan((double)(h-y)/(double)x)/ 3.14;
-    }
-    mr = r;
-    mpsi = psi;
 
-    //DrawVerticalArea();
+
+    if (m_2DViewOptions == eSourceCone || m_2DViewOptions == eIntepolatedCone ||
+     m_2DViewOptions == eInterpolatedHorizontal || m_2DViewOptions == eResultCell)
+    {
+        int r = (int)sqrt(x*x + (h-y)*(h-y));
+        dist = this->m_dist[r];
+        psi  = 0;
+        if (x == 0)
+            psi = 90;
+        else
+            psi = 180*atan((double)(h-y)/(double)x)/ 3.14;
+    }
     StatusBar1->Panels->Items[0]->Text = "x = " + IntToStr(x) + " y = " + IntToStr(y) + " r = " + FormatFloat(".000", dist/1000) + " psi = " + FormatFloat(".00", psi);
 }
 //---------------------------------------------------------------------------
@@ -1286,7 +1236,6 @@ void __fastcall TForm2::PaintBox1MouseDown(TObject *Sender,
 	m_dy = Y;
 }
 //---------------------------------------------------------------------------
-
 
 
 void __fastcall TForm2::Draw3DPoint(TCanvas* cnv, T3DPoint& p)
@@ -1315,10 +1264,15 @@ void __fastcall TForm2::Draw2DScene()
             DrawSourceConeInter(ComboBox1->ItemIndex);
         break;
         case eSourceVirtical:
-            DrawVerticalArea();
+            //DrawVerticalArea();
         break;
         case eInterpolatedVertical:
-            DrawVerticalArea();
+            //DrawVerticalArea();
+ //           MakeSourceCone3D();
+ //           DrawSourceCone3D(FImage1->Canvas);
+
+     MakeSourceCone3D();
+    DrawScene();
         break;
         case eInterpolatedHorizontal:
            InterHorizontalActionExecute(NULL);
@@ -1495,7 +1449,7 @@ void __fastcall TForm2::DrawResultCells()
     awpConvert(img, AWP_CONVERT_TO_BYTE_WITH_NORM);
     awpImage* img1 = NULL;
     awpCopyImage(img, &img1);
-    awpGaussianBlur(img, img1, 5);
+    awpGaussianBlur(img, img1, 1.5);
 
     awpImage* img2 = NULL;
     awpCreateImage(&img2, img1->sSizeX, img1->sSizeY, 3, AWP_BYTE);
@@ -1506,9 +1460,9 @@ void __fastcall TForm2::DrawResultCells()
     {
       for (int j = 0; j < img1->sSizeX*img1->sSizeY; j++)
       {
-          bb2[3*j] = 2*HeatmapPal[128-bb1[j]/2].r;
-          bb2[3*j+1] = 2*HeatmapPal[128-bb1[j]/2].g;
-          bb2[3*j+2] = 2*HeatmapPal[128-bb1[j]/2].b;
+          bb2[3*j] = HeatmapPal[bb1[j]/2].b;
+          bb2[3*j+1] = HeatmapPal[bb1[j]/2].g;
+          bb2[3*j+2] = HeatmapPal[bb1[j]/2].r;
       }
     }
     else
@@ -1522,7 +1476,6 @@ void __fastcall TForm2::DrawResultCells()
     }
     // поиск объектов.
     FindObjects(img1, img2);
-
 
     FImage1->Bitmap->SetAWPImage(img2);
     FImage1->BestFit();
@@ -1647,8 +1600,43 @@ void __fastcall TForm2::Source3dViewActionExecute(TObject *Sender)
 //
     this->m_3DViewOptions = e3dSourceData;
    // MakeSourceCone3D();
-   // DrawScene();
+   //DrawScene();
 }
+
+void __fastcall TForm2::DrawScene()
+{
+	Graphics::TBitmap* bmp = new Graphics::TBitmap();
+	bmp->Width = ClientWidth;
+	bmp->Height= ClientHeight;
+
+	TCanvas* cnv = bmp->Canvas;
+	TRect rect;  rect.left = 0; rect.top = 0;
+    rect.Bottom = ClientHeight;
+    rect.right =  ClientWidth;
+
+	cnv->Brush->Color = clBlack;
+	cnv->FillRect(rect);
+
+	TCube cube(&t);
+ 	cube.Draw(cnv);
+    switch(m_3DViewOptions)
+    {
+        case e3dSourceData:
+            DrawSourceCone3D(cnv);
+        break;
+
+        case e3dConeContours:
+            DrawInterCone3D(cnv);
+        break;
+    }
+
+
+	FImage1->Canvas->Draw(0,0,bmp);
+	delete bmp;
+
+}
+
+
 //---------------------------------------------------------------------------
 
 void __fastcall TForm2::Source3dViewActionUpdate(TObject *Sender)
@@ -1867,9 +1855,6 @@ void __fastcall TForm2::MakeInterCone3D()
               }
           }
           awpFreeStrokes(num, &obj);
-
-
-
      _AWP_SAFE_RELEASE_(res);
      _AWP_SAFE_RELEASE_(tmp);
    }
@@ -1879,36 +1864,45 @@ void __fastcall TForm2::MakeInterCone3D()
 void __fastcall TForm2::SpeedButton4Click(TObject *Sender)
 {
     m_currentFrame++;
-    if (m_currentFrame >= this->m_imageFiles->Count)
+    if (m_currentFrame >= FList->Count)
         m_currentFrame = 0;
-    AnsiString _ansi = m_imageFiles->Strings[m_currentFrame].c_str();
-    this->OpenNCFile(_ansi.c_str());
-    ComboBox1->ItemIndex = 0;
-   this->Draw2DScene();
-
+    MREvent* e = ( MREvent*)FList->Items[m_currentFrame];
+    if (e != NULL)
+    {
+      UnicodeString str = m_strDataPath;
+      str += e->FileName.c_str();
+      AnsiString _ansi = str;
+      this->OpenNCFile(_ansi.c_str());
+      ComboBox1->ItemIndex = 0;
+      ComboBox3->ItemIndex = m_currentFrame;
+      Draw2DScene();
+    }
 }
 //---------------------------------------------------------------------------
-
 void __fastcall TForm2::SpeedButton2Click(TObject *Sender)
 {
     m_currentFrame--;
     if (m_currentFrame < 0)
-        m_currentFrame = this->m_imageFiles->Count - 1;
-    AnsiString _ansi = m_imageFiles->Strings[m_currentFrame].c_str();
-    this->OpenNCFile(_ansi.c_str());
-    ComboBox1->ItemIndex = 0;
-    this->Draw2DScene();
+        m_currentFrame = FList->Count - 1;
+    MREvent* e = ( MREvent*)FList->Items[m_currentFrame];
+    if (e != NULL)
+    {
+      UnicodeString str = m_strDataPath;
+      str += e->FileName.c_str();
+      AnsiString _ansi = str;
+      this->OpenNCFile(_ansi.c_str());
+      ComboBox1->ItemIndex = 0;
+      Draw2DScene();
+    }
 }
 //---------------------------------------------------------------------------
-
 void __fastcall TForm2::Timer1Timer(TObject *Sender)
 {
- if (m_imageFiles->Count == 0)
+ if (FList->Count == 0)
     return;
   SpeedButton4Click(NULL);
 }
 //---------------------------------------------------------------------------
-
 void __fastcall TForm2::SpeedButton5Click(TObject *Sender)
 {
     Timer1->Enabled = !Timer1->Enabled;
@@ -2048,15 +2042,6 @@ void __fastcall TForm2::InterHorizontalActionExecute(TObject *Sender)
         _AWP_SAFE_RELEASE_(cone);
     }
     awpConvert(img, AWP_CONVERT_TO_BYTE_WITH_NORM);
-    {
-/*    AWPBYTE* pix = (AWPBYTE*)img->pPixels;
-      for (int j = 0; j < img->sSizeX*img->sSizeY; j++)
-      {
-          pix[j] = 255 - pix[j];
-          if (pix[j] < 200)
-            pix[j] = 0;
-      }*/
-     }
     FImage1->Bitmap->SetAWPImage(img);
     FImage1->BestFit();
     _AWP_SAFE_RELEASE_(img);
@@ -2068,61 +2053,37 @@ void __fastcall TForm2::InterHorizontalActionUpdate(TObject *Sender)
     InterHorizontalAction->Checked = m_2DViewOptions == eInterpolatedHorizontal;
 }
 //---------------------------------------------------------------------------
-//---------------------------------------------------------------------------
-void __fastcall TForm2::OpenFlashes(const char* lpFileName)
+void __fastcall TForm2::DrawFlashes1(awpImage* image)
 {
-    FILE* f = fopen(lpFileName, "r+t");
-    if (f == NULL)
+    if (ComboBox3->ItemIndex < 0 || image == NULL)
         return;
 
-    float log;
-    float lon;
-    int KK;
-    int count = 0;
-    while (fscanf(f,"%f\t%f\t%d\n",&log,&lon,&KK)!= EOF)
+    awpImage* img = image;
+    int w = img->sSizeX/2;
+    int h = img->sSizeX/2;
+    double x = 0;
+    double y = 0;
+
+    MREvent* e = ( MREvent*)FList->Items[ComboBox3->ItemIndex];
+    if (e != NULL && e->ListFlash != NULL)
     {
-        //
-        m_flashes[count].lat = log;
-        m_flashes[count].lon = lon;
-        m_flashes[count].num = KK;
+        for (int i = 0; i < e->ListFlash->Count; i++)
+        {
+            TFlash* f = (TFlash*)e->ListFlash->Items[i];
+            ConLL(f->lat, f->lon, RLat,RLon, w,h,  x, y);
+            awpRect rect;
 
-        count++;
+            double r = (double)f->num / 100. < 1 ? 10 : f->num / 10;
+//            double alfa = (double)f->num / 500.;
+            rect.left = x - r;
+            rect.top  = y - r;
+            rect.right = x + r;
+            rect.bottom = y + r;
+
+            awpDrawCRect(img, &rect,  255,0, 0,  3);
+
+        }
     }
-    m_flashes_count = count;
-  //  ShowMessage("Flashes count = " + IntToStr(count));
-}
-
-void __fastcall TForm2::DrawFlashes()
-{
-    if (FImage1->Bitmap->Empty)
-        return;
-    awpImage* img = NULL;
-    FImage1->Bitmap->GetAWPImage(&img);
-    if (img == NULL)
-        return;
-
-    int w = 2*m_source->sSizeX;
-    int h = 2*m_source->sSizeX;
-
-    for (int i = 0; i < this->m_flashes_count; i++)
-    {
-        double x, y;
-
-        ConLL(m_flashes[i].lat, m_flashes[i].lon, 46,-100, w,h,  x, y);
-        awpRect rect;
-
-        double r = (double)m_flashes[i].num / 100. < 1 ? 10 : m_flashes[i].num / 10;
-        double alfa = (double)m_flashes[i].num / 500.;
-        rect.left = x - r;
-        rect.top  = y - r;
-        rect.right = x + r;
-        rect.bottom = y + r;
-
-        awpDrawCRect(img, &rect,  128+alfa*128,0, 128+alfa*128,  2);
-    }
-    FImage1->Bitmap->SetAWPImage(img);
-    FImage1->BestFit();
-    awpReleaseImage(&img);
 }
 
 void __fastcall TForm2::ResultCellsActionExecute(TObject *Sender)
@@ -2156,8 +2117,10 @@ void __fastcall TForm2::FindObjects(awpImage*  img1, awpImage*  img2)
         awpCalcObjRect(&obj[i], &rect);
         int w = rect.right - rect.left;
         int h = rect.bottom - rect.top;
+
         if (w*h > 128)
         {
+       		// awpDrawCRect(img2,&rect, 0,255,255, 1);
             int s;
             // площадь
             awpStrObjSquare(&obj[i], &s);
@@ -2171,7 +2134,7 @@ void __fastcall TForm2::FindObjects(awpImage*  img1, awpImage*  img2)
             if (c == NULL)
                 continue;
             double d;
-             awpDrawCPolygon(img2,c, 0,255,0,1);
+            awpDrawCPolygon(img2,c, 0,255,0,1);
             awpGetContPerim(c, &d);
             awpFreeContour(&c);
             item->SubItems->Add(d);
@@ -2199,10 +2162,42 @@ void __fastcall TForm2::FindObjects(awpImage*  img1, awpImage*  img2)
         }
     }
     awpFreeStrokes(num, &obj);
-
-
-
-    //ShowMessage("void __fastcall TForm2::FindObject(img1)");
 }
 
+
+void __fastcall TForm2::FormClose(TObject *Sender, TCloseAction &Action)
+{
+//    delete        FList;
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm2::ComboBox3Change(TObject *Sender)
+{
+    if (ComboBox3->ItemIndex >= 0)
+    {
+        AnsiString _ansi = m_strDataPath + ComboBox3->Items->Strings[ComboBox3->ItemIndex];
+//        const char* name = "D:\\kabr\\KABR_V06_20150813_100016.nc";
+        OpenNCFile(_ansi.c_str());
+//        OpenNCFile(name);
+        ComboBox1->ItemIndex = 0;
+        Draw2DScene();
+    }
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm2::PaintBox1MouseMove(TObject *Sender, TShiftState Shift, int X,
+          int Y)
+{
+	 if (m_mdown)
+	 {
+		m_dx -= X;
+		m_dy -= Y;
+		t.ay = t.ay + m_dy;
+		t.az = t.az + m_dx;
+		this->DrawScene();
+		m_dx = X;
+		m_dy = Y;
+	 }
+}
+//---------------------------------------------------------------------------
 

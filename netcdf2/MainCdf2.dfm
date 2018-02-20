@@ -1,6 +1,6 @@
 object Form2: TForm2
-  Left = 715
-  Top = 195
+  Left = 926
+  Top = 182
   Caption = 'Form2'
   ClientHeight = 583
   ClientWidth = 918
@@ -12,9 +12,22 @@ object Form2: TForm2
   Font.Style = []
   Menu = MainMenu1
   OldCreateOrder = False
+  Position = poScreenCenter
+  OnClose = FormClose
   OnResize = FormResize
   PixelsPerInch = 96
   TextHeight = 13
+  object PaintBox1: TPaintBox
+    Left = 0
+    Top = 41
+    Width = 464
+    Height = 435
+    Align = alClient
+    ExplicitLeft = 560
+    ExplicitTop = 160
+    ExplicitWidth = 105
+    ExplicitHeight = 105
+  end
   object Panel1: TPanel
     Left = 0
     Top = 0
@@ -157,6 +170,19 @@ object Form2: TForm2
         00E33777777777777733EEEEEEEEEEEEEEE33333333333333333}
       NumGlyphs = 2
       OnClick = SpeedButton5Click
+    end
+    object ComboBox3: TComboBox
+      Left = 182
+      Top = 7
+      Width = 209
+      Height = 21
+      Margins.Left = 2
+      Margins.Top = 2
+      Margins.Right = 2
+      Margins.Bottom = 2
+      Style = csDropDownList
+      TabOrder = 0
+      OnChange = ComboBox3Change
     end
   end
   object FImage1: TFImage
@@ -361,8 +387,8 @@ object Form2: TForm2
     ViewStyle = vsReport
   end
   object OpenDialog1: TOpenDialog
-    Filter = 'netcdf files|*.nc'
-    Options = [ofHideReadOnly, ofAllowMultiSelect, ofEnableSizing]
+    Filter = 'groza|*.XML'
+    Options = [ofHideReadOnly, ofNoChangeDir, ofAllowMultiSelect, ofEnableSizing]
     Left = 8
     Top = 48
   end
@@ -499,7 +525,7 @@ object Form2: TForm2
   end
   object Timer1: TTimer
     Enabled = False
-    Interval = 500
+    Interval = 100
     OnTimer = Timer1Timer
     Left = 136
     Top = 48
