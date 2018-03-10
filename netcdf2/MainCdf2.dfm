@@ -18,15 +18,18 @@ object Form2: TForm2
   PixelsPerInch = 96
   TextHeight = 13
   object PaintBox1: TPaintBox
-    Left = 0
+    Left = 560
+    Top = 160
+    Width = 105
+    Height = 105
+  end
+  object Splitter1: TSplitter
+    Left = 461
     Top = 41
-    Width = 464
     Height = 435
-    Align = alClient
-    ExplicitLeft = 560
-    ExplicitTop = 160
-    ExplicitWidth = 105
-    ExplicitHeight = 105
+    ExplicitLeft = 344
+    ExplicitTop = 200
+    ExplicitHeight = 100
   end
   object Panel1: TPanel
     Left = 0
@@ -188,7 +191,7 @@ object Form2: TForm2
   object FImage1: TFImage
     Left = 0
     Top = 41
-    Width = 464
+    Width = 461
     Height = 435
     Cursor = 1
     Margins.Left = 2
@@ -196,9 +199,13 @@ object Form2: TForm2
     Margins.Right = 2
     Margins.Bottom = 2
     BorderStyle = bsFSingle
-    Align = alClient
+    Align = alLeft
     ParentColor = False
     OnMouseMove = FImage1MouseMove
+    OnMouseUp = FImage1MouseUp
+    ExplicitLeft = 7
+    ExplicitTop = 38
+    ExplicitWidth = 250
   end
   object Panel2: TPanel
     Left = 0
@@ -345,46 +352,78 @@ object Form2: TForm2
         Width = 50
       end>
   end
-  object ListView1: TListView
+  object Panel3: TPanel
     Left = 464
     Top = 41
     Width = 454
     Height = 435
-    Margins.Left = 2
-    Margins.Top = 2
-    Margins.Right = 2
-    Margins.Bottom = 2
-    Align = alRight
-    Columns = <
-      item
-        Caption = #8470
-      end
-      item
-        Caption = #1055#1083#1086#1097#1072#1076#1100
-      end
-      item
-        Caption = #1055#1077#1088#1080#1084#1077#1090#1088
-      end
-      item
-        Caption = 'X - '#1062'.'#1084
-      end
-      item
-        Caption = 'Y - '#1094'.'#1084'.'
-      end
-      item
-        Caption = #1041#1086#1083#1100#1096#1072#1103' '#1087#1086#1083#1091#1086#1089#1100
-      end
-      item
-        Caption = #1052#1072#1083#1072#1103' '#1087#1086#1083#1091#1086#1089#1100
-      end
-      item
-        Caption = #1059#1075#1086#1083' '#1085#1072#1082#1083#1086#1085#1072
-      end
-      item
-        Caption = #1050#1086#1101#1092'. '#1092#1086#1088#1084#1099
-      end>
+    Align = alClient
+    Caption = 'Panel3'
     TabOrder = 4
-    ViewStyle = vsReport
+    ExplicitLeft = 456
+    ExplicitTop = 44
+    object Splitter2: TSplitter
+      Left = 1
+      Top = 301
+      Width = 452
+      Height = 3
+      Cursor = crVSplit
+      Align = alBottom
+      ExplicitTop = 1
+      ExplicitWidth = 255
+    end
+    object ListView1: TListView
+      Left = 1
+      Top = 304
+      Width = 452
+      Height = 130
+      Margins.Left = 2
+      Margins.Top = 2
+      Margins.Right = 2
+      Margins.Bottom = 2
+      Align = alBottom
+      Columns = <
+        item
+          Caption = #8470
+        end
+        item
+          Caption = #1055#1083#1086#1097#1072#1076#1100
+        end
+        item
+          Caption = #1055#1077#1088#1080#1084#1077#1090#1088
+        end
+        item
+          Caption = 'X - '#1062'.'#1084
+        end
+        item
+          Caption = 'Y - '#1094'.'#1084'.'
+        end
+        item
+          Caption = #1041#1086#1083#1100#1096#1072#1103' '#1087#1086#1083#1091#1086#1089#1100
+        end
+        item
+          Caption = #1052#1072#1083#1072#1103' '#1087#1086#1083#1091#1086#1089#1100
+        end
+        item
+          Caption = #1059#1075#1086#1083' '#1085#1072#1082#1083#1086#1085#1072
+        end
+        item
+          Caption = #1050#1086#1101#1092'. '#1092#1086#1088#1084#1099
+        end>
+      TabOrder = 0
+      ViewStyle = vsReport
+    end
+    object FImage2: TFImage
+      Left = 1
+      Top = 1
+      Width = 452
+      Height = 300
+      BorderStyle = bsFSingle
+      Align = alClient
+      ParentColor = False
+      ExplicitLeft = 2
+      ExplicitTop = -1
+    end
   end
   object OpenDialog1: TOpenDialog
     Filter = 'groza|*.XML'

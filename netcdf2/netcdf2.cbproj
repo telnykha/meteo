@@ -47,7 +47,7 @@
         <SanitizedProjectName>netcdf2</SanitizedProjectName>
         <DCC_Namespace>Vcl;Vcl.Imaging;Vcl.Touch;Vcl.Samples;Vcl.Shell;System;Xml;Data;Datasnap;Web;Soap;$(DCC_Namespace)</DCC_Namespace>
         <VerInfo_Locale>1049</VerInfo_Locale>
-        <AllPackageLibs>vcl.lib;rtl.lib;photon.lib;tee.lib;bcbsmp.lib;vclx.lib;vclimg.lib</AllPackageLibs>
+        <AllPackageLibs>vcl.lib;rtl.lib;photon.lib;bcbsmp.lib;vclx.lib;vclimg.lib;Tee925.lib</AllPackageLibs>
         <FinalOutputDir>..\bin\</FinalOutputDir>
         <BCC_InlineFunctionExpansion>false</BCC_InlineFunctionExpansion>
         <BRCC_IncludePath>$(BDS)\Projects;$(BDS)\Bin;$(BDS)\include;$(PHOTON);$(BDS)\include\vcl;$(AWP);..\netcdfLib\include;$(LF);$(TINY);$(BRCC_IncludePath)</BRCC_IncludePath>
@@ -60,7 +60,7 @@
         <PackageImports>vcl.bpi;rtl.bpi;dbrtl.bpi;adortl.bpi;vcldb.bpi;vclx.bpi;bdertl.bpi;vcldbx.bpi;ibxpress.bpi;dsnap.bpi;dsnap.bpi;dsnapcon.bpi;teeui.bpi;teedb.bpi;tee.bpi;dss.bpi;dsnapcon.bpi;bcbsmp.bpi;vclie.bpi;xmlrtl.bpi;inet.bpi;inetdbbde.bpi;inetdbxpress.bpi;inetdb.bpi;webdsnap.bpi;bcbie.bpi;websnap.bpi;soaprtl.bpi;dbexpress.bpi;dbxcds.bpi;indycore.bpi;indysystem.bpi;bcboffice2k.bpi;$(PackageImports)</PackageImports>
         <DynamicRTL>true</DynamicRTL>
         <BCC_PCHCache>true</BCC_PCHCache>
-        <BCC_IncludePath>$(BDS)\Bin;$(BDS)\include;$(PHOTON);$(PHOTON)\photon\;..\netcdfLib\include;$(LF);$(TINY);$(AWP);$(BCC_IncludePath)</BCC_IncludePath>
+        <BCC_IncludePath>$(BDS)\Bin;$(BDS)\include;$(PHOTON);$(PHOTON)\photon\;..\netcdfLib\include;$(LF);$(TINY);$(AWP);$(PHOTON)\\;$(LF)\;$(BCC_IncludePath)</BCC_IncludePath>
         <TASM_IncludePath>$(BDS)\Projects;$(BDS)\Bin;$(BDS)\include;$(PHOTON);$(BDS)\include\vcl;$(AWP);..\netcdfLib\include;$(LF);$(TINY);$(TASM_IncludePath)</TASM_IncludePath>
         <DCC_UnitSearchPath>.\;$(BDS)\lib;$(BDS)\lib\obj;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
         <DCC_IncludePath>.\;$(BDS)\lib;$(BDS)\lib\obj;$(DCC_IncludePath)</DCC_IncludePath>
@@ -79,7 +79,6 @@
         <OutputExt>exe</OutputExt>
         <BRCC_Defines>_DEBUG;$(BRCC_Defines)</BRCC_Defines>
         <TASM_Defines>_DEBUG;$(TASM_Defines)</TASM_Defines>
-        <Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <DCC_Namespace>Winapi;System.Win;Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;Bde;$(DCC_Namespace)</DCC_Namespace>
         <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
@@ -101,9 +100,11 @@
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <BCC_UserSuppliedOptions> -tWM -Vx -r- -k -Ve -k</BCC_UserSuppliedOptions>
         <ILINK_LibraryPath>..\..\VideoA\VideoAnalytics\Modules\utils\photon4\lib\;$(AWP);$(LF);$(TINY);$(PHOTON);$(ILINK_LibraryPath)</ILINK_LibraryPath>
-        <LinkPackageStatics>photon.lib;vclimg.lib</LinkPackageStatics>
-        <LinkPackageImports>vcl.bpi;rtl.bpi;tee.bpi;bcbsmp.bpi;vclx.bpi</LinkPackageImports>
+        <LinkPackageStatics>photon.lib;vclimg.lib;Tee925.lib</LinkPackageStatics>
+        <LinkPackageImports>vcl.bpi;rtl.bpi;bcbsmp.bpi;vclx.bpi</LinkPackageImports>
         <BCC_Defines>_DEBUG;$(BCC_Defines);$(BCC_Defines)</BCC_Defines>
+        <IncludePath>C:\Users\Александр\Documents\Embarcadero\Studio\Projects\photon;C:\Users\Александр\Documents\Embarcadero\Studio\Projects\awplflib\include;$(IncludePath)</IncludePath>
+        <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <BCC_InlineFunctionExpansion>true</BCC_InlineFunctionExpansion>
@@ -116,6 +117,8 @@
     <PropertyGroup Condition="'$(Cfg_2_Win32)'!=''">
         <BCC_UserSuppliedOptions> -tWM -Vx -r- -k -Ve -r</BCC_UserSuppliedOptions>
         <BCC_Defines>NDEBUG;$(BCC_Defines);$(BCC_Defines)</BCC_Defines>
+        <LinkPackageImports>vcl.bpi;rtl.bpi;bcbsmp.bpi;vclx.bpi</LinkPackageImports>
+        <LinkPackageStatics>photon.lib;vclimg.lib;Tee925.lib</LinkPackageStatics>
     </PropertyGroup>
     <ItemGroup>
         <CppCompile Include="Convert_Log_Lon.cpp">
@@ -161,6 +164,10 @@
             <Form>OptionsDlg</Form>
             <DependentOn>OptionsForm.h</DependentOn>
             <BuildOrder>1</BuildOrder>
+        </CppCompile>
+        <CppCompile Include="ResultSave.cpp">
+            <DependentOn>ResultSave.h</DependentOn>
+            <BuildOrder>10</BuildOrder>
         </CppCompile>
         <FormResources Include="OptionsForm.dfm"/>
         <FormResources Include="MainCdf2.dfm"/>
@@ -276,12 +283,7 @@
                 <Source>
                     <Source Name="MainSource">netcdf2.cpp</Source>
                 </Source>
-                <Excluded_Packages>
-                    <Excluded_Packages Name="$(BDSBIN)\bcboffice2k210.bpl">Embarcadero C++Builder Office 2000 Servers Package</Excluded_Packages>
-                    <Excluded_Packages Name="$(BDSBIN)\bcbofficexp210.bpl">Embarcadero C++Builder Office XP Servers Package</Excluded_Packages>
-                    <Excluded_Packages Name="$(BDSBIN)\dcloffice2k210.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
-                    <Excluded_Packages Name="$(BDSBIN)\dclofficexp210.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
-                </Excluded_Packages>
+                <Excluded_Packages/>
             </CPlusPlusBuilder.Personality>
             <Platforms>
                 <Platform value="Win32">True</Platform>

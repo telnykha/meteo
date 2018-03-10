@@ -1,20 +1,20 @@
 [Closed Files]
-File_0=SourceModule,'C:\Program Files (x86)\Borland\CBuilder6\Projects\convert\Convert_Log_Lon.cpp',0,1,1,1,1,0,0
-File_1=SourceModule,'C:\Users\Александр\Documents\GitHub\meteo\viewer\Convert_Log_Lon.cpp',0,1,7,20,15,0,0
-File_2=SourceModule,'C:\Users\Александр\Documents\GitHub\meteo\viewer\MainCdf2.cpp',0,1,244,1,1,3,0
-File_3=SourceModule,'C:\Users\Александр\Documents\GitHub\meteo\viewer\Verst.cpp',0,1,1,1,1,0,0
-File_4=SourceModule,'C:\Users\Александр\Documents\GitHub\meteo\viewer\DZb.cpp',0,1,1,1,13,0,0
-File_5=SourceModule,'C:\meteo_proect\meteo\viewer\DZb.cpp',0,1,7,1,1,0,0
-File_6=SourceModule,'C:\meteo_proect\meteo\viewer\Convert_Log_Lon.cpp',0,1,22,1,19,0,0
-File_7=SourceModule,'c:\Program Files (x86)\Borland\CBuilder6\Projects\awplflib\include\LFWeak.h',0,1,132,32,140,0,0
-File_8=SourceModule,'C:\meteo_proect\meteo\viewer\ImageData.cpp',0,1,1,1,1,0,0
-File_9=SourceModule,'C:\meteo_proect\meteo\viewer\MainCdf2.cpp',0,1,1,1,1,1,0
+File_0=SourceModule,'C:\Users\Александр\Documents\GitHub\meteo\old\viewer\MainCdf2.cpp',0,1,139,1,4,0,0
+File_1=SourceModule,'C:\Program Files (x86)\Borland\CBuilder6\Projects\convert\Convert_Log_Lon.cpp',0,1,1,1,1,0,0
+File_2=SourceModule,'C:\Users\Александр\Documents\GitHub\meteo\viewer\Convert_Log_Lon.cpp',0,1,7,20,15,0,0
+File_3=SourceModule,'C:\Users\Александр\Documents\GitHub\meteo\viewer\MainCdf2.cpp',0,1,244,1,1,3,0
+File_4=SourceModule,'C:\Users\Александр\Documents\GitHub\meteo\viewer\Verst.cpp',0,1,1,1,1,0,0
+File_5=SourceModule,'C:\Users\Александр\Documents\GitHub\meteo\viewer\DZb.cpp',0,1,1,1,13,0,0
+File_6=SourceModule,'C:\meteo_proect\meteo\viewer\DZb.cpp',0,1,7,1,1,0,0
+File_7=SourceModule,'C:\meteo_proect\meteo\viewer\Convert_Log_Lon.cpp',0,1,22,1,19,0,0
+File_8=SourceModule,'c:\Program Files (x86)\Borland\CBuilder6\Projects\awplflib\include\LFWeak.h',0,1,132,32,140,0,0
+File_9=SourceModule,'C:\meteo_proect\meteo\viewer\ImageData.cpp',0,1,1,1,1,0,0
 
 [Modules]
 Count=0
 EditWindowCount=0
 
-[C:\Users\Александр\Documents\GitHub\meteo\viewer\netcdf2.bpr]
+[C:\Users\Александр\Documents\GitHub\meteo\old\viewer\netcdf2.bpr]
 FormState=0
 FormOnTop=0
 

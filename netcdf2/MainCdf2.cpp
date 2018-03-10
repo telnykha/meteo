@@ -8,6 +8,7 @@
 #include "MainCdf2.h"
 #include "OptionsForm.h"
 #include "Convert_Log_Lon.h"
+#include "map.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma link "FImage"
@@ -24,8 +25,10 @@ TForm2 *Form2;
 __fastcall TForm2::TForm2(TComponent* Owner)
     : TForm(Owner)
 {
-    FList=new TList ();
-    m_azmuth = NULL;
+	FList=new TList ();
+	VecList=new TList ();
+	MapList=new TList ();
+	m_azmuth = NULL;
     m_dist   = NULL;
     m_elev   = NULL;
 
@@ -408,7 +411,7 @@ AWPRESULT _awpDrawThickLine(awpImage* pImage, awpPoint p1, awpPoint p2, AWPBYTE 
 	if (delta_x > delta_y) distance = delta_x;
 	else distance = delta_y;
 
-     r = sqrt((p2.X - p1.X)*(p2.X - p1.X) + (p2.Y - p1.Y)*(p2.Y - p1.Y));
+	 r = sqrt(double((p2.X - p1.X)*(p2.X - p1.X) + (p2.Y - p1.Y)*(p2.Y - p1.Y)));
 
 
 	for (t = 0; t <= distance + 1; t ++)
@@ -416,7 +419,7 @@ AWPRESULT _awpDrawThickLine(awpImage* pImage, awpPoint p1, awpPoint p2, AWPBYTE 
       if (startx < pImage->sSizeX && starty < pImage->sSizeY )
       {
 		p.X = startx;p.Y = starty;
-         r1 = sqrt((startx - p1.X)*(startx - p1.X) + (starty - p1.Y)*(starty - p1.Y));
+		 r1 = sqrt(double((startx - p1.X)*(startx - p1.X) + (starty - p1.Y)*(starty - p1.Y)));
 
          v = r1*(v2-v1) / (r) + v1;
 
@@ -487,7 +490,7 @@ void __fastcall TForm2::DrawVerticalArea()
     {
         for (int x = 0; x < l; x++)
         {
-            double r = sqrt(x*x + (h-y)*(h-y));
+			double r = sqrt(double(x*x + (h-y)*(h-y)));
             double psi  = 0;
             if (x == 0)
                 psi = 90;
@@ -877,7 +880,7 @@ awpImage* TForm2::GetInterCone(int index)
     contour.NumPoints = 5;
     contour.Direction = true;
     contour.Points = c;
-    int l = m_source->sSizeX*this->m_2DOptions.dist_x / m_max_lenght;
+	int l = m_source->sSizeX*this->m_2DOptions.dist_x / m_max_lenght;
     len1 = l;
     for (int i = 0; i < m_azmuth->sSizeX-1; i++ )
     {
@@ -911,36 +914,36 @@ awpImage* TForm2::GetInterCone(int index)
             ///awpDrawPolygon(res, &contour, 0, 100, 0);
 
             double l1,l2;
-            l1 = 1+sqrt((c[1].X - c[0].X)*(c[1].X - c[0].X) + (c[1].Y - c[0].Y)*(c[1].Y - c[0].Y));
-            l2 = 1+sqrt((c[3].X - c[2].X)*(c[3].X - c[2].X) + (c[3].Y - c[2].Y)*(c[3].Y - c[2].Y));
+			l1 = 1+sqrt(double((c[1].X - c[0].X)*(c[1].X - c[0].X) + (c[1].Y - c[0].Y)*(c[1].Y - c[0].Y)));
+			l2 = 1+sqrt(double((c[3].X - c[2].X)*(c[3].X - c[2].X) + (c[3].Y - c[2].Y)*(c[3].Y - c[2].Y)));
 
 
             // нахождение minx и maxx
             awpPoint pp;
-            for (int yy = rect.top; yy <= rect.bottom; yy++)
-            {
+			for (int yy = rect.top; yy <= rect.bottom; yy++)
+			{
                 pp.Y = yy;
                 for (int xx = rect.left; xx <= rect.right; xx++)
                 {
                   pp.X = xx;
                   AWPBOOL result = false;
-                  awpIsPointInContour(&contour, &pp, &result);
+				  awpIsPointInContour(&contour, &pp, &result);
                   if (result == true)
                   {
                      double r1,r2, r3 , r4 , r5;
-                     r1 = sqrt((xx - c[0].X)*(xx - c[0].X)+(yy - c[0].Y)*(yy - c[0].Y));
-                     r2 = sqrt((xx - c[1].X)*(xx - c[1].X)+(yy - c[1].Y)*(yy - c[1].Y));
+					 r1 = sqrt(double((xx - c[0].X)*(xx - c[0].X)+(yy - c[0].Y)*(yy - c[0].Y)));
+					 r2 = sqrt(double((xx - c[1].X)*(xx - c[1].X)+(yy - c[1].Y)*(yy - c[1].Y)));
 
                      r3 = (l1*l1 + r1*r1 - r2*r2) / (2*l1);
 
-                     r1 = sqrt((xx - c[2].X)*(xx - c[2].X)+(yy - c[2].Y)*(yy - c[2].Y));
-                     r2 = sqrt((xx - c[3].X)*(xx - c[3].X)+(yy - c[3].Y)*(yy - c[3].Y));
+					 r1 = sqrt(double((xx - c[2].X)*(xx - c[2].X)+(yy - c[2].Y)*(yy - c[2].Y)));
+					 r2 = sqrt(double((xx - c[3].X)*(xx - c[3].X)+(yy - c[3].Y)*(yy - c[3].Y)));
 
                      r4 = (l2*l2+r1*r1 - r2*r2) / (2*l2);
 
-                     r1 = sqrt((xx - c[0].X)*(xx - c[0].X)+(yy - c[0].Y)*(yy - c[0].Y));
-                     if (r1*r1 - r3*r3 >= 0 )
-                         r5 = sqrt(r1*r1 - r3*r3 );
+					 r1 = sqrt(double((xx - c[0].X)*(xx - c[0].X)+(yy - c[0].Y)*(yy - c[0].Y)));
+					 if (r1*r1 - r3*r3 >= 0 )
+						 r5 = sqrt(double(r1*r1 - r3*r3 ));
                      else
                          r5 = 0;
                      // интерпол€ци€.
@@ -975,7 +978,7 @@ void __fastcall TForm2::DrawSourceConeInter(int channel)
 
     awpImage* tmp = NULL;//GetInterCone(channel);
 
-    awpGetChannel(m_source,  &tmp, channel);
+	awpGetChannel(m_source,  &tmp, channel);
     double* a = (double*)m_azmuth->pPixels;
     double* t = (double*)tmp->pPixels;
     awpImage* res = NULL;
@@ -996,10 +999,10 @@ void __fastcall TForm2::DrawSourceConeInter(int channel)
     len1 = l;
     for (int i = 0; i < m_azmuth->sSizeX-1; i++ )
     {
-        for (int j = 0; j < l; j++)
-        {
-            //int x,y,x1,y1,x3,y3,x4,y4;  //
-            c[0].X = floor(len1 + len1*(m_dist[j] / m_dist[len1])*cos(3.14*a[i+ idx*m_azmuth->sSizeX]/180) + 0.5);
+		for (int j = 0; j < l; j++)
+		{
+			//int x,y,x1,y1,x3,y3,x4,y4;  //
+			c[0].X = floor(len1 + len1*(m_dist[j] / m_dist[len1])*cos(3.14*a[i+ idx*m_azmuth->sSizeX]/180) + 0.5);
             c[0].Y = floor(len1 + len1*(m_dist[j] / m_dist[len1] )*sin(3.14*a[i+ idx*m_azmuth->sSizeX]/180) + 0.5);
 
             c[1].X = floor(len1 + len1*(m_dist[j] / m_dist[len1])*cos(3.14*a[i+ idx*m_azmuth->sSizeX + 1]/180) + 0.5);
@@ -1010,9 +1013,9 @@ void __fastcall TForm2::DrawSourceConeInter(int channel)
 
             c[3].X = floor(len1 + len1*(m_dist[j+1] / m_dist[len1])*cos(3.14*a[i+ idx*m_azmuth->sSizeX ]/180) + 0.5);
             c[3].Y = floor(len1 + len1*(m_dist[j+1] / m_dist[len1] )*sin(3.14*a[i+ idx*m_azmuth->sSizeX]/180) + 0.5);
-            c[4] = c[0];
-
-
+			c[4] = c[0];
+		   //	if (c[0].X<=256)
+			 //	continue;
 
             awpGetContourRect(&contour, &rect);
             double v1, v2, v3, v4, v5, v6, v;
@@ -1028,9 +1031,9 @@ void __fastcall TForm2::DrawSourceConeInter(int channel)
 
                //    awpDrawPolygon(res, &contour, 0, 100, 0);
 
-            double l1,l2;
-            l1 = 1+sqrt((c[1].X - c[0].X)*(c[1].X - c[0].X) + (c[1].Y - c[0].Y)*(c[1].Y - c[0].Y));
-            l2 = 1+sqrt((c[3].X - c[2].X)*(c[3].X - c[2].X) + (c[3].Y - c[2].Y)*(c[3].Y - c[2].Y));
+			double l1,l2;
+			l1 = 1+sqrt(double((c[1].X - c[0].X)*(c[1].X - c[0].X) + (c[1].Y - c[0].Y)*(c[1].Y - c[0].Y)));
+			l2 = 1+sqrt(double((c[3].X - c[2].X)*(c[3].X - c[2].X) + (c[3].Y - c[2].Y)*(c[3].Y - c[2].Y)));
 
 
             // нахождение minx и maxx
@@ -1046,19 +1049,19 @@ void __fastcall TForm2::DrawSourceConeInter(int channel)
                   if (result == true)
                   {
                      double r1,r2, r3 , r4 , r5;
-                     r1 = sqrt((xx - c[0].X)*(xx - c[0].X)+(yy - c[0].Y)*(yy - c[0].Y));
-                     r2 = sqrt((xx - c[1].X)*(xx - c[1].X)+(yy - c[1].Y)*(yy - c[1].Y));
+					 r1 = sqrt(double((xx - c[0].X)*(xx - c[0].X)+(yy - c[0].Y)*(yy - c[0].Y)));
+					 r2 = sqrt(double((xx - c[1].X)*(xx - c[1].X)+(yy - c[1].Y)*(yy - c[1].Y)));
 
                      r3 = (l1*l1 + r1*r1 - r2*r2) / (2*l1);
 
-                     r1 = sqrt((xx - c[2].X)*(xx - c[2].X)+(yy - c[2].Y)*(yy - c[2].Y));
-                     r2 = sqrt((xx - c[3].X)*(xx - c[3].X)+(yy - c[3].Y)*(yy - c[3].Y));
+					 r1 = sqrt(double((xx - c[2].X)*(xx - c[2].X)+(yy - c[2].Y)*(yy - c[2].Y)));
+					 r2 = sqrt(double((xx - c[3].X)*(xx - c[3].X)+(yy - c[3].Y)*(yy - c[3].Y)));
 
                      r4 = (l2*l2+r1*r1 - r2*r2) / (2*l2);
 
-                     r1 = sqrt((xx - c[0].X)*(xx - c[0].X)+(yy - c[0].Y)*(yy - c[0].Y));
+					 r1 = sqrt(double((xx - c[0].X)*(xx - c[0].X)+(yy - c[0].Y)*(yy - c[0].Y)));
                      if (r1*r1 - r3*r3 >= 0 )
-                         r5 = sqrt(r1*r1 - r3*r3 );
+						 r5 = sqrt(double(r1*r1 - r3*r3 ));
                      else
                          r5 = 0;
                      // интерпол€ци€.
@@ -1167,7 +1170,7 @@ void __fastcall TForm2::DrawSourceConeInter(int channel)
 
     }
     DrawFlashes1(res1);
-    FImage1->Bitmap->SetAWPImage(res1);
+	FImage1->Bitmap->SetAWPImage(res1);
     FImage1->BestFit();
 
 
@@ -1215,10 +1218,10 @@ void __fastcall TForm2::FImage1MouseMove(TObject *Sender,
     if (m_2DViewOptions == eSourceCone || m_2DViewOptions == eIntepolatedCone ||
      m_2DViewOptions == eInterpolatedHorizontal || m_2DViewOptions == eResultCell)
     {
-        int r = (int)sqrt(x*x + (h-y)*(h-y));
+		int r = (int)sqrt(double(x*x + (h-y)*(h-y)));
         dist = this->m_dist[r];
         psi  = 0;
-        if (x == 0)
+		if (x == 0)
             psi = 90;
         else
             psi = 180*atan((double)(h-y)/(double)x)/ 3.14;
@@ -1255,7 +1258,7 @@ void __fastcall TForm2::Draw2DScene()
     switch (m_2DViewOptions)
     {
         case eSourceData:
-            DrawSource(ComboBox1->ItemIndex);
+			DrawSource(ComboBox1->ItemIndex);
         break;
         case eSourceCone:
             DrawSourceCone(ComboBox1->ItemIndex);
@@ -1515,7 +1518,7 @@ void __fastcall TForm2::SourceViewActionUpdate(TObject *Sender)
 
 void __fastcall TForm2::InterConeActionExecute(TObject *Sender)
 {
-    m_2DViewOptions = eIntepolatedCone;
+	m_2DViewOptions = eIntepolatedCone;
     Draw2DScene();
 }
 //---------------------------------------------------------------------------
@@ -1735,8 +1738,8 @@ void __fastcall TForm2::MakeInterCone3D()
                  //    awpDrawPolygon(res, &contour, 0, 100, 0);
 
               double l1,l2;
-              l1 = sqrt((c[1].X - c[0].X)*(c[1].X - c[0].X) + (c[1].Y - c[0].Y)*(c[1].Y - c[0].Y));
-              l2 = sqrt((c[3].X - c[2].X)*(c[3].X - c[2].X) + (c[3].Y - c[2].Y)*(c[3].Y - c[2].Y));
+			  l1 = sqrt(double((c[1].X - c[0].X)*(c[1].X - c[0].X) + (c[1].Y - c[0].Y)*(c[1].Y - c[0].Y)));
+			  l2 = sqrt(double((c[3].X - c[2].X)*(c[3].X - c[2].X) + (c[3].Y - c[2].Y)*(c[3].Y - c[2].Y)));
 
 
               // нахождение minx и maxx
@@ -1752,19 +1755,19 @@ void __fastcall TForm2::MakeInterCone3D()
                     if (result == true)
                     {
                        double r1,r2, r3 , r4 , r5;
-                       r1 = sqrt((xx - c[0].X)*(xx - c[0].X)+(yy - c[0].Y)*(yy - c[0].Y));
-                       r2 = sqrt((xx - c[1].X)*(xx - c[1].X)+(yy - c[1].Y)*(yy - c[1].Y));
+					   r1 = sqrt(double((xx - c[0].X)*(xx - c[0].X)+(yy - c[0].Y)*(yy - c[0].Y)));
+					   r2 = sqrt(double((xx - c[1].X)*(xx - c[1].X)+(yy - c[1].Y)*(yy - c[1].Y)));
 
                        r3 = (l1*l1 + r1*r1 - r2*r2) / (2*l1);
 
-                       r1 = sqrt((xx - c[2].X)*(xx - c[2].X)+(yy - c[2].Y)*(yy - c[2].Y));
-                       r2 = sqrt((xx - c[3].X)*(xx - c[3].X)+(yy - c[3].Y)*(yy - c[3].Y));
+					   r1 = sqrt(double((xx - c[2].X)*(xx - c[2].X)+(yy - c[2].Y)*(yy - c[2].Y)));
+					   r2 = sqrt(double((xx - c[3].X)*(xx - c[3].X)+(yy - c[3].Y)*(yy - c[3].Y)));
 
                        r4 = (l2*l2+r1*r1 - r2*r2) / (2*l2);
 
-                       r1 = sqrt((xx - c[0].X)*(xx - c[0].X)+(yy - c[0].Y)*(yy - c[0].Y));
+					   r1 = sqrt(double(((xx - c[0].X)*(xx - c[0].X)+(yy - c[0].Y)*(yy - c[0].Y))));
                        if (r1*r1 - r3*r3 >= 0 )
-                           r5 = sqrt(r1*r1 - r3*r3 );
+						   r5 = sqrt(double(r1*r1 - r3*r3 ));
                        else
                            r5 = 0;
                        // интерпол€ци€.
@@ -1791,7 +1794,7 @@ void __fastcall TForm2::MakeInterCone3D()
           }
       }
 
-      for (int i = 0; i < res->sSizeX*res->sSizeY; i++)
+	  for (int i = 0; i < res->sSizeX*res->sSizeY; i++)
       {
           if (r[i] < -32)
               r[i] = -32;
@@ -1883,9 +1886,9 @@ void __fastcall TForm2::SpeedButton2Click(TObject *Sender)
 {
     m_currentFrame--;
     if (m_currentFrame < 0)
-        m_currentFrame = FList->Count - 1;
-    MREvent* e = ( MREvent*)FList->Items[m_currentFrame];
-    if (e != NULL)
+		m_currentFrame = FList->Count - 1;
+	MREvent* e = ( MREvent*)FList->Items[m_currentFrame];
+	if (e != NULL)
     {
       UnicodeString str = m_strDataPath;
       str += e->FileName.c_str();
@@ -2058,7 +2061,7 @@ void __fastcall TForm2::DrawFlashes1(awpImage* image)
     if (ComboBox3->ItemIndex < 0 || image == NULL)
         return;
 
-    awpImage* img = image;
+	awpImage* img = image;
     int w = img->sSizeX/2;
     int h = img->sSizeX/2;
     double x = 0;
@@ -2073,8 +2076,7 @@ void __fastcall TForm2::DrawFlashes1(awpImage* image)
             ConLL(f->lat, f->lon, RLat,RLon, w,h,  x, y);
             awpRect rect;
 
-            double r = (double)f->num / 100. < 1 ? 10 : f->num / 10;
-//            double alfa = (double)f->num / 500.;
+			double r = (double)f->num / 100. < 1 ? 10 : f->num / 10;
             rect.left = x - r;
             rect.top  = y - r;
             rect.right = x + r;
@@ -2088,8 +2090,11 @@ void __fastcall TForm2::DrawFlashes1(awpImage* image)
 
 void __fastcall TForm2::ResultCellsActionExecute(TObject *Sender)
 {
-    m_2DViewOptions = eResultCell;
-    Draw2DScene();
+	m_2DViewOptions = eResultCell;
+	Draw2DScene();
+
+	FImageResult(VecList, MapList);
+    DrawResult(MapList);
 }
 //---------------------------------------------------------------------------
 
@@ -2106,62 +2111,76 @@ void __fastcall TForm2::N4Click(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm2::FindObjects(awpImage*  img1, awpImage*  img2)
 {
-  	ListView1->Clear();
-
+	ListView1->Clear();
+	VecList->Clear();
     int num = 0;
-    awpStrokeObj* obj = NULL;
-    awpGetStrokes(img1, &num, &obj, 64, NULL);
-    for (int i = 0; i < num; i++)
-    {
-        awpRect rect;
+	awpStrokeObj* obj = NULL;
+	awpGetStrokes(img1, &num, &obj, 64, NULL);
+	for (int i = 0; i < num; i++)
+	{
+		awpRect rect;
         awpCalcObjRect(&obj[i], &rect);
-        int w = rect.right - rect.left;
+		int w = rect.right - rect.left;
         int h = rect.bottom - rect.top;
 
         if (w*h > 128)
         {
-       		// awpDrawCRect(img2,&rect, 0,255,255, 1);
-            int s;
-            // площадь
-            awpStrObjSquare(&obj[i], &s);
-            TListItem* item = ListView1->Items->Add();
-            item->Caption = IntToStr(i);
-            item->SubItems->Add(s);
-            //периметр
+			VectorP *VP=new VectorP;
+			// awpDrawCRect(img2,&rect, 0,255,255, 1);
+			// площадь
+			int s;
+			awpStrObjSquare(&obj[i], &s);
+			VP->s=s;
+			TListItem* item = ListView1->Items->Add();
+			item->Caption = IntToStr(i);
+			item->SubItems->Add(s);    //change
+			//периметр
             awpContour* c = NULL;
-             awpCreateContour(&c, obj[i].Num*2, true);
+			awpCreateContour(&c, obj[i].Num*2, true);
             awpGetObjCountour(&obj[i], c);
             if (c == NULL)
-                continue;
+				continue;
             double d;
             awpDrawCPolygon(img2,c, 0,255,0,1);
-            awpGetContPerim(c, &d);
+			awpGetContPerim(c, &d);
+			VP->p = d;
             awpFreeContour(&c);
-            item->SubItems->Add(d);
-            // цм
-            awpPoint p;
-            awpGetObjCentroid(img1, &obj[i], &p);
-            if(OptionsDlg->CheckBox4->Checked)
-            {
-                awpDrawCPoint(img2, p, 0,0,255, 3);
-            }
+			item->SubItems->Add(d);
+			// цм
+			awpPoint p;
+			awpGetObjCentroid(img1, &obj[i], &p);
+			VP->cX=p.X;
+			VP->cY=p.Y;
 
-            item->SubItems->Add(p.X);
-            item->SubItems->Add(p.Y);
-            // эллипс
-            double teta;
-            double mi;
-            double ma;
-            awpGetObjOrientation(img1, &obj[i],&teta, &mi, &ma); ///нодо смотреть и исправить и посмотреть как рисуютс€ элипсы
-            awpDrawCEllipse(img2, p, mi,ma, teta, 0,0,255, 1);
-            item->SubItems->Add(ma);
-            item->SubItems->Add(mi);
-            item->SubItems->Add(teta);
-            // коэф. формы
-            item->SubItems->Add(sqrt((double)s)/d);
-        }
-    }
-    awpFreeStrokes(num, &obj);
+			if(OptionsDlg->CheckBox4->Checked)
+			{
+				awpDrawCPoint(img2, p, 0,0,255, 3);
+			}
+
+			item->SubItems->Add(p.X);
+			item->SubItems->Add(p.Y);
+			// эллипс
+			double teta;
+			double mi;
+			double ma;
+			awpGetObjOrientation(img1, &obj[i],&teta, &mi, &ma); ///нодо смотреть и исправить и посмотреть как рисуютс€ элипсы
+            VP->teta=teta;
+			VP->mi=mi;
+			VP->ma=ma;
+			awpDrawCEllipse(img2, p, mi,ma, teta, 0,0,255, 1);
+			item->SubItems->Add(ma);
+			item->SubItems->Add(mi);
+			item->SubItems->Add(teta);
+			// коэф. формы
+			double kF=sqrt((double)(s))/d;
+			VP->kF=kF;
+
+			item->SubItems->Add(sqrt((double)(VP->s))/d);
+			 VecList->Add(VP);
+		}
+	}
+	awpFreeStrokes(num, &obj);
+	DrawFlashes1(img2);
 }
 
 
@@ -2180,7 +2199,7 @@ void __fastcall TForm2::ComboBox3Change(TObject *Sender)
         OpenNCFile(_ansi.c_str());
 //        OpenNCFile(name);
         ComboBox1->ItemIndex = 0;
-        Draw2DScene();
+		Draw2DScene();
     }
 }
 //---------------------------------------------------------------------------
@@ -2201,3 +2220,53 @@ void __fastcall TForm2::PaintBox1MouseMove(TObject *Sender, TShiftState Shift, i
 }
 //---------------------------------------------------------------------------
 
+void __fastcall TForm2::FImage1MouseUp(TObject *Sender, TMouseButton Button, TShiftState Shift,
+		  int X, int Y)
+{
+//
+	int XX=FImage1->GetImageX(X);
+	int YY=FImage1->GetImageY(Y);
+
+   //	for (int i)
+}
+//---------------------------------------------------------------------------
+
+   void __fastcall TForm2::FImageResult(TList* VecList, TList* MapList)
+   {
+	  MapList->Clear();
+	 //cоздаем карту
+	 for(int y = 0; y < 512; y+= 32)
+	 {
+		for (int x = 0; x < 512; x+= 32)
+		{
+		   TMapElement* e = new TMapElement();
+		   e->S_lat = y+16;
+		   e->S_lon = x+16;
+		   e->Size_lat = 34;
+		   e->Size_lon = 34;
+		   memset(e->Vector, 0, sizeof(e->Vector));
+		   e->N = 0;
+		   MapList->Add(e);
+		}
+	 }
+   }
+
+   void __fastcall TForm2::DrawResult(TList * MapList)
+   {
+	   awpImage* img = NULL;
+	   awpCreateImage(&img, 512, 512, 3, AWP_BYTE);
+	   for (int i = 0; i < MapList->Count; i++)
+	   {
+		   TMapElement* e = (TMapElement*)MapList->Items[i];
+
+		   awpRect r;
+		   r.left = e->S_lon - e->Size_lon/2;
+		   r.right = e->S_lon + e->Size_lon/2;
+		   r.top = e->S_lat - e->Size_lon/2;
+		   r.bottom = e->S_lat + e->Size_lon/2;
+		   awpDrawRect(img, &r, 1, 255, 1);
+	   }
+	   FImage2->Bitmap->SetAWPImage(img);
+	   FImage2->BestFit();
+	   awpReleaseImage(&img);
+   }

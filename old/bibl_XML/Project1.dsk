@@ -35,7 +35,7 @@ FormOnTop=0
 FormState=0
 FormOnTop=0
 
-[C:\Program Files (x86)\Borland\CBuilder6\Projects\bibl_XML\Project1.bpr]
+[C:\Users\Александр\Documents\GitHub\meteo\old\bibl_XML\Project1.bpr]
 FormState=0
 FormOnTop=0
 
@@ -69,16 +69,16 @@ BottomPanelData=0000040000000000000000000000000000000000000000000001000000000000
 
 [View0]
 Module=C:\Program Files (x86)\Borland\CBuilder6\Projects\bibl_XML\all.cpp
-CursorX=4
-CursorY=97
-TopLine=106
+CursorX=69
+CursorY=163
+TopLine=160
 LeftCol=1
 
 [View1]
 Module=C:\Program Files (x86)\Borland\CBuilder6\Projects\bibl_XML\LFlash.cpp
 CursorX=1
 CursorY=1
-TopLine=1
+TopLine=82
 LeftCol=1
 
 [View2]
@@ -112,7 +112,7 @@ ClientHeight=84
 
 [ProjectManager]
 Create=1
-Visible=1
+Visible=0
 State=0
 Left=460
 Top=227

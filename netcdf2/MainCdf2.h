@@ -42,9 +42,21 @@ typedef struct
 
 typedef struct
 {
-    int         num;
-    T3DPoint*   pts;
+	int         num;
+	T3DPoint*   pts;
 }T3DContour;
+typedef struct   // массив структур вектора признаков
+{
+	int s;// square
+	int p;//perimetr
+	int cX;
+	int cY;
+	double teta;
+	double mi;
+	double ma;
+	double kF;
+}VectorP;
+
 //---------------------------------------------------------------------------
 class TForm2 : public TForm
 {
@@ -99,9 +111,13 @@ __published:	// IDE-managed Components
     TAction *ResultCellsAction;
     TMenuItem *N3;
     TMenuItem *N4;
-    TListView *ListView1;
     TComboBox *ComboBox3;
 	TPaintBox *PaintBox1;
+	TSplitter *Splitter1;
+	TPanel *Panel3;
+	TListView *ListView1;
+	TFImage *FImage2;
+	TSplitter *Splitter2;
     void __fastcall SpeedButton1Click(TObject *Sender);
     void __fastcall ComboBox1Change(TObject *Sender);
     void __fastcall SpeedButton3Click(TObject *Sender);
@@ -140,15 +156,20 @@ __published:	// IDE-managed Components
     void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
     void __fastcall ComboBox3Change(TObject *Sender);
 	void __fastcall PaintBox1MouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
+	void __fastcall FImage1MouseUp(TObject *Sender, TMouseButton Button, TShiftState Shift,
+          int X, int Y);
+
 
 private:	// User declarations
        	UnicodeString m_strDataPath;
 
         int       m_ncid;
-        awpImage* m_source;  // исходное изображение
-        awpImage* m_azmuth;
+		awpImage* m_source;  // исходное изображение
+		awpImage* m_azmuth;
         double*   m_dist;
-        awpImage* m_elev;
+		awpImage* m_elev;
+		// result
+		//awpImage* m_result;
 
         int mr,mpsi;
 
@@ -171,7 +192,9 @@ private:	// User declarations
 
         int             m_max_lenght;
 
-        TList          *FList;
+		TList          *FList;
+		TList          *VecList;// список признаков для каждой ячейки
+		TList           *MapList;
         double         RLat; //координаты радара
         double         RLon; // координаты радара
 
@@ -197,10 +220,12 @@ private:	// User declarations
         void __fastcall DrawFlashes1(awpImage* image);
         awpImage* GetInterCone(int index);
 
-        void __fastcall FindObjects(awpImage* image,awpImage*   image2);
+		void __fastcall FindObjects(awpImage* image,awpImage*   image2);
+		void __fastcall FImageResult(TList* VecList, TList * MapList);
+		void __fastcall DrawResult(TList * MapList);
 
 public:		// User declarations
-    __fastcall TForm2(TComponent* Owner);
+	__fastcall TForm2(TComponent* Owner);
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm2 *Form2;
