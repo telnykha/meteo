@@ -465,7 +465,8 @@ CLEANUP:
         res = AWP_NOTSUPPORT;
         _ERR_EXIT_
     }
-
+	x0=0;
+    y0=0;
     pix = (AWPBYTE*)pImg->pPixels;
     for ( i = 0; i < pImg->sSizeY; i++)
     {
@@ -1269,7 +1270,7 @@ void __fastcall TForm2::FImage1MouseMove(TObject *Sender,
         else
             psi = 180*atan((double)(h-y)/(double)x)/ 3.14;
     }
-    StatusBar1->Panels->Items[0]->Text = "x = " + IntToStr(x) + " y = " + IntToStr(y) + " r = " + FormatFloat(".000", dist/1000) + " psi = " + FormatFloat(".00", psi);
+	StatusBar1->Panels->Items[0]->Text = "x = " + IntToStr(x) + " y = " + IntToStr(y) + " r = " + FormatFloat(".000", dist/1000) + " psi = " + FormatFloat(".00", psi);
 }
 //---------------------------------------------------------------------------
 
@@ -2156,7 +2157,8 @@ void __fastcall TForm2::FindObjects(awpImage*  img1, awpImage*  img2)
 {
 	ListView1->Clear();
 	VecList->Clear();
-    int num = 0;
+	int num = 0;
+
 	awpStrokeObj* obj = NULL;
 	awpGetStrokes(img1, &num, &obj, 64, NULL);
 	for (int i = 0; i < num; i++)
@@ -2222,6 +2224,15 @@ void __fastcall TForm2::FindObjects(awpImage*  img1, awpImage*  img2)
 			 VecList->Add(VP);
 		}
 	}
+	awpPoint P;  //центр всех €чеек
+	awpGetCentroid(img1, &P);
+    awpRect r;
+		   r.left = P.X-10;
+		   r.right = P.X+10;
+		   r.top = P.Y-10;
+		   r.bottom = P.Y+10;
+	awpDrawCross(img2, &r, 2, 255, 1);
+
 	awpFreeStrokes(num, &obj);
 	DrawFlashes1(img2);
 }
