@@ -404,6 +404,15 @@ object Form2: TForm2
         end
         item
           Caption = #1050#1086#1101#1092'. '#1092#1086#1088#1084#1099
+        end
+        item
+          Caption = 'TETA'
+        end
+        item
+          Caption = 'MI'
+        end
+        item
+          Caption = 'MA'
         end>
       TabOrder = 0
       ViewStyle = vsReport

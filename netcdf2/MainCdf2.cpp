@@ -485,7 +485,7 @@ CLEANUP:
     return res;
 }
 
- AWPRESULT awpGetObjOrientation0(const awpImage* pImg, const awpStrokeObj* pObj, AWPDOUBLE* teta, AWPDOUBLE* mi, AWPDOUBLE* ma)
+ AWPRESULT awpGetOrientation(const awpImage* pImg, AWPDOUBLE* teta, AWPDOUBLE* mi, AWPDOUBLE* ma)
 {
     /*local variables*/
     AWPRESULT res;
@@ -501,7 +501,7 @@ CLEANUP:
     res = AWP_OK;
     /*check the arguments*/
     _CHECK_RESULT_((res = awpCheckImage(pImg)))
-    if (pObj == NULL || teta == NULL || mi == NULL || ma == NULL)
+	if (teta == NULL || mi == NULL || ma == NULL)
     {
         res = AWP_BADARG;
         _ERR_EXIT_
@@ -514,7 +514,7 @@ CLEANUP:
     }
     /*init local variables*/
     mxx = 0; myy = 0; mxy = 0;
-	if (awpGetObjCentroid(pImg, pObj, &center) != AWP_OK)
+	if (awpGetCentroid(pImg, &center) != AWP_OK)
 	{
 		res = AWP_BADARG;
 		_ERR_EXIT_
@@ -524,12 +524,12 @@ CLEANUP:
 	intes = 0;
     s = 0;
 	pixels = (AWPBYTE*)pImg->pPixels;
-	for (i = 0; i < pObj->Num; i++)
+	for (i = 0; i < pImg->sSizeY; i++)
 	{
-		for (j = pObj->strokes[i].xl; j <= pObj->strokes[i].xr; j++)
+		for (j = 0; j <pImg->sSizeX; j++)
 		{
 			x = j;
-			y = pObj->strokes[i].y;
+		//y = pObj->strokes[i].y;
 			intes ++;//= pixels[y*pImg->sSizeX + x];
             s++;
 			mxx += (x - center.X)*(x - center.X);
@@ -2310,10 +2310,12 @@ void __fastcall TForm2::FindObjects(awpImage*  img1, awpImage*  img2)
 			VP->kF=kF;
 
 			item->SubItems->Add(sqrt((double)(VP->s))/d);
-			 VecList->Add(VP);
-		}
-	}
-	awpPoint P;  //центр всех €чеек
+            AWPDOUBLE MI,MA, TETA;
+	    awpGetOrientation(img1, &TETA, &MI, &MA);
+		item->SubItems->Add(TETA);
+			item->SubItems->Add(MI);
+			item->SubItems->Add(MA);
+            awpPoint P;  //центр всех €чеек
 	awpGetCentroid(img1, &P);
     awpRect r;
 		   r.left = P.X-10;
@@ -2321,6 +2323,12 @@ void __fastcall TForm2::FindObjects(awpImage*  img1, awpImage*  img2)
 		   r.top = P.Y-10;
 		   r.bottom = P.Y+10;
 	awpDrawCross(img2, &r, 2, 255, 1);
+			 VecList->Add(VP);
+		}
+	}
+
+
+
 
 	awpFreeStrokes(num, &obj);
 	DrawFlashes1(img2);
