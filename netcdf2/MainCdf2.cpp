@@ -9,12 +9,15 @@
 #include "OptionsForm.h"
 #include "Convert_Log_Lon.h"
 #include "map.h"
+
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma link "FImage"
 #pragma link "netcdfb.lib"
 #pragma resource "*.dfm"
 
+
+#define _ERR_EXIT_	goto CLEANUP;
 #define _CHECK_RESULT_(r) if ((r) != AWP_OK) goto CLEANUP;
 #define _ERROR_EXIT_RES_(v) {res = v; goto CLEANUP;}
 #define _PIXEL(img, x, y, ch, type)\
@@ -440,6 +443,46 @@ CLEANUP:
     return res;
 }
 
+ AWPRESULT awpGetCentroid(const awpImage* pImg, awpPoint* p)
+{
+    AWPRESULT res;
+    AWPDOUBLE sum,x0,y0;
+    AWPBYTE* pix;
+    AWPINT  x, y;
+    AWPDWORD i;
+
+    res = AWP_OK;
+    _CHECK_RESULT_((res = awpCheckImage(pImg)))
+
+    if(pImg->dwType!=AWP_BYTE)
+    {
+        res = AWP_NOTSUPPORT;
+        _ERR_EXIT_
+    }
+
+    if(pImg->bChannels!=1)
+    {
+        res = AWP_NOTSUPPORT;
+        _ERR_EXIT_
+    }
+
+    pix = (AWPBYTE*)pImg->pPixels;
+    for ( i = 0; i < pImg->sSizeY; i++)
+    {
+       y = i;
+       for (x = 0; x <= pImg->sSizeX; x++)
+       {
+          sum += pix[y*pImg->sSizeX + x];
+          x0  += x*pix[y*pImg->sSizeX + x];
+          y0  += y*pix[y*pImg->sSizeX + x];
+       }
+    }
+
+    p->X = (AWPSHORT)floor(x0 / (double)sum + 0.5);
+	p->Y = (AWPSHORT)floor(y0 / (double)sum + 0.5);
+CLEANUP:
+    return res;
+}
 
 //---------------------------------------------------------------------------
 
