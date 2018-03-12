@@ -5,6 +5,7 @@
 #include "awpipl.h"
 
 //TList* l_elements;
+double CalcDist(int x1, int x2, int y1,int y2, double &R);
 
 //---------------------------------------------------------------------------
 #endif
@@ -17,7 +18,7 @@ public:
 
   double S_lat,S_lon,Size_lat, Size_lon;    //rectangle size
   int N;									// ligthing summa;
-  double Vector[23];
+  double Vector[14];
 
   double GetS_lat();
   void SetS_lat(double L);
