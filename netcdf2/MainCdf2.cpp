@@ -485,6 +485,95 @@ CLEANUP:
     return res;
 }
 
+ AWPRESULT awpGetObjOrientation0(const awpImage* pImg, const awpStrokeObj* pObj, AWPDOUBLE* teta, AWPDOUBLE* mi, AWPDOUBLE* ma)
+{
+    /*local variables*/
+    AWPRESULT res;
+	AWPINT  x, y, j;
+    AWPDOUBLE mxx, myy, mxy, intes,s; /*cental moments*/
+	AWPBYTE* pixels;
+	awpPoint center;
+	AWPDWORD i;
+    /*init out arguments */
+    *teta = 0;
+    *mi   = 0;
+    *ma   = 0;
+    res = AWP_OK;
+    /*check the arguments*/
+    _CHECK_RESULT_((res = awpCheckImage(pImg)))
+    if (pObj == NULL || teta == NULL || mi == NULL || ma == NULL)
+    {
+        res = AWP_BADARG;
+        _ERR_EXIT_
+    }
+    /*check the capabilities*/
+    if (pImg->bChannels > 1 || pImg->dwType != AWP_BYTE)
+    {
+        res = AWP_BADARG;
+        _ERR_EXIT_
+    }
+    /*init local variables*/
+    mxx = 0; myy = 0; mxy = 0;
+	if (awpGetObjCentroid(pImg, pObj, &center) != AWP_OK)
+	{
+		res = AWP_BADARG;
+		_ERR_EXIT_
+	}
+
+	/*find the moment*/
+	intes = 0;
+    s = 0;
+	pixels = (AWPBYTE*)pImg->pPixels;
+	for (i = 0; i < pObj->Num; i++)
+	{
+		for (j = pObj->strokes[i].xl; j <= pObj->strokes[i].xr; j++)
+		{
+			x = j;
+			y = pObj->strokes[i].y;
+			intes ++;//= pixels[y*pImg->sSizeX + x];
+            s++;
+			mxx += (x - center.X)*(x - center.X);
+			myy += (y - center.Y)*(y - center.Y);
+			mxy += (x - center.X)*(y - center.Y);
+		}
+	}
+	//intes /=s;
+	mxx /= intes;
+	myy /= intes;
+	mxy /= intes;
+
+	if (mxy == 0 && myy <= mxx)
+	{
+		*teta = -AWP_PI / 2;
+		*ma = 4 * sqrt(mxx);
+		*mi = 4 * sqrt(myy);
+	}
+	else if (mxy == 0 && myy > mxx)
+	{
+		*teta = 0;
+		*ma = 4 * sqrt(myy);
+		*mi = 4 * sqrt(mxx);
+	}
+	else if (myy <= mxx)
+	{
+		*teta = atan(-2 * mxy*myy - mxx + sqrt((myy - mxx)*(myy - mxx) + 4 * mxy*mxy));
+		*ma = sqrt(8 * (myy + mxx + sqrt((myy - mxx)*(myy - mxx) + 4 * mxy*mxy)));
+		*mi = sqrt(8 * (myy + mxx - sqrt((myy - mxx)*(myy - mxx) + 4 * mxy*mxy)));
+
+	}
+	else if (myy > mxx)
+	{
+		*teta = atan(sqrt(mxx + myy + sqrt((mxx - myy)*(mxx - myy) + 4 * mxy*mxy)) / (-2 * mxy + 0.000001));
+		*ma = sqrt(8 * (myy + mxx + sqrt((myy - mxx)*(myy - mxx) + 4 * mxy*mxy)));
+		*mi = sqrt(8 * (myy + mxx - sqrt((myy - mxx)*(myy - mxx) + 4 * mxy*mxy)));
+	}
+
+	*teta = 180.0*(*teta) / AWP_PI;
+
+CLEANUP:
+    return res;
+}
+
 //---------------------------------------------------------------------------
 
 void __fastcall TForm2::Exit1Click(TObject *Sender)

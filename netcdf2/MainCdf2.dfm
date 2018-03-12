@@ -203,9 +203,6 @@ object Form2: TForm2
     ParentColor = False
     OnMouseMove = FImage1MouseMove
     OnMouseUp = FImage1MouseUp
-    ExplicitLeft = 7
-    ExplicitTop = 38
-    ExplicitWidth = 250
   end
   object Panel2: TPanel
     Left = 0
@@ -360,8 +357,6 @@ object Form2: TForm2
     Align = alClient
     Caption = 'Panel3'
     TabOrder = 4
-    ExplicitLeft = 456
-    ExplicitTop = 44
     object Splitter2: TSplitter
       Left = 1
       Top = 301
@@ -421,8 +416,6 @@ object Form2: TForm2
       BorderStyle = bsFSingle
       Align = alClient
       ParentColor = False
-      ExplicitLeft = 2
-      ExplicitTop = -1
     end
   end
   object OpenDialog1: TOpenDialog
