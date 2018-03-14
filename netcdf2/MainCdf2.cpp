@@ -1415,6 +1415,8 @@ void __fastcall TForm2::Draw2DScene()
         break;
         case eResultCell:
             DrawResultCells();
+            FImageResult(VecList, MapList);
+            DrawResult(MapList);
         break;
     }
 }
@@ -2225,9 +2227,6 @@ void __fastcall TForm2::ResultCellsActionExecute(TObject *Sender)
 {
 	m_2DViewOptions = eResultCell;
 	Draw2DScene();
-
-	FImageResult(VecList, MapList);
-    DrawResult(MapList);
 }
 //---------------------------------------------------------------------------
 
