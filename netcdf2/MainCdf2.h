@@ -199,6 +199,10 @@ private:	// User declarations
         double         RLat; //координаты радара
         double         RLon; // координаты радара
 
+        // Находит ближайшую ячейку к заданной площадке
+        VectorP* GetNearCell(double x, double y);
+
+
         void __fastcall DrawSource(int channel);
         void __fastcall DrawSourceCone(int channel);
         void __fastcall DrawSourceConeInter(int channel);

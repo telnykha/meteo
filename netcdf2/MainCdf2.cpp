@@ -2485,4 +2485,25 @@ void __fastcall TForm2::FImage1MouseUp(TObject *Sender, TMouseButton Button, TSh
 	   awpReleaseImage(&img);
    }
 
+VectorP* TForm2::GetNearCell(double x, double y)
+{
+    if (VecList == NULL)
+        return NULL;
+    if (VecList->Count < 2)
+        return NULL;
+    double mind = 1e10;
+    int    minidx;
+    for (int i = 1; i < VecList->Count; i++)
+    {
+       VectorP* v = (VectorP*)VecList->Items[i];
+       double d = sqrt((x - v->cX)*(x - v->cX) + (y-v->cY)*(y-v->cY));
+       if (d < mind)
+       {
+         mind = d;
+         minidx = i;
+       }
+    }
+    return (VectorP*)VecList->Items[minidx];
+
+}
 

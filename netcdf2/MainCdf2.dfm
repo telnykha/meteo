@@ -203,7 +203,6 @@ object Form2: TForm2
     ParentColor = False
     OnMouseMove = FImage1MouseMove
     OnMouseUp = FImage1MouseUp
-    ExplicitTop = 40
   end
   object Panel2: TPanel
     Left = 0
