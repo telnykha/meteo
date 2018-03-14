@@ -2453,7 +2453,20 @@ void __fastcall TForm2::FImage1MouseUp(TObject *Sender, TMouseButton Button, TSh
 		   e->Vector[3]=VP->mi/R0;
 		   e->Vector[4]=VP->ma/R0;
 		   //memset(e->Vector, 0, sizeof(e->Vector));
-		   e->N = 0;
+
+           VectorP*  vp = GetNearCell(e->S_lon, e->S_lat);
+           if (vp != NULL)
+           {
+			  R=sqrt(double((vp->cX -x)*(vp->cX-x)+(vp->cY-y)*(vp->cY-y)));
+
+               e->Vector[5]=(1.-  R/R0);
+               e->Vector[6]=vp->s/VP->s;
+               e->Vector[7]=vp->p/VP->p;
+               e->Vector[8]=vp->mi/e->Vector[3];
+               e->Vector[9]=vp->ma/e->Vector[4];
+           }
+
+           e->N = 0;
 		   MapList->Add(e);
 		}
 	 }
@@ -2473,9 +2486,9 @@ void __fastcall TForm2::FImage1MouseUp(TObject *Sender, TMouseButton Button, TSh
 		   r.top = e->S_lat - e->Size_lon/2;
 		   r.bottom = e->S_lat + e->Size_lon/2;
 		   double v = 0;
-		   for (int j = 0; j < 1; j++)
+		   for (int j = 0; j < 9; j++)
 		   {
-			  v+= e->Vector[j];
+			  v+= 0.125*e->Vector[j];
 		   }
 		   v*=255;
 		   awpFillRect (img, &r, 0, v);
