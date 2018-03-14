@@ -128,12 +128,12 @@ void __fastcall TForm2::OpenNCFile(const char* lpFileName)
     AnsiString FileName = lpFileName;
     status = nc_open(lpFileName, 0, &m_ncid);
     if (status != NC_NOERR)
-        ShowMessage("не могу открыть файл " + FileName);
+        ShowMessage("РЅРµ РјРѕРіСѓ РѕС‚РєСЂС‹С‚СЊ С„Р°Р№Р» " + FileName);
 
     int  ndims, nvars, ngatts, unlimdimid;
     status = nc_inq(m_ncid, &ndims, &nvars, &ngatts, &unlimdimid);
     if (status != NC_NOERR)
-        ShowMessage("не могу открыть файл " + FileName);
+        ShowMessage("РЅРµ РјРѕРіСѓ РѕС‚РєСЂС‹С‚СЊ С„Р°Р№Р» " + FileName);
     int varID;
     nc_inq_varid(this->m_ncid, "Reflectivity", &varID);
 
@@ -179,7 +179,7 @@ void __fastcall TForm2::OpenNCFile(const char* lpFileName)
     double* data = (double*)malloc(c*h*w*sizeof(double));
     status = nc_get_vara_double(this->m_ncid, varID, start, count, data);
     if (status != NC_NOERR)
-        ShowMessage("ошибка!");
+        ShowMessage("РѕС€РёР±РєР°!");
 
 
     nc_inq_varid(this->m_ncid, "azimuthR", &varID);
@@ -188,7 +188,7 @@ void __fastcall TForm2::OpenNCFile(const char* lpFileName)
     double* dd = (double*)m_azmuth->pPixels;
     status = nc_get_var_double(this->m_ncid, varID, dd);
     if (status != NC_NOERR)
-        ShowMessage("ошибка!");
+        ShowMessage("РѕС€РёР±РєР°!");
 
     _bSaveAWPAsDAT("azmuth.txt", m_azmuth);
 
@@ -196,7 +196,7 @@ void __fastcall TForm2::OpenNCFile(const char* lpFileName)
     m_dist = (double*)malloc(w*sizeof(double));
     status = nc_get_var_double(this->m_ncid, varID, m_dist);
     if (status != NC_NOERR)
-        ShowMessage("ошибка!");
+        ShowMessage("РѕС€РёР±РєР°!");
 
 
     nc_inq_varid(this->m_ncid, "elevationR", &varID);
@@ -204,7 +204,7 @@ void __fastcall TForm2::OpenNCFile(const char* lpFileName)
     dd = (double*)m_elev->pPixels;
     status = nc_get_var_double(this->m_ncid, varID, dd);
     if (status != NC_NOERR)
-        ShowMessage("ошибка!");
+        ShowMessage("РѕС€РёР±РєР°!");
 
     ComboBox1->Clear();
     for (int i = 0; i < c; i++)
@@ -264,7 +264,7 @@ void __fastcall TForm2::SpeedButton3Click(TObject *Sender)
      }
 }
 /*awpDrawThickPointByte
-закрашивает окрестность точки p на изобажении, содержащем данные типа AWPBYTE*/
+Р·Р°РєСЂР°С€РёРІР°РµС‚ РѕРєСЂРµСЃС‚РЅРѕСЃС‚СЊ С‚РѕС‡РєРё p РЅР° РёР·РѕР±Р°Р¶РµРЅРёРё, СЃРѕРґРµСЂР¶Р°С‰РµРј РґР°РЅРЅС‹Рµ С‚РёРїР° AWPBYTE*/
 static AWPRESULT _awpDrawThickPointByte(awpImage* pImage, awpPoint p, AWPBYTE bChan, AWPDOUBLE dValue, AWPBYTE radius)
 {
 	AWPBYTE* b = (AWPBYTE*)pImage->pPixels;
@@ -280,7 +280,7 @@ static AWPRESULT _awpDrawThickPointByte(awpImage* pImage, awpPoint p, AWPBYTE bC
 	return AWP_OK;
 }
 /*awpDrawThickPointShort
-закрашивает окрестность точки p на изобажении, содержащем данные типа AWPSHORT*/
+Р·Р°РєСЂР°С€РёРІР°РµС‚ РѕРєСЂРµСЃС‚РЅРѕСЃС‚СЊ С‚РѕС‡РєРё p РЅР° РёР·РѕР±Р°Р¶РµРЅРёРё, СЃРѕРґРµСЂР¶Р°С‰РµРј РґР°РЅРЅС‹Рµ С‚РёРїР° AWPSHORT*/
 static AWPRESULT _awpDrawThickPointShort(awpImage* pImage, awpPoint p, AWPBYTE bChan, AWPDOUBLE dValue, AWPBYTE radius)
 {
 	AWPSHORT* b = (AWPSHORT*)pImage->pPixels;
@@ -296,7 +296,7 @@ static AWPRESULT _awpDrawThickPointShort(awpImage* pImage, awpPoint p, AWPBYTE b
 	return AWP_OK;
 }
 /*awpDrawThickPointFloat
-закрашивает окрестность точки p на изобажении, содержащем данные типа AWPSHORT*/
+Р·Р°РєСЂР°С€РёРІР°РµС‚ РѕРєСЂРµСЃС‚РЅРѕСЃС‚СЊ С‚РѕС‡РєРё p РЅР° РёР·РѕР±Р°Р¶РµРЅРёРё, СЃРѕРґРµСЂР¶Р°С‰РµРј РґР°РЅРЅС‹Рµ С‚РёРїР° AWPSHORT*/
 static AWPRESULT _awpDrawThickPointFloat(awpImage* pImage, awpPoint p, AWPBYTE bChan, AWPDOUBLE dValue, AWPBYTE radius)
 {
 	AWPFLOAT* b = (AWPFLOAT*)pImage->pPixels;
@@ -312,7 +312,7 @@ static AWPRESULT _awpDrawThickPointFloat(awpImage* pImage, awpPoint p, AWPBYTE b
 	return AWP_OK;
 }
 /*awpDrawThickPointDouble
-закрашивает окрестность точки p на изобажении, содержащем данные типа AWPSHORT*/
+Р·Р°РєСЂР°С€РёРІР°РµС‚ РѕРєСЂРµСЃС‚РЅРѕСЃС‚СЊ С‚РѕС‡РєРё p РЅР° РёР·РѕР±Р°Р¶РµРЅРёРё, СЃРѕРґРµСЂР¶Р°С‰РµРј РґР°РЅРЅС‹Рµ С‚РёРїР° AWPSHORT*/
 static AWPRESULT _awpDrawThickPointDouble(awpImage* pImage, awpPoint p, AWPBYTE bChan, AWPDOUBLE dValue, AWPBYTE radius)
 {
 	AWPDOUBLE* b = (AWPDOUBLE*)pImage->pPixels;
@@ -328,7 +328,7 @@ static AWPRESULT _awpDrawThickPointDouble(awpImage* pImage, awpPoint p, AWPBYTE 
 	return AWP_OK;
 }
 // awpDrawThickPoint
-// закрашивает окрестность точки p радиусом r 
+// Р·Р°РєСЂР°С€РёРІР°РµС‚ РѕРєСЂРµСЃС‚РЅРѕСЃС‚СЊ С‚РѕС‡РєРё p СЂР°РґРёСѓСЃРѕРј r 
 AWPRESULT _awpDrawThickPoint(awpImage* pImage, awpPoint p, AWPBYTE bChan, AWPDOUBLE dValue, AWPBYTE radius)
 {
     AWPRESULT res = AWP_OK;
@@ -337,18 +337,18 @@ AWPRESULT _awpDrawThickPoint(awpImage* pImage, awpPoint p, AWPBYTE bChan, AWPDOU
 	AWPINT maxy = p.Y + radius;
 	AWPINT miny = p.Y - radius;
 	
-	// проверка входных данных
+	// РїСЂРѕРІРµСЂРєР° РІС…РѕРґРЅС‹С… РґР°РЅРЅС‹С…
 	_CHECK_RESULT_(( res = awpCheckImage(pImage)))
-	/*координата точки p с учетом радиуса точки не может выходить 
-	за пределы изображения*/
+	/*РєРѕРѕСЂРґРёРЅР°С‚Р° С‚РѕС‡РєРё p СЃ СѓС‡РµС‚РѕРј СЂР°РґРёСѓСЃР° С‚РѕС‡РєРё РЅРµ РјРѕР¶РµС‚ РІС‹С…РѕРґРёС‚СЊ 
+	Р·Р° РїСЂРµРґРµР»С‹ РёР·РѕР±СЂР°Р¶РµРЅРёСЏ*/
 	if (maxx >= pImage->sSizeX || minx < 0 || maxy >= pImage->sSizeY || miny < 0)
 		_ERROR_EXIT_RES_(AWP_BADARG)
-	/* номер канала, на котором должна быть отрисована точка не может быть 
-	   больше числа каналов входного изображения */
+	/* РЅРѕРјРµСЂ РєР°РЅР°Р»Р°, РЅР° РєРѕС‚РѕСЂРѕРј РґРѕР»Р¶РЅР° Р±С‹С‚СЊ РѕС‚СЂРёСЃРѕРІР°РЅР° С‚РѕС‡РєР° РЅРµ РјРѕР¶РµС‚ Р±С‹С‚СЊ 
+	   Р±РѕР»СЊС€Рµ С‡РёСЃР»Р° РєР°РЅР°Р»РѕРІ РІС…РѕРґРЅРѕРіРѕ РёР·РѕР±СЂР°Р¶РµРЅРёСЏ */
 	if (bChan > pImage->bChannels)
 		_ERROR_EXIT_RES_(AWP_BADARG)
-	/*todo: значение якорсти рисуемой точки dValue не может выходить за допустимый диапазон, определяемый
-	выбранным типом изображения*/
+	/*todo: Р·РЅР°С‡РµРЅРёРµ СЏРєРѕСЂСЃС‚Рё СЂРёСЃСѓРµРјРѕР№ С‚РѕС‡РєРё dValue РЅРµ РјРѕР¶РµС‚ РІС‹С…РѕРґРёС‚СЊ Р·Р° РґРѕРїСѓСЃС‚РёРјС‹Р№ РґРёР°РїР°Р·РѕРЅ, РѕРїСЂРµРґРµР»СЏРµРјС‹Р№
+	РІС‹Р±СЂР°РЅРЅС‹Рј С‚РёРїРѕРј РёР·РѕР±СЂР°Р¶РµРЅРёСЏ*/
 	switch (pImage->dwType)
 	{
 	case AWP_BYTE:
@@ -753,7 +753,7 @@ void __fastcall TForm2::DrawVerticalArea()
 }
 
 
-// перевод из полярных координат в декартовы исходной матрицы
+// РїРµСЂРµРІРѕРґ РёР· РїРѕР»СЏСЂРЅС‹С… РєРѕРѕСЂРґРёРЅР°С‚ РІ РґРµРєР°СЂС‚РѕРІС‹ РёСЃС…РѕРґРЅРѕР№ РјР°С‚СЂРёС†С‹
 
 void __fastcall TForm2::DrawSource(int channel)
 {
@@ -1051,7 +1051,7 @@ awpImage* TForm2::GetInterCone(int index)
 			l2 = 1+sqrt(double((c[3].X - c[2].X)*(c[3].X - c[2].X) + (c[3].Y - c[2].Y)*(c[3].Y - c[2].Y)));
 
 
-            // нахождение minx и maxx
+            // РЅР°С…РѕР¶РґРµРЅРёРµ minx Рё maxx
             awpPoint pp;
 			for (int yy = rect.top; yy <= rect.bottom; yy++)
 			{
@@ -1079,7 +1079,7 @@ awpImage* TForm2::GetInterCone(int index)
 						 r5 = sqrt(double(r1*r1 - r3*r3 ));
                      else
                          r5 = 0;
-                     // интерполяция.
+                     // РёРЅС‚РµСЂРїРѕР»СЏС†РёСЏ.
                      v5 = r3*(v2 - v1) / l1 + v1;
                      v6 = r4*(v4 - v3) / l2 + v3;
                      v  =  v5 + r5*(v6 - v5) / l1;
@@ -1169,7 +1169,7 @@ void __fastcall TForm2::DrawSourceConeInter(int channel)
 			l2 = 1+sqrt(double((c[3].X - c[2].X)*(c[3].X - c[2].X) + (c[3].Y - c[2].Y)*(c[3].Y - c[2].Y)));
 
 
-            // нахождение minx и maxx
+            // РЅР°С…РѕР¶РґРµРЅРёРµ minx Рё maxx
             awpPoint pp;
             for (int yy = rect.top; yy <= rect.bottom; yy++)
 			{
@@ -1197,7 +1197,7 @@ void __fastcall TForm2::DrawSourceConeInter(int channel)
 						 r5 = sqrt(double(r1*r1 - r3*r3 ));
                      else
                          r5 = 0;
-                     // интерполяция.
+                     // РёРЅС‚РµСЂРїРѕР»СЏС†РёСЏ.
                      v5 = r3*(v2 - v1) / l1 + v1;
                      v6 = r4*(v4 - v3) / l2 + v3;
                      v  =  v5 + r5*(v6 - v5) / l1;
@@ -1272,7 +1272,7 @@ void __fastcall TForm2::DrawSourceConeInter(int channel)
         }
         int num = 0;
 		awpStrokeObj* obj = NULL;
-        awpGetStrokes(res, &num, &obj, 250, NULL);//порог бинаризации (250)
+        awpGetStrokes(res, &num, &obj, 250, NULL);//РїРѕСЂРѕРі Р±РёРЅР°СЂРёР·Р°С†РёРё (250)
         for (int i = 0; i < num; i++)
         {
             awpRect rect;
@@ -1610,7 +1610,7 @@ void __fastcall TForm2::DrawResultCells()
             bb2[3*j+2] = bb1[j];
         }
     }
-    // поиск объектов.
+    // РїРѕРёСЃРє РѕР±СЉРµРєС‚РѕРІ.
     FindObjects(img1, img2);
 
     FImage1->Bitmap->SetAWPImage(img2);
@@ -1875,7 +1875,7 @@ void __fastcall TForm2::MakeInterCone3D()
 			  l2 = sqrt(double((c[3].X - c[2].X)*(c[3].X - c[2].X) + (c[3].Y - c[2].Y)*(c[3].Y - c[2].Y)));
 
 
-              // нахождение minx и maxx
+              // РЅР°С…РѕР¶РґРµРЅРёРµ minx Рё maxx
               awpPoint pp;
               for (int yy = rect.top; yy <= rect.bottom; yy++)
               {
@@ -1903,7 +1903,7 @@ void __fastcall TForm2::MakeInterCone3D()
 						   r5 = sqrt(double(r1*r1 - r3*r3 ));
                        else
                            r5 = 0;
-                       // интерполяция.
+                       // РёРЅС‚РµСЂРїРѕР»СЏС†РёСЏ.
                        v5 = r3*(v2 - v1) / l1 + v1;
                        v6 = r4*(v4 - v3) / l2 + v3;
                        v  =  v5 + r5*(v6 - v5) / l1;
@@ -2247,11 +2247,11 @@ void __fastcall TForm2::FindObjects(awpImage*  img1, awpImage*  img2)
 	ListView1->Clear();
 	VecList->Clear();
 
-	int SumS=0;  //сумма площадей всех ячеек
-	double SumP=0;  // сумма периметров всех ячеек
+	int SumS=0;  //СЃСѓРјРјР° РїР»РѕС‰Р°РґРµР№ РІСЃРµС… СЏС‡РµРµРє
+	double SumP=0;  // СЃСѓРјРјР° РїРµСЂРёРјРµС‚СЂРѕРІ РІСЃРµС… СЏС‡РµРµРє
 	int num = 0;
-	double MI,MA,TETA; // полуоси всех ячеек
-	awpPoint P; //цент масс всех ячеек
+	double MI,MA,TETA; // РїРѕР»СѓРѕСЃРё РІСЃРµС… СЏС‡РµРµРє
+	awpPoint P; //С†РµРЅС‚ РјР°СЃСЃ РІСЃРµС… СЏС‡РµРµРє
 
 	awpStrokeObj* obj = NULL;
 	awpGetStrokes(img1, &num, &obj, 64, NULL);
@@ -2279,14 +2279,14 @@ void __fastcall TForm2::FindObjects(awpImage*  img1, awpImage*  img2)
 		{
 			VectorP *VP=new VectorP;
 			// awpDrawCRect(img2,&rect, 0,255,255, 1);
-			// площадь
+			// РїР»РѕС‰Р°РґСЊ
 			int s;
 			awpStrObjSquare(&obj[i], &s);
 			VP->s=s;
 			TListItem* item = ListView1->Items->Add();
 			item->Caption = IntToStr(i);
 			item->SubItems->Add(s);
-						//периметр
+						//РїРµСЂРёРјРµС‚СЂ
             awpContour* c = NULL;
 			awpCreateContour(&c, obj[i].Num*2, true);
             awpGetObjCountour(&obj[i], c);
@@ -2295,10 +2295,10 @@ void __fastcall TForm2::FindObjects(awpImage*  img1, awpImage*  img2)
             double d;
             awpDrawCPolygon(img2,c, 0,255,0,1);
 			awpGetContPerim(c, &d);
-			VP->p = d;   //добавили периметр
+			VP->p = d;   //РґРѕР±Р°РІРёР»Рё РїРµСЂРёРјРµС‚СЂ
             awpFreeContour(&c);
 			item->SubItems->Add(d);
-			// цм
+			// С†Рј
 			awpPoint p;
 			awpGetObjCentroid(img1, &obj[i], &p);
 			VP->cX=p.X;
@@ -2311,11 +2311,11 @@ void __fastcall TForm2::FindObjects(awpImage*  img1, awpImage*  img2)
 
 			item->SubItems->Add(p.X);
 			item->SubItems->Add(p.Y);
-			// эллипс
+			// СЌР»Р»РёРїСЃ
 			double teta;
 			double mi;
 			double ma;
-			awpGetObjOrientation(img1, &obj[i],&teta, &mi, &ma); ///нодо смотреть и исправить и посмотреть как рисуются элипсы
+			awpGetObjOrientation(img1, &obj[i],&teta, &mi, &ma); ///РЅРѕРґРѕ СЃРјРѕС‚СЂРµС‚СЊ Рё РёСЃРїСЂР°РІРёС‚СЊ Рё РїРѕСЃРјРѕС‚СЂРµС‚СЊ РєР°Рє СЂРёСЃСѓСЋС‚СЃСЏ СЌР»РёРїСЃС‹
             VP->teta=teta;
 			VP->mi=mi;
 			VP->ma=ma;
@@ -2330,7 +2330,7 @@ void __fastcall TForm2::FindObjects(awpImage*  img1, awpImage*  img2)
 		   //	VP->MI=MI;
 		   //	VP->MA=MA;
 
-		   //центр всех ячеек
+		   //С†РµРЅС‚СЂ РІСЃРµС… СЏС‡РµРµРє
 			  /*
 			awpGetCentroid(img1, &P);
 			awpRect r;
@@ -2349,7 +2349,7 @@ void __fastcall TForm2::FindObjects(awpImage*  img1, awpImage*  img2)
 
 	}
    v = (VectorP*)VecList->Items[0];
-   //отрисока центра масс всех ячеек
+   //РѕС‚СЂРёСЃРѕРєР° С†РµРЅС‚СЂР° РјР°СЃСЃ РІСЃРµС… СЏС‡РµРµРє
 		   awpRect r;
 		   r.left = P.X-10;
 		   r.right = P.X+10;
@@ -2359,7 +2359,7 @@ void __fastcall TForm2::FindObjects(awpImage*  img1, awpImage*  img2)
 
 
 		TListItem* item = ListView1->Items->Add();
-		item->Caption = "итого:";
+		item->Caption = "РёС‚РѕРіРѕ:";
 		v->s=SumS;
 		v->p=SumP;
 
@@ -2434,7 +2434,7 @@ void __fastcall TForm2::FImage1MouseUp(TObject *Sender, TMouseButton Button, TSh
 	  VectorP* VP =(VectorP*)VecList->Items[0];
 	   double x1=VP->cX;
 	   double y1=VP->cY;
-	 //cоздаем карту
+	 //cРѕР·РґР°РµРј РєР°СЂС‚Сѓ
 	 for(int y = 0; y < img->sSizeX; y+= 16)
 	 {
 		for (int x = 0; x < img->sSizeX; x+= 16)
@@ -2485,4 +2485,10 @@ void __fastcall TForm2::FImage1MouseUp(TObject *Sender, TMouseButton Button, TSh
 	   awpReleaseImage(&img);
    }
 
+ void __fastcall TForm2::ResearchCell(X, Y, &obg_i)
+  {
+   int i;
+   VectorP* VP =(VectorP*)VecList;
+   TMapElement* e = new TMapElement();
 
+  }

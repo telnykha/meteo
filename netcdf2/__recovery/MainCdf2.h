@@ -45,7 +45,7 @@ typedef struct
 	int         num;
 	T3DPoint*   pts;
 }T3DContour;
-typedef struct   // массив структур вектора признаков
+typedef struct   // РјР°СЃСЃРёРІ СЃС‚СЂСѓРєС‚СѓСЂ РІРµРєС‚РѕСЂР° РїСЂРёР·РЅР°РєРѕРІ
 {
 	int s;// square
 	double p;//perimetr
@@ -165,7 +165,7 @@ private:	// User declarations
        	UnicodeString m_strDataPath;
 
         int       m_ncid;
-		awpImage* m_source;  // исходное изображение
+		awpImage* m_source;  // РёСЃС…РѕРґРЅРѕРµ РёР·РѕР±СЂР°Р¶РµРЅРёРµ
 		awpImage* m_azmuth;
         double*   m_dist;
 		awpImage* m_elev;
@@ -194,10 +194,10 @@ private:	// User declarations
         int             m_max_lenght;
 
 		TList          *FList;
-		TList          *VecList;// список признаков для каждой ячейки
+		TList          *VecList;// СЃРїРёСЃРѕРє РїСЂРёР·РЅР°РєРѕРІ РґР»СЏ РєР°Р¶РґРѕР№ СЏС‡РµР№РєРё
 		TList           *MapList;
-        double         RLat; //координаты радара
-        double         RLon; // координаты радара
+        double         RLat; //РєРѕРѕСЂРґРёРЅР°С‚С‹ СЂР°РґР°СЂР°
+        double         RLon; // РєРѕРѕСЂРґРёРЅР°С‚С‹ СЂР°РґР°СЂР°
 
         void __fastcall DrawSource(int channel);
         void __fastcall DrawSourceCone(int channel);
@@ -224,6 +224,7 @@ private:	// User declarations
 		void __fastcall FindObjects(awpImage* image,awpImage*   image2);
 		void __fastcall FImageResult(TList* VecList, TList * MapList);
 		void __fastcall DrawResult(TList * MapList);
+		void __fastcall ResearchCell(X, Y, &obg_i)
 
 public:		// User declarations
 	__fastcall TForm2(TComponent* Owner);

@@ -74,5 +74,9 @@ void TMapElement::SetSize_lon(double w)
   double CalcDist(int x1, int x2, int y1, int y2, double &R)
   {
 
-  R=sqrt(double(abs(x1*x1-x2*x2)+(abs(y1*y1-y2*y2))));
+  R=sqrt(double((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2));
   }
+
+
+
+
