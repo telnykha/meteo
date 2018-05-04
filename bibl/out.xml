@@ -1,0 +1,32 @@
+<?xml version="1.0" ?>
+<radar name_radar="KBIS" type_radar="wsd-88" lat="100.500000" lon="-50.000000">
+    <event NAME="KBIS_V06_20130709_234456.nc" DATE="09.07.2013" TIME="23:44:56">
+        <flash Lat="45.945999" Lon="98.400002" Num="17" Time="23:45:00" />
+        <flash Lat="45.945999" Lon="98.500000" Num="18" Time="23:45:00" />
+        <flash Lat="45.851002" Lon="-98.842003" Num="25" Time="23:48:28" />
+        <flash Lat="45.814999" Lon="-98.515999" Num="49" Time="23:46:37" />
+        <flash Lat="45.801998" Lon="-98.490997" Num="49" Time="23:48:04" />
+        <flash Lat="45.805000" Lon="-98.513000" Num="49" Time="23:48:28" />
+        <flash Lat="45.835999" Lon="-98.838997" Num="29" Time="23:48:04" />
+    </event>
+    <event NAME="KBIS_V06_20130709_234828.nc" DATE="09.07.2013" TIME="23:48:28">
+        <flash Lat="45.945999" Lon="98.400002" Num="17" Time="23:50:00" />
+        <flash Lat="45.945999" Lon="98.500000" Num="18" Time="23:50:00" />
+        <flash Lat="45.771999" Lon="-98.438004" Num="40" Time="23:52:23" />
+        <flash Lat="45.790001" Lon="-98.808998" Num="29" Time="23:52:23" />
+    </event>
+    <event NAME="KBIS_V06_20130709_235200.nc" DATE="09.07.2013" TIME="23:52:00">
+        <flash Lat="45.752998" Lon="-98.441002" Num="40" Time="23:54:07" />
+        <flash Lat="45.741001" Lon="-98.459000" Num="75" Time="23:55:33" />
+    </event>
+    <event NAME="KBIS_V06_20130709_235533.nc" DATE="09.07.2013" TIME="23:55:33">
+        <flash Lat="45.783001" Lon="-98.706001" Num="31" Time="23:59:04" />
+        <flash Lat="45.786999" Lon="-98.753998" Num="29" Time="23:58:10" />
+        <flash Lat="45.716000" Lon="-98.366997" Num="53" Time="23:58:10" />
+    </event>
+    <event NAME="KBIS_V06_20130709_235904.nc" DATE="09.07.2013" TIME="23:55:33">
+        <flash Lat="45.783001" Lon="-98.706001" Num="31" Time="23:59:04" />
+        <flash Lat="45.786999" Lon="-98.753998" Num="29" Time="23:58:10" />
+        <flash Lat="45.716000" Lon="-98.366997" Num="53" Time="23:58:10" />
+    </event>
+</radar>

@@ -14,25 +14,9 @@ TMapElement::TMapElement()
 
 {
 	N=0;
-	double R,MI, MA, Theta, r, mi, ma, theta;
-	int S,P,X, Y, s,p,x,y;
-	 Vector[10];
+	Vector[12];
 
-   /*	Vector[0]=1-();
-	Vector[1]=Y/(R+1);
-	Vector[2]=S/(R*R+1);
-	Vector[3]=P/(R+1);
-	Vector[4]=MI/(R+1);
-	Vector[5]=MA/(R+1);
-   //	Vector[6]=Theta;
-	Vector[7]=x/(r+1);
-	Vector[8]=y/(r+1);
-	Vector[9]=s/(r*r+1);
-	Vector[10]=p/(r+1);
-	Vector[11]=mi/(r+1);
-	Vector[12]=ma/(r+1);
-	Vector[13]=theta;
-	Vector[14]=N;  */
+
 }
 // class destructor
 TMapElement::~TMapElement()

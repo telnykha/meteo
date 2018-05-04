@@ -43,7 +43,7 @@ __fastcall TForm2::TForm2(TComponent* Owner)
 
     m_2DOptions.dist_x = 150;
     m_2DOptions.step_ro = 2;
-    m_2DOptions.step_fi = 2;
+	m_2DOptions.step_fi = 2;
     m_2DOptions.smooth = false;
     m_2DOptions.contours = false;
 
@@ -56,7 +56,9 @@ __fastcall TForm2::TForm2(TComponent* Owner)
     m_planeOptions.imageWidth = 512;
     m_planeOptions.Height = 3000;
     m_planeOptions.Distance = 150;
-    m_strDataPath = L"";
+	m_strDataPath = L"";
+
+    m_outFile = NULL;
 }
 //---------------------------------------------------------------------------
 
@@ -76,7 +78,7 @@ void __fastcall TForm2::SpeedButton1Click(TObject *Sender)
            MREvent* e = ( MREvent*)FList->Items[i];
            ComboBox3->Items->Add(e->FileName);
        }
-       ComboBox3->ItemIndex = 0;
+	   ComboBox3->ItemIndex = 0;
        ComboBox3Change(NULL);
        return;
     }
@@ -109,7 +111,7 @@ static void _bSaveAWPAsDAT(const char* lpFileName, awpImage* pImage)
 
 void __fastcall TForm2::OpenNCFile(const char* lpFileName)
 {
-    if (m_ncid != 0)
+	if (m_ncid != 0)
     {
         nc_close(m_ncid);
         m_ncid = 0;
@@ -142,7 +144,7 @@ void __fastcall TForm2::OpenNCFile(const char* lpFileName)
     int ndimsp;
     int dimidsp[128];
     int nattsp;
-    nc_inq_var(this->m_ncid,  varID, NULL, &xtypep, &ndimsp, dimidsp, &nattsp);
+	nc_inq_var(this->m_ncid,  varID, NULL, &xtypep, &ndimsp, dimidsp, &nattsp);
 
     char buf[NC_MAX_NAME+1];
     int w, h, c;
@@ -175,7 +177,7 @@ void __fastcall TForm2::OpenNCFile(const char* lpFileName)
 
 
     size_t start[3] = {0,0,0};
-    size_t count[3]  = {c,h,w};
+	size_t count[3]  = {c,h,w};
     double* data = (double*)malloc(c*h*w*sizeof(double));
     status = nc_get_vara_double(this->m_ncid, varID, start, count, data);
     if (status != NC_NOERR)
@@ -208,7 +210,7 @@ void __fastcall TForm2::OpenNCFile(const char* lpFileName)
 
     ComboBox1->Clear();
     for (int i = 0; i < c; i++)
-        ComboBox1->AddItem(FormatFloat("00.00", dd[i*m_elev->sSizeX]), NULL);
+		ComboBox1->AddItem(FormatFloat("00.00", dd[i*m_elev->sSizeX]), NULL);
 
     for (int r = 0;r < w; r++)
     {
@@ -241,7 +243,7 @@ void __fastcall TForm2::ComboBox1Change(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm2::SpeedButton3Click(TObject *Sender)
 {
-     if(SaveDialog1->Execute())
+	 if(SaveDialog1->Execute())
      {
         AnsiString FileName = SaveDialog1->FileName;
         AnsiString strExt = ExtractFileExt(FileName);
@@ -472,7 +474,7 @@ CLEANUP:
     {
        y = i;
        for (x = 0; x <= pImg->sSizeX; x++)
-       {
+	   {
           sum += pix[y*pImg->sSizeX + x];
           x0  += x*pix[y*pImg->sSizeX + x];
           y0  += y*pix[y*pImg->sSizeX + x];
@@ -505,7 +507,7 @@ CLEANUP:
     {
         res = AWP_BADARG;
         _ERR_EXIT_
-    }
+	}
     /*check the capabilities*/
     if (pImg->bChannels > 1 || pImg->dwType != AWP_BYTE)
     {
@@ -571,7 +573,7 @@ CLEANUP:
 	*teta = 180.0*(*teta) / AWP_PI;
 
 CLEANUP:
-    return res;
+	return res;
 }
 
 //---------------------------------------------------------------------------
@@ -604,7 +606,7 @@ void __fastcall TForm2::DrawVerticalArea()
     double min_psi, max_psi;
     double min_r,   max_r;
     min_psi = 90;
-    int idx = ComboBox2->ItemIndex >= 0 ? ComboBox2->ItemIndex : 0;
+	int idx = ComboBox2->ItemIndex >= 0 ? ComboBox2->ItemIndex : 0;
     max_psi = a[idx];
     for (int i = 0; i < m_elev->sSizeY; i++)
     {
@@ -637,7 +639,7 @@ void __fastcall TForm2::DrawVerticalArea()
                 b[3*y*img->sSizeX + 3*x] = 64;
                 b[3*y*img->sSizeX + 3*x+1] = 64;
                 b[3*y*img->sSizeX + 3*x+2] = 64;
-            }
+			}
             else
             {
                 b[3*y*img->sSizeX + 3*x] = 0;
@@ -670,7 +672,7 @@ void __fastcall TForm2::DrawVerticalArea()
             p1.Y = img->sSizeY - img->sSizeX*norm*sin(fi1);
 */
 
-            double norm = m_dist[i]/m_dist[m_source->sSizeX-1];
+			double norm = m_dist[i]/m_dist[m_source->sSizeX-1];
             double norm1 = m_dist[i+step]/m_dist[m_source->sSizeX-1];
 
             p.X = m_source->sSizeX*norm*cos(fi);
@@ -703,7 +705,7 @@ void __fastcall TForm2::DrawVerticalArea()
 //                awpDrawCEllipse(img, p1, 1, 1, 0, 128, 128, 128, 2);
 //                awpDrawCEllipse(img, p2, 1, 1, 0, 128, 128, 128, 2);
 //                awpDrawCEllipse(img, p3, 1, 1, 0, 128, 128, 128, 2);
-            }
+			}
             else
             {
                 awpDrawCEllipse(img, p,  4, 4, 0, 0, 255, 0, 2);
@@ -736,7 +738,7 @@ void __fastcall TForm2::DrawVerticalArea()
             {
                   _awpDrawThickLine(img, p,p1, 1, 0, value,value1);
             }
-            else
+			else
                _awpDrawThickLine(img, p,p1, 0, 0, 64,64);
 
             //b[p.Y*3*img->sSizeX + 3*p.X + 2] = value;
@@ -769,7 +771,7 @@ void __fastcall TForm2::DrawSourceCone(int channel)
 
       awpImage* tmp = NULL;
 
-      awpGetChannel(m_source,  &tmp, channel);
+	  awpGetChannel(m_source,  &tmp, channel);
       awpConvert(tmp, AWP_CONVERT_TO_BYTE_WITH_NORM);
       AWPBYTE* bb = (AWPBYTE*)tmp->pPixels;
       //
@@ -802,7 +804,7 @@ void __fastcall TForm2::DrawSourceCone(int channel)
 
 void __fastcall TForm2::MakeSourceCone3D()
 {
-      if (m_source == NULL)
+	  if (m_source == NULL)
         return;
       if (this->m_3DPoints != NULL)
       {
@@ -868,7 +870,7 @@ void __fastcall TForm2::MakeSourceCone3D()
         for (int j = 0; j < m_source->sSizeX*this->m_2DOptions.dist_x / m_max_lenght; j+=this->m_2DOptions.step_ro)
         {
 
-            double fi = aa[k*m_elev->sSizeX + i];
+			double fi = aa[k*m_elev->sSizeX + i];
             fi *= 3.14;
             fi /= 180;
 
@@ -901,7 +903,7 @@ void __fastcall TForm2::MakeSourceCone3D()
 }
 void __fastcall TForm2::DrawInterCone3D(TCanvas* cnv)
 {
-      if (m_source == NULL)
+	  if (m_source == NULL)
         return;
         MakeSourceCone3D();
       if (this->m_3DContours == NULL || this->m_num3DContours == 0)
@@ -934,7 +936,7 @@ void __fastcall TForm2::DrawSourceCone3D(TCanvas* cnv)
         return;
       for (int i = 0; i < m_num3DPoints; i++)
       {
-         Draw3DPoint(cnv, m_3DPoints[i]);
+		 Draw3DPoint(cnv, m_3DPoints[i]);
       }
 
       return;
@@ -967,7 +969,7 @@ void __fastcall TForm2::DrawSourceCone3D(TCanvas* cnv)
               p.x = (double)x / (0.1*width);
               p.y = (double)y / (0.1*width);
               double d =  sqrt(p.x*p.x + p.y*p.y);
-              p.z = (-1 + 5*d*sin(fi));
+			  p.z = (-1 + 5*d*sin(fi));
               double value = s[i*m_source->sSizeX*m_source->bChannels + j*m_source->bChannels + k];
 
             if (value < -32)
@@ -1000,7 +1002,7 @@ awpImage* TForm2::GetInterCone(int index)
     double* a = (double*)m_azmuth->pPixels;
     double* t = (double*)tmp->pPixels;
     awpImage* res = NULL;
-    int idx  = index;
+	int idx  = index;
     double len = m_source->sSizeX;
     int len1   = m_source->sSizeX-1;
     awpCreateImage(&res, 2*m_source->sSizeX*this->m_2DOptions.dist_x / m_max_lenght, 2*m_source->sSizeX*this->m_2DOptions.dist_x / m_max_lenght, 1, AWP_DOUBLE);
@@ -1033,7 +1035,7 @@ awpImage* TForm2::GetInterCone(int index)
             c[4] = c[0];
 
             awpGetContourRect(&contour, &rect);
-            double v1, v2, v3, v4, v5, v6, v;
+			double v1, v2, v3, v4, v5, v6, v;
 
             v1 = t[j+ i*tmp->sSizeX];
             r[2*c[0].Y*(l) + c[0].X] = v1;
@@ -1099,7 +1101,7 @@ awpImage* TForm2::GetInterCone(int index)
 
         r[i] += 32;
         r[i] *=1.9;
-    }
+	}
    _AWP_SAFE_RELEASE_(tmp);
     return res;
 }
@@ -1198,7 +1200,7 @@ void __fastcall TForm2::DrawSourceConeInter(int channel)
                      else
                          r5 = 0;
                      // интерполяция.
-                     v5 = r3*(v2 - v1) / l1 + v1;
+					 v5 = r3*(v2 - v1) / l1 + v1;
                      v6 = r4*(v4 - v3) / l2 + v3;
                      v  =  v5 + r5*(v6 - v5) / l1;
                      r[2*yy*l + xx] = v;
@@ -1231,7 +1233,7 @@ void __fastcall TForm2::DrawSourceConeInter(int channel)
     }
 
     awpImage* res1 = NULL;
-    awpCreateImage(&res1, res->sSizeX, res->sSizeY, 3, AWP_BYTE);
+	awpCreateImage(&res1, res->sSizeX, res->sSizeY, 3, AWP_BYTE);
     AWPBYTE* bres1 = (AWPBYTE*)res1->pPixels;
     for (int i = 0; i < res->sSizeX*res->sSizeY; i++)
     {
@@ -1264,7 +1266,7 @@ void __fastcall TForm2::DrawSourceConeInter(int channel)
     }
     if (this->m_2DOptions.contours)
     {
-        //
+		//
         AWPBYTE* pix = (AWPBYTE*)res->pPixels;
         for (int i = 0; i < res->sSizeX*res->sSizeY; i++)
         {
@@ -1297,7 +1299,7 @@ void __fastcall TForm2::DrawSourceConeInter(int channel)
                 }
                 awpFreeContour(&c);
             }
-        }
+		}
         awpFreeStrokes(num, &obj);
 
 
@@ -1330,7 +1332,7 @@ void __fastcall TForm2::ComboBox2Change(TObject *Sender)
         this->FastLineSeries1->Add(a[i*m_elev->sSizeX + ComboBox2->ItemIndex]);
         ComboBox1->Items->Add(FormatFloat("000.00", a[i*m_elev->sSizeX + ComboBox2->ItemIndex]));
     }
-    ComboBox1->ItemIndex = 0;
+	ComboBox1->ItemIndex = 0;
     Draw2DScene();
 }
 //---------------------------------------------------------------------------
@@ -1396,7 +1398,7 @@ void __fastcall TForm2::Draw2DScene()
         case eSourceCone:
             DrawSourceCone(ComboBox1->ItemIndex);
         break;
-        case eIntepolatedCone:
+		case eIntepolatedCone:
             DrawSourceConeInter(ComboBox1->ItemIndex);
         break;
         case eSourceVirtical:
@@ -1594,7 +1596,7 @@ void __fastcall TForm2::DrawResultCells()
     AWPBYTE* bb1 = (AWPBYTE*)img1->pPixels;
     AWPBYTE* bb2 = (AWPBYTE*)img2->pPixels;
 
-    if (OptionsDlg->RadioGroup1->ItemIndex==0)
+	if (OptionsDlg->RadioGroup1->ItemIndex==0)
     {
       for (int j = 0; j < img1->sSizeX*img1->sSizeY; j++)
       {
@@ -1627,7 +1629,7 @@ void __fastcall TForm2::DrawResultCells()
 void __fastcall TForm2::SourceViewActionExecute(TObject *Sender)
 {
     m_2DViewOptions = eSourceData;
-    Draw2DScene();
+	Draw2DScene();
 }
 //---------------------------------------------------------------------------
 
@@ -1660,7 +1662,7 @@ void __fastcall TForm2::InterConeActionExecute(TObject *Sender)
 
 void __fastcall TForm2::InterConeActionUpdate(TObject *Sender)
 {
-    InterConeAction->Checked = m_2DViewOptions == eIntepolatedCone;
+	InterConeAction->Checked = m_2DViewOptions == eIntepolatedCone;
 }
 //---------------------------------------------------------------------------
 
@@ -1759,7 +1761,7 @@ void __fastcall TForm2::DrawScene()
  	cube.Draw(cnv);
     switch(m_3DViewOptions)
     {
-        case e3dSourceData:
+		case e3dSourceData:
             DrawSourceCone3D(cnv);
         break;
 
@@ -1825,7 +1827,7 @@ void __fastcall TForm2::MakeInterCone3D()
       int len1   = m_source->sSizeX-1;
       awpCreateImage(&res, 2*m_source->sSizeX*this->m_2DOptions.dist_x / m_max_lenght, 2*m_source->sSizeX*this->m_2DOptions.dist_x / m_max_lenght, 1, AWP_DOUBLE);
       double* r  = (double*)res->pPixels;
-      double* aa = (double*)this->m_elev->pPixels;
+	  double* aa = (double*)this->m_elev->pPixels;
 
       awpPoint p1,p2,p3,p4, c[5];
       awpRect rect;
@@ -1858,7 +1860,7 @@ void __fastcall TForm2::MakeInterCone3D()
 
 
 
-              awpGetContourRect(&contour, &rect);
+			  awpGetContourRect(&contour, &rect);
               double v1, v2, v3, v4, v5, v6, v;
 
               v1 = t[j+ i*tmp->sSizeX];
@@ -1957,7 +1959,7 @@ void __fastcall TForm2::MakeInterCone3D()
           awpStrokeObj* obj = NULL;
           awpGetStrokes(res, &num, &obj, 200, NULL);
           for (int i = 0; i < num; i++)
-          {
+		  {
               awpRect rect;
               awpCalcObjRect(&obj[i], &rect);
               int w = rect.right - rect.left;
@@ -1990,7 +1992,7 @@ void __fastcall TForm2::MakeInterCone3D()
                       this->m_3DContours[nc-1].pts[k] = p;
                   }
                   awpFreeContour(&c);
-              }
+			  }
           }
           awpFreeStrokes(num, &obj);
      _AWP_SAFE_RELEASE_(res);
@@ -2056,7 +2058,7 @@ void __fastcall TForm2::FindAlfaMaxMin(double& amin, double& amax)
         if (amin > data[i])
             amin = data[i];
         if (amax < data[i])
-            amax = data[i];
+			amax = data[i];
     }
 
     amin = AWP_PI*amin/180.;
@@ -2089,7 +2091,7 @@ awpPoint __fastcall  TForm2::FindFiTheta(double fi, double theta)
 {
     double* f = (double*)this->m_azmuth->pPixels;
     double* t = (double*)this->m_elev->pPixels;
-    awpPoint p;
+	awpPoint p;
     p.X = 0;
     p.Y = 0;
     double min = L2(f[0],fi, t[0], theta);
@@ -2122,7 +2124,7 @@ void __fastcall TForm2::MakeInterPic(double H, double R, awpImage* img)
 
     double beta = 2*R / img->sSizeX;
     double R0 = 0;
-    double R1 = 0;
+	double R1 = 0;
     double alfa_max = 0;
     double alfa_min = 0;
     int scan_width = img->bChannels*img->sSizeX;
@@ -2155,7 +2157,7 @@ void __fastcall TForm2::MakeInterPic(double H, double R, awpImage* img)
             double theta = 180*atan(H / ro) / AWP_PI;
             awpPoint p = FindFiTheta(fi, theta);
 
-            bb[y*scan_width + img->bChannels*x] = 0;
+			bb[y*scan_width + img->bChannels*x] = 0;
             bb[y*scan_width + img->bChannels*x + 1] = 255;
             bb[y*scan_width + img->bChannels*x + 2] = 0;
         }
@@ -2188,31 +2190,31 @@ void __fastcall TForm2::InterHorizontalActionExecute(TObject *Sender)
 
 void __fastcall TForm2::InterHorizontalActionUpdate(TObject *Sender)
 {
-    InterHorizontalAction->Checked = m_2DViewOptions == eInterpolatedHorizontal;
+	InterHorizontalAction->Checked = m_2DViewOptions == eInterpolatedHorizontal;
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm2::DrawFlashes1(awpImage* image)
 {
-    if (ComboBox3->ItemIndex < 0 || image == NULL)
-        return;
+	if (ComboBox3->ItemIndex < 0 || image == NULL)
+		return;
 
 	awpImage* img = image;
 	int w = img->sSizeX/2;
-    int h = img->sSizeX/2;
-    double x = 0;
-    double y = 0;
+	int h = img->sSizeY/2;
+	double x = 0;
+	double y = 0;
 
-    MREvent* e = ( MREvent*)FList->Items[ComboBox3->ItemIndex];
-    if (e != NULL && e->ListFlash != NULL)
-    {
-        for (int i = 0; i < e->ListFlash->Count; i++)
-        {
-            TFlash* f = (TFlash*)e->ListFlash->Items[i];
-            ConLL(f->lat, f->lon, RLat,RLon, w,h,  x, y);
-            awpRect rect;
+	MREvent* e = ( MREvent*)FList->Items[ComboBox3->ItemIndex];
+	if (e != NULL && e->ListFlash != NULL)
+	{
+		for (int i = 0; i < e->ListFlash->Count; i++)
+		{
+			TFlash* f = (TFlash*)e->ListFlash->Items[i];
+			ConLL(f->lat, f->lon, RLat,RLon, w,h,  x, y);
+			awpRect rect;
 
 			double r = (double)f->num / 100. < 1 ? 10 : f->num / 10;
-            rect.left = x - r;
+			rect.left = x - r;
             rect.top  = y - r;
             rect.right = x + r;
             rect.bottom = y + r;
@@ -2220,7 +2222,7 @@ void __fastcall TForm2::DrawFlashes1(awpImage* image)
             awpDrawCRect(img, &rect,  255,0, 0,  3);
 
         }
-    }
+	}
 }
 
 void __fastcall TForm2::ResultCellsActionExecute(TObject *Sender)
@@ -2378,7 +2380,8 @@ void __fastcall TForm2::FindObjects(awpImage*  img1, awpImage*  img2)
 
 void __fastcall TForm2::FormClose(TObject *Sender, TCloseAction &Action)
 {
-//    delete        FList;
+	if (this->m_outFile != NULL)
+		fclose(this->m_outFile);
 }
 //---------------------------------------------------------------------------
 
@@ -2386,7 +2389,7 @@ void __fastcall TForm2::ComboBox3Change(TObject *Sender)
 {
     if (ComboBox3->ItemIndex >= 0)
 	{
-        AnsiString _ansi = m_strDataPath + ComboBox3->Items->Strings[ComboBox3->ItemIndex];
+		AnsiString _ansi = m_strDataPath + ComboBox3->Items->Strings[ComboBox3->ItemIndex];
 //        const char* name = "D:\\kabr\\KABR_V06_20150813_100016.nc";
         OpenNCFile(_ansi.c_str());
 //        OpenNCFile(name);
@@ -2429,46 +2432,62 @@ void __fastcall TForm2::FImage1MouseUp(TObject *Sender, TMouseButton Button, TSh
 	  double R,R0,r;
 	  awpImage* img = NULL;
 	  FImage1->Bitmap->GetAWPImage(&img);
-	  R0=1.41*img->sSizeX;
+	  R0=sqrt(2.)*img->sSizeX;
 	  VectorP* VP =(VectorP*)VecList->Items[0];
 	   double x1=VP->cX;
 	   double y1=VP->cY;
 	 //cоздаем карту
-	 for(int y = 0; y < img->sSizeX; y+= 16)
+	 for(int y = 0; y < img->sSizeX; y+= 32)
 	 {
-		for (int x = 0; x < img->sSizeX; x+= 16)
+		for (int x = 0; x < img->sSizeX; x+= 32)
 		{
 		  R=sqrt((x1-x)*(x1-x)+(y1-y)*(y1-y));
 
 
 		   TMapElement* e = new TMapElement();
-		   e->S_lat = y+8;
-		   e->S_lon = x+8;
-		   e->Size_lat = 17;
-		   e->Size_lon = 17;
+		   e->S_lat = y+16;
+		   e->S_lon = x+16;
+		   e->Size_lat = 34;
+		   e->Size_lon = 34;
+		   double S=VP->s;
+		   double P=VP->p;
+		   double MI=VP->mi;
+		   double MA=VP->ma;
 		   e->Vector[0]=(1.-  R/R0);
-		   e->Vector[1]=VP->s/(2*AWP_PI*R0*R0);
-		   e->Vector[2]=sqrt((double)VP->s)/VP->p;
-		   e->Vector[3]=VP->mi/R0;
-		   e->Vector[4]=VP->ma/R0;
+		   e->Vector[1]=S/(R*R);
+		   e->Vector[2]=4*AWP_PI*S/(P*P);//4*sqrt(S*AWP_PI)/P; //обратный коэф малинковского
+		   e->Vector[3]=MI/MA;
+		   e->Vector[4]=MA/(R0);
+
 		   //memset(e->Vector, 0, sizeof(e->Vector));
 
-           VectorP*  vp = GetNearCell(e->S_lon, e->S_lat);
-           if (vp != NULL)
-           {
-			  R=sqrt(double((vp->cX -x)*(vp->cX-x)+(vp->cY-y)*(vp->cY-y)));
+		   VectorP*  vp = GetNearCell(e->S_lon, e->S_lat);
+		   if (vp != NULL)
+		   {
+			  r=sqrt(double((vp->cX -x)*(vp->cX-x)+(vp->cY-y)*(vp->cY-y)));
+			  double s=vp->s;
+			  double p=vp->p;
+			  double mi=vp->mi;
+			  double ma=vp->ma;
 
-               e->Vector[5]=(1.-  R/R0);
-               e->Vector[6]=vp->s/VP->s;
-               e->Vector[7]=vp->p/VP->p;
-               e->Vector[8]=vp->mi/e->Vector[3];
-               e->Vector[9]=vp->ma/e->Vector[4];
-           }
 
-           e->N = 0;
+		   e->Vector[5]=(1.-  r/R0);
+		   e->Vector[6]=sqrt(s*AWP_PI)/p;  //обратный коэф малинковского
+		   e->Vector[7]=mi/ma;
+		   e->Vector[8]= ma/(r+1);
+		   e->Vector[9]=4*AWP_PI*s/(p*p);  //коэф формы
+		   e->Vector[10]=p/(2*AWP_PI*(r+1));
+		   e->Vector[11]=s/(2*AWP_PI*(r+1));
+
+		   }
+
+
 		   MapList->Add(e);
+
 		}
+
 	 }
+
    }
 
    void __fastcall TForm2::DrawResult(TList * MapList)
@@ -2485,10 +2504,17 @@ void __fastcall TForm2::FImage1MouseUp(TObject *Sender, TMouseButton Button, TSh
 		   r.top = e->S_lat - e->Size_lon/2;
 		   r.bottom = e->S_lat + e->Size_lon/2;
 		   double v = 0;
-		   for (int j = 0; j < 9; j++)
+		   double num_flash = this->IsFlashInRect(r,600,600);
+		   if (this->m_outFile != NULL)
+				fprintf(m_outFile, "%f:", num_flash );
+		   for (int j = 0; j < 11; j++)
 		   {
 			  v+= 0.125*e->Vector[j];
+			  if (this->m_outFile != NULL)
+				fprintf(m_outFile, "%f:", e->Vector[j] );
 		   }
+		   if (this->m_outFile != NULL)
+			 fprintf(m_outFile, "\n");
 		   v*=255;
 		   awpFillRect (img, &r, 0, v);
 	   }
@@ -2499,23 +2525,55 @@ void __fastcall TForm2::FImage1MouseUp(TObject *Sender, TMouseButton Button, TSh
 
 VectorP* TForm2::GetNearCell(double x, double y)
 {
-    if (VecList == NULL)
-        return NULL;
+	if (VecList == NULL)
+		return NULL;
     if (VecList->Count < 2)
         return NULL;
     double mind = 1e10;
     int    minidx;
     for (int i = 1; i < VecList->Count; i++)
     {
-       VectorP* v = (VectorP*)VecList->Items[i];
+	   VectorP* v = (VectorP*)VecList->Items[i];
        double d = sqrt((x - v->cX)*(x - v->cX) + (y-v->cY)*(y-v->cY));
        if (d < mind)
        {
          mind = d;
          minidx = i;
-       }
+	   }
     }
     return (VectorP*)VecList->Items[minidx];
 
 }
+void __fastcall TForm2::CheckBox1Click(TObject *Sender)
+{
+	if (CheckBox1->Checked)
+	{
+		this->m_outFile = fopen("svm_out.txt", "w+t");
+	}
+	else
+	{
+		if (m_outFile != NULL)
+			fclose(this->m_outFile);
+	}
+}
+//---------------------------------------------------------------------------
+bool __fastcall TForm2::IsFlashInRect(awpRect r, int w, int h)
+{
+	if (ComboBox3->ItemIndex < 0)
+		return false;
+	double x = 0;
+	double y = 0;
 
+	MREvent* e = ( MREvent*)FList->Items[ComboBox3->ItemIndex];
+	if (e != NULL && e->ListFlash != NULL)
+	{
+		for (int i = 0; i < e->ListFlash->Count; i++)
+		{
+			TFlash* f = (TFlash*)e->ListFlash->Items[i];
+			ConLL(f->lat, f->lon, RLat,RLon, w,h,  x, y);
+			if (x > r.left && x < r.right && y > r.top && y < r.bottom)
+				return true;
+		}
+	}
+	return false;
+}

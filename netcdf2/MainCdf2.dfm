@@ -44,8 +44,8 @@ object Form2: TForm2
     TabOrder = 0
     OnResize = Panel1Resize
     object SpeedButton1: TSpeedButton
-      Left = 4
-      Top = 4
+      Left = 0
+      Top = 5
       Width = 32
       Height = 32
       Margins.Left = 2
@@ -186,6 +186,15 @@ object Form2: TForm2
       Style = csDropDownList
       TabOrder = 0
       OnChange = ComboBox3Change
+    end
+    object CheckBox1: TCheckBox
+      Left = 400
+      Top = 13
+      Width = 169
+      Height = 17
+      Caption = #1069#1082#1089#1087#1086#1088#1090#1080#1088#1086#1074#1072#1090#1100' '#1076#1072#1085#1085#1099#1077
+      TabOrder = 1
+      OnClick = CheckBox1Click
     end
   end
   object FImage1: TFImage

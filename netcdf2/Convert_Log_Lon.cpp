@@ -31,13 +31,18 @@ void ConLL(double log, double lon, double log_R, double lon_R, double NormX, dou
         xx=NormX;
         yy=NormY;
         return;
-    }
+	}
 
   gama=2*asin(sqrt(sin((l_LOG-Log)/2)*sin((l_LOG-Log)/2)+cos(Log)*cos(l_LOG)*sin((l_LON-Lon)/2)*sin((l_LON-Lon)/2)));  //gaversinusov  formula
   //double gama=acos(sin(l_LOG)*sin(Log)+cos(l_LOG)*cos(Log)*cos(l_LON-Lon));  // simple formula
   gama1=2*asin((sqrt(cos(l_LOG)*cos(l_LOG)*sin((l_LON-Lon)/2)*sin((l_LON-Lon)/2))));
+   double g1=sin(gama1);
+   double g=sin(gama);
+   if ((abs(g1-g))<0.001)
+	  return;
+
   double x=(gama*EARTH_DIAM);
-  double y=(asin(sin(gama1)/sin(gama)))*180/PI_VALUE;
+  double y=(asin(g1/g))*180/PI_VALUE;
 
   RCircel(x,y, xx,yy);
   xx = 0.5*NormX*(xx + 1);

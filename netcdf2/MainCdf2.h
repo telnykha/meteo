@@ -118,6 +118,7 @@ __published:	// IDE-managed Components
 	TListView *ListView1;
 	TFImage *FImage2;
 	TSplitter *Splitter2;
+	TCheckBox *CheckBox1;
     void __fastcall SpeedButton1Click(TObject *Sender);
     void __fastcall ComboBox1Change(TObject *Sender);
     void __fastcall SpeedButton3Click(TObject *Sender);
@@ -158,6 +159,7 @@ __published:	// IDE-managed Components
 	void __fastcall PaintBox1MouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FImage1MouseUp(TObject *Sender, TMouseButton Button, TShiftState Shift,
           int X, int Y);
+	void __fastcall CheckBox1Click(TObject *Sender);
 
 
 
@@ -200,8 +202,8 @@ private:	// User declarations
         double         RLon; // координаты радара
 
         // Находит ближайшую ячейку к заданной площадке
-        VectorP* GetNearCell(double x, double y);
-
+		VectorP* GetNearCell(double x, double y);
+        FILE*           m_outFile;
 
         void __fastcall DrawSource(int channel);
         void __fastcall DrawSourceCone(int channel);
@@ -228,6 +230,7 @@ private:	// User declarations
 		void __fastcall FindObjects(awpImage* image,awpImage*   image2);
 		void __fastcall FImageResult(TList* VecList, TList * MapList);
 		void __fastcall DrawResult(TList * MapList);
+		bool __fastcall IsFlashInRect(awpRect r, int w, int h);
 
 public:		// User declarations
 	__fastcall TForm2(TComponent* Owner);
