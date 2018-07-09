@@ -2,12 +2,12 @@ object Form2: TForm2
   Left = 926
   Top = 182
   Caption = 'Form2'
-  ClientHeight = 583
-  ClientWidth = 918
+  ClientHeight = 718
+  ClientWidth = 1130
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
-  Font.Height = -11
+  Font.Height = -14
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   Menu = MainMenu1
@@ -15,27 +15,34 @@ object Form2: TForm2
   Position = poScreenCenter
   OnClose = FormClose
   OnResize = FormResize
-  PixelsPerInch = 96
-  TextHeight = 13
+  PixelsPerInch = 120
+  TextHeight = 16
   object PaintBox1: TPaintBox
-    Left = 560
-    Top = 160
-    Width = 105
-    Height = 105
+    Left = 689
+    Top = 197
+    Width = 129
+    Height = 129
+    Margins.Left = 4
+    Margins.Top = 4
+    Margins.Right = 4
+    Margins.Bottom = 4
   end
   object Splitter1: TSplitter
-    Left = 461
-    Top = 41
-    Height = 435
-    ExplicitLeft = 344
-    ExplicitTop = 200
-    ExplicitHeight = 100
+    Left = 567
+    Top = 50
+    Width = 4
+    Height = 541
+    Margins.Left = 4
+    Margins.Top = 4
+    Margins.Right = 4
+    Margins.Bottom = 4
+    ExplicitHeight = 536
   end
   object Panel1: TPanel
     Left = 0
     Top = 0
-    Width = 918
-    Height = 41
+    Width = 1130
+    Height = 50
     Margins.Left = 2
     Margins.Top = 2
     Margins.Right = 2
@@ -45,9 +52,9 @@ object Form2: TForm2
     OnResize = Panel1Resize
     object SpeedButton1: TSpeedButton
       Left = 0
-      Top = 5
-      Width = 32
-      Height = 32
+      Top = 6
+      Width = 39
+      Height = 40
       Margins.Left = 2
       Margins.Top = 2
       Margins.Right = 2
@@ -70,10 +77,10 @@ object Form2: TForm2
       OnClick = SpeedButton1Click
     end
     object SpeedButton3: TSpeedButton
-      Left = 36
-      Top = 4
-      Width = 32
-      Height = 32
+      Left = 44
+      Top = 5
+      Width = 40
+      Height = 39
       Margins.Left = 2
       Margins.Top = 2
       Margins.Right = 2
@@ -97,10 +104,10 @@ object Form2: TForm2
       OnClick = SpeedButton3Click
     end
     object SpeedButton2: TSpeedButton
-      Left = 68
-      Top = 4
-      Width = 32
-      Height = 32
+      Left = 84
+      Top = 5
+      Width = 39
+      Height = 39
       Margins.Left = 2
       Margins.Top = 2
       Margins.Right = 2
@@ -123,10 +130,10 @@ object Form2: TForm2
       OnClick = SpeedButton2Click
     end
     object SpeedButton4: TSpeedButton
-      Left = 100
-      Top = 4
-      Width = 32
-      Height = 32
+      Left = 123
+      Top = 5
+      Width = 39
+      Height = 39
       Margins.Left = 2
       Margins.Top = 2
       Margins.Right = 2
@@ -149,10 +156,10 @@ object Form2: TForm2
       OnClick = SpeedButton4Click
     end
     object SpeedButton5: TSpeedButton
-      Left = 134
-      Top = 4
-      Width = 32
-      Height = 32
+      Left = 165
+      Top = 5
+      Width = 39
+      Height = 39
       Margins.Left = 2
       Margins.Top = 2
       Margins.Right = 2
@@ -175,10 +182,10 @@ object Form2: TForm2
       OnClick = SpeedButton5Click
     end
     object ComboBox3: TComboBox
-      Left = 182
-      Top = 7
-      Width = 209
-      Height = 21
+      Left = 224
+      Top = 9
+      Width = 257
+      Height = 24
       Margins.Left = 2
       Margins.Top = 2
       Margins.Right = 2
@@ -188,10 +195,14 @@ object Form2: TForm2
       OnChange = ComboBox3Change
     end
     object CheckBox1: TCheckBox
-      Left = 400
-      Top = 13
-      Width = 169
-      Height = 17
+      Left = 492
+      Top = 16
+      Width = 208
+      Height = 21
+      Margins.Left = 4
+      Margins.Top = 4
+      Margins.Right = 4
+      Margins.Bottom = 4
       Caption = #1069#1082#1089#1087#1086#1088#1090#1080#1088#1086#1074#1072#1090#1100' '#1076#1072#1085#1085#1099#1077
       TabOrder = 1
       OnClick = CheckBox1Click
@@ -199,9 +210,9 @@ object Form2: TForm2
   end
   object FImage1: TFImage
     Left = 0
-    Top = 41
-    Width = 461
-    Height = 435
+    Top = 50
+    Width = 567
+    Height = 541
     Cursor = 1
     Margins.Left = 2
     Margins.Top = 2
@@ -215,9 +226,9 @@ object Form2: TForm2
   end
   object Panel2: TPanel
     Left = 0
-    Top = 476
-    Width = 918
-    Height = 88
+    Top = 591
+    Width = 1130
+    Height = 108
     Margins.Left = 2
     Margins.Top = 2
     Margins.Right = 2
@@ -227,10 +238,10 @@ object Form2: TForm2
     BevelOuter = bvNone
     TabOrder = 2
     object Label3: TLabel
-      Left = 456
-      Top = 44
-      Width = 42
-      Height = 13
+      Left = 561
+      Top = 54
+      Width = 50
+      Height = 16
       Margins.Left = 2
       Margins.Top = 2
       Margins.Right = 2
@@ -238,17 +249,17 @@ object Form2: TForm2
       Caption = 'Azmuth'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
-      Font.Height = -12
+      Font.Height = -15
       Font.Name = 'MS Sans Serif'
       Font.Style = [fsBold]
       ParentFont = False
       WordWrap = True
     end
     object Label1: TLabel
-      Left = 452
-      Top = 8
-      Width = 54
-      Height = 13
+      Left = 556
+      Top = 10
+      Width = 66
+      Height = 16
       Margins.Left = 2
       Margins.Top = 2
       Margins.Right = 2
@@ -256,7 +267,7 @@ object Form2: TForm2
       Caption = 'Elevation'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
-      Font.Height = -12
+      Font.Height = -15
       Font.Name = 'MS Sans Serif'
       Font.Style = [fsBold]
       ParentFont = False
@@ -265,8 +276,8 @@ object Form2: TForm2
     object Chart1: TChart
       Left = 1
       Top = 1
-      Width = 224
-      Height = 86
+      Width = 276
+      Height = 106
       Margins.Left = 2
       Margins.Top = 2
       Margins.Right = 2
@@ -290,10 +301,10 @@ object Form2: TForm2
       end
     end
     object Chart2: TChart
-      Left = 225
+      Left = 277
       Top = 1
-      Width = 224
-      Height = 86
+      Width = 276
+      Height = 106
       Margins.Left = 2
       Margins.Top = 2
       Margins.Right = 2
@@ -317,10 +328,10 @@ object Form2: TForm2
       end
     end
     object ComboBox1: TComboBox
-      Left = 512
-      Top = 8
-      Width = 73
-      Height = 21
+      Left = 630
+      Top = 10
+      Width = 90
+      Height = 24
       Margins.Left = 2
       Margins.Top = 2
       Margins.Right = 2
@@ -330,10 +341,10 @@ object Form2: TForm2
       OnChange = ComboBox1Change
     end
     object ComboBox2: TComboBox
-      Left = 512
-      Top = 40
-      Width = 73
-      Height = 21
+      Left = 630
+      Top = 49
+      Width = 90
+      Height = 24
       Margins.Left = 2
       Margins.Top = 2
       Margins.Right = 2
@@ -345,8 +356,8 @@ object Form2: TForm2
   end
   object StatusBar1: TStatusBar
     Left = 0
-    Top = 564
-    Width = 918
+    Top = 699
+    Width = 1130
     Height = 19
     Margins.Left = 2
     Margins.Top = 2
@@ -359,28 +370,35 @@ object Form2: TForm2
       end>
   end
   object Panel3: TPanel
-    Left = 464
-    Top = 41
-    Width = 454
-    Height = 435
+    Left = 571
+    Top = 50
+    Width = 559
+    Height = 541
+    Margins.Left = 4
+    Margins.Top = 4
+    Margins.Right = 4
+    Margins.Bottom = 4
     Align = alClient
     Caption = 'Panel3'
     TabOrder = 4
     object Splitter2: TSplitter
       Left = 1
-      Top = 301
-      Width = 452
-      Height = 3
+      Top = 376
+      Width = 557
+      Height = 4
       Cursor = crVSplit
+      Margins.Left = 4
+      Margins.Top = 4
+      Margins.Right = 4
+      Margins.Bottom = 4
       Align = alBottom
-      ExplicitTop = 1
-      ExplicitWidth = 255
+      ExplicitTop = 370
     end
     object ListView1: TListView
       Left = 1
-      Top = 304
-      Width = 452
-      Height = 130
+      Top = 380
+      Width = 557
+      Height = 160
       Margins.Left = 2
       Margins.Top = 2
       Margins.Right = 2
@@ -389,42 +407,55 @@ object Form2: TForm2
       Columns = <
         item
           Caption = #8470
+          Width = 62
         end
         item
           Caption = #1055#1083#1086#1097#1072#1076#1100
+          Width = 62
         end
         item
           Caption = #1055#1077#1088#1080#1084#1077#1090#1088
+          Width = 62
         end
         item
           Caption = 'X - '#1062'.'#1084
+          Width = 62
         end
         item
           Caption = 'Y - '#1094'.'#1084'.'
+          Width = 62
         end
         item
           Caption = #1041#1086#1083#1100#1096#1072#1103' '#1087#1086#1083#1091#1086#1089#1100
+          Width = 62
         end
         item
           Caption = #1052#1072#1083#1072#1103' '#1087#1086#1083#1091#1086#1089#1100
+          Width = 62
         end
         item
           Caption = #1059#1075#1086#1083' '#1085#1072#1082#1083#1086#1085#1072
+          Width = 62
         end
         item
           Caption = #1050#1086#1101#1092'. '#1092#1086#1088#1084#1099
+          Width = 62
         end
         item
           Caption = 'TETA'
+          Width = 62
         end
         item
           Caption = 'MI'
+          Width = 62
         end
         item
           Caption = 'MA'
+          Width = 62
         end
         item
           Caption = 'S'
+          Width = 62
         end>
       TabOrder = 0
       ViewStyle = vsReport
@@ -432,8 +463,12 @@ object Form2: TForm2
     object FImage2: TFImage
       Left = 1
       Top = 1
-      Width = 452
-      Height = 300
+      Width = 557
+      Height = 375
+      Margins.Left = 4
+      Margins.Top = 4
+      Margins.Right = 4
+      Margins.Bottom = 4
       BorderStyle = bsFSingle
       Align = alClient
       ParentColor = False

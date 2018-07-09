@@ -2,6 +2,7 @@
 
 #ifndef MainCdf2H
 #define MainCdf2H
+#define PI_VALUE   3.14159265358979
 //---------------------------------------------------------------------------
 #include <Classes.hpp>
 #include <Controls.hpp>
@@ -23,6 +24,7 @@
 #include "Cube3D.h"
 #include <ActnList.hpp>
 #include <System.Actions.hpp>
+
 enum EView2D {eSourceData, eSourceCone, eIntepolatedCone, eSourceVirtical, eInterpolatedVertical, eInterpolatedHorizontal, eResultCell} ;
 enum EView3D {e3dSourceData, e3dConeContours};
 typedef struct
@@ -54,6 +56,9 @@ typedef struct   // массив структур вектора признаков
 	double teta;
 	double mi;
 	double ma;
+        double Dist;
+        double alfa;
+        double VecPr; // ска€л€рное произведение векторов
 
 }VectorP;
 
@@ -196,10 +201,11 @@ private:	// User declarations
         int             m_max_lenght;
 
 		TList          *FList;
-		TList          *VecList;// список признаков дл€ каждой €чейки
+		TList          *VecList;// список признаков дл€ каждой €чейки (объекты)
 		TList           *MapList;
         double         RLat; //координаты радара
         double         RLon; // координаты радара
+        awpPoint       Pold; // координаты центра масс с предыдущей картинке
 
         // Ќаходит ближайшую €чейку к заданной площадке
 		VectorP* GetNearCell(double x, double y);
@@ -228,6 +234,7 @@ private:	// User declarations
         awpImage* GetInterCone(int index);
 
 		void __fastcall FindObjects(awpImage* image,awpImage*   image2);
+                void __fastcall CallDistOrient(awpPoint P, awpPoint P1, int X, int Y,double& DistC, double& alfa, double& VecPr);
 		void __fastcall FImageResult(TList* VecList, TList * MapList);
 		void __fastcall DrawResult(TList * MapList);
 		bool __fastcall IsFlashInRect(awpRect r, int w, int h);

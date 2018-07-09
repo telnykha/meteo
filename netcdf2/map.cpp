@@ -14,7 +14,7 @@ TMapElement::TMapElement()
 
 {
 	N=0;
-	Vector[12];
+	Vector[14];
 
 
 }

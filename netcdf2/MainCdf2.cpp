@@ -505,14 +505,14 @@ CLEANUP:
     _CHECK_RESULT_((res = awpCheckImage(pImg)))
 	if (teta == NULL || mi == NULL || ma == NULL)
     {
-        res = AWP_BADARG;
-        _ERR_EXIT_
+		res = AWP_BADARG;
+		_ERR_EXIT_
 	}
     /*check the capabilities*/
     if (pImg->bChannels > 1 || pImg->dwType != AWP_BYTE)
     {
         res = AWP_BADARG;
-        _ERR_EXIT_
+		_ERR_EXIT_
     }
 	/*init local variables*/
     mxx = 0; myy = 0; mxy = 0;
@@ -540,6 +540,14 @@ CLEANUP:
 		}
 	}
 	//intes /=s;
+
+	if (intes==0)
+	  {
+
+         res = AWP_BADARG;
+		_ERR_EXIT_
+      }
+
 	mxx /= intes;
 	myy /= intes;
 	mxy /= intes;
@@ -2199,8 +2207,8 @@ void __fastcall TForm2::DrawFlashes1(awpImage* image)
 		return;
 
 	awpImage* img = image;
-	int w = img->sSizeX/2;
-	int h = img->sSizeY/2;
+	int w = img->sSizeX;
+	int h = img->sSizeY;
 	double x = 0;
 	double y = 0;
 
@@ -2210,7 +2218,7 @@ void __fastcall TForm2::DrawFlashes1(awpImage* image)
 		for (int i = 0; i < e->ListFlash->Count; i++)
 		{
 			TFlash* f = (TFlash*)e->ListFlash->Items[i];
-			ConLL(f->lat, f->lon, RLat,RLon, w,h,  x, y);
+			ConLL(f->lat, f->lon, RLat, RLon, w,h, m_2DOptions.dist_x,  x, y);
 			awpRect rect;
 
 			double r = (double)f->num / 100. < 1 ? 10 : f->num / 10;
@@ -2230,6 +2238,51 @@ void __fastcall TForm2::ResultCellsActionExecute(TObject *Sender)
 	m_2DViewOptions = eResultCell;
 	Draw2DScene();
 }
+
+void __fastcall TForm2::CallDistOrient(awpPoint P, awpPoint P1, int X, int Y, double& DistC, double& alfa, double& VecPr)
+
+{
+   // иницилизаци€ переменных
+   double cX1, cX2, cY1, cY2;     // center mass
+   cX1=P.X;
+   cX2=P1.X;
+   cY1=P.Y;
+   cY2=P1.Y;
+   int width, height;   // size image
+  // int X, Y;// координаты центра квадрата карты веро€тности
+   double dx, dy;
+     // рассто€ние между двум€ точками и угол
+   DistC=sqrt((cX1-cX2)*(cX1-cX2)+(cY1-cY2)*(cY1-cY2));
+   //направление и угол
+   dx=(cX1-cY2);
+   dy=(cY1-cY2);
+
+   if (cX1==cX2, cY1<cY2) {
+		alfa=90;
+   }
+   else if (cX1==cX2, cY1>cY2){
+		alfa=270;
+   }
+   else if (cX1<cX2, cY1<=cY2) {
+		alfa=((atan(dy/dx)))*180/PI_VALUE;
+        }
+   else if (cX1>cX2, cY1<=cY2) {
+        alfa=((atan(dy/dx)))*180/PI_VALUE+90;
+             }
+             else if (cX1>cX2, cY1>=cY2) {
+                   alfa=((atan(dy/dx)))*180/PI_VALUE+180;
+                  }
+                  else if ( cX1<cX2, cY1>=cY2) {
+                        alfa=((atan(dy/dx)))*180/PI_VALUE+270;
+                       }
+		   alfa=alfa/360;
+     // векторное произведение
+	   double vec1x=(cX1-X);
+        double vec1y=(cY1-Y);
+       double vec2x=(cX2-X);
+	   double vec2y=(cY2-Y);
+	   VecPr=vec1x*vec2x+vec1y*vec2y;
+}
 //---------------------------------------------------------------------------
 
 void __fastcall TForm2::ResultCellsActionUpdate(TObject *Sender)
@@ -2245,8 +2298,24 @@ void __fastcall TForm2::N4Click(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm2::FindObjects(awpImage*  img1, awpImage*  img2)
 {
-	ListView1->Clear();
-	VecList->Clear();
+ListView1->Clear();
+
+        double DistC;
+        double alfa;
+        double VecPr;
+      // awpImage* img = image;
+        int ww=(img1->sSizeX)/2;
+        int hh=(img1->sSizeY)/2;
+		 Pold.X= ww;
+		 Pold.Y=hh;
+        if (VecList->Count!=0) {
+
+	VectorP* v = (VectorP*)VecList->Items[0];
+                Pold.X = v->cX;
+                Pold.Y =  v->cY;
+        }
+
+
 
 	int SumS=0;  //сумма площадей всех €чеек
 	double SumP=0;  // сумма периметров всех €чеек
@@ -2259,6 +2328,19 @@ void __fastcall TForm2::FindObjects(awpImage*  img1, awpImage*  img2)
 
 	 awpGetOrientation(img1, &TETA, &MI, &MA);
 	 awpGetCentroid(img1, &P);
+        //cоздаем карту
+	/* for(int y = 0; y < img1->sSizeX; y+= 8)
+	 {
+		for (int x = 0; x < img1->sSizeX; x+= 8)
+		{
+                   TMapElement* e = new TMapElement();
+		   e->S_lat = y+16;
+		   e->S_lon = x+16;
+		   e->Size_lat = 34;
+		   e->Size_lon = 34; */
+		      //CallDistOrient(Pold, P, e->S_lon, e->S_lat, DistC, alfa, VecPr);
+
+         VecList->Clear();
 	VecList->Add(new VectorP);
 
 	VectorP* v = (VectorP*)VecList->Items[0];
@@ -2267,6 +2349,11 @@ void __fastcall TForm2::FindObjects(awpImage*  img1, awpImage*  img2)
 	v->ma=MA;
 	v->cX=P.X;
 	v->cY=P.Y;
+	v->Dist=DistC;
+	v->alfa=alfa;
+	v->VecPr=VecPr;
+
+
 
 	for (int i = 0; i < num; i++)
 	{
@@ -2280,15 +2367,15 @@ void __fastcall TForm2::FindObjects(awpImage*  img1, awpImage*  img2)
 		{
 			VectorP *VP=new VectorP;
 			// awpDrawCRect(img2,&rect, 0,255,255, 1);
-			// площадь
-			int s;
+
+			int s;   // площадь
 			awpStrObjSquare(&obj[i], &s);
 			VP->s=s;
 			TListItem* item = ListView1->Items->Add();
 			item->Caption = IntToStr(i);
 			item->SubItems->Add(s);
-						//периметр
-            awpContour* c = NULL;
+
+            awpContour* c = NULL;    //периметр
 			awpCreateContour(&c, obj[i].Num*2, true);
             awpGetObjCountour(&obj[i], c);
             if (c == NULL)
@@ -2304,7 +2391,6 @@ void __fastcall TForm2::FindObjects(awpImage*  img1, awpImage*  img2)
 			awpGetObjCentroid(img1, &obj[i], &p);
 			VP->cX=p.X;
 			VP->cY=p.Y;
-
 			if(OptionsDlg->CheckBox4->Checked)
 			{
 				awpDrawCPoint(img2, p, 0,0,255, 3);
@@ -2312,20 +2398,22 @@ void __fastcall TForm2::FindObjects(awpImage*  img1, awpImage*  img2)
 
 			item->SubItems->Add(p.X);
 			item->SubItems->Add(p.Y);
+
 			// эллипс
 			double teta;
 			double mi;
 			double ma;
 			awpGetObjOrientation(img1, &obj[i],&teta, &mi, &ma); ///нодо смотреть и исправить и посмотреть как рисуютс€ элипсы
-            VP->teta=teta;
+                        VP->teta=teta;
 			VP->mi=mi;
 			VP->ma=ma;
 			awpDrawCEllipse(img2, p, mi,ma, teta, 0,0,255, 1);
-            	item->SubItems->Add(ma);
+				item->SubItems->Add(ma);
 				item->SubItems->Add(mi);
 				item->SubItems->Add(teta);
-
-
+			       //	item->SubItems->Add(DistC);
+			      //	item->SubItems->Add(alfa);
+			       //	item->SubItems->Add(VecPr);
 		   //	awpGetOrientation(img1, &TETA, &MI, &MA);
 		   //	VP->TETA=TETA;
 		   //	VP->MI=MI;
@@ -2341,7 +2429,7 @@ void __fastcall TForm2::FindObjects(awpImage*  img1, awpImage*  img2)
 		   r.bottom = P.Y+10;
 		  awpDrawCross(img2, &r, 2, 255, 1);
 		  */
-		   VecList->Add(VP);
+//		   VecList->Add(VP);
 
 		SumS+=VP->s;
 		SumP+=VP->p;
@@ -2364,17 +2452,19 @@ void __fastcall TForm2::FindObjects(awpImage*  img1, awpImage*  img2)
 		v->s=SumS;
 		v->p=SumP;
 
-	VecList->Add(v);
+
+
+  //	VecList->Add(v);
 	item->SubItems->Add(v->s);
 	item->SubItems->Add(v->p);
 	item->SubItems->Add(v->teta);
 	item->SubItems->Add(v->mi);
 	item->SubItems->Add(v->ma);
-
-
-
+       // item->SubItems->Add(v->Dist);
+       //	item->SubItems->Add(v->alfa);
+       //	item->SubItems->Add(v->VecPr);
 	awpFreeStrokes(num, &obj);
-	DrawFlashes1(img2);
+   	DrawFlashes1(img2);
 }
 
 
@@ -2429,6 +2519,7 @@ void __fastcall TForm2::FImage1MouseUp(TObject *Sender, TMouseButton Button, TSh
    void __fastcall TForm2::FImageResult(TList* VecList, TList* MapList)
    {
 	  MapList->Clear();
+
 	  double R,R0,r;
 	  awpImage* img = NULL;
 	  FImage1->Bitmap->GetAWPImage(&img);
@@ -2437,9 +2528,9 @@ void __fastcall TForm2::FImage1MouseUp(TObject *Sender, TMouseButton Button, TSh
 	   double x1=VP->cX;
 	   double y1=VP->cY;
 	 //cоздаем карту
-	 for(int y = 0; y < img->sSizeX; y+= 32)
+	 for(int y = 0; y < img->sSizeX; y+= 8)
 	 {
-		for (int x = 0; x < img->sSizeX; x+= 32)
+		for (int x = 0; x < img->sSizeX; x+= 8)
 		{
 		  R=sqrt((x1-x)*(x1-x)+(y1-y)*(y1-y));
 
@@ -2453,12 +2544,22 @@ void __fastcall TForm2::FImage1MouseUp(TObject *Sender, TMouseButton Button, TSh
 		   double P=VP->p;
 		   double MI=VP->mi;
 		   double MA=VP->ma;
-		   e->Vector[0]=(1.-  R/R0);
-		   e->Vector[1]=S/(R*R);
-		   e->Vector[2]=4*AWP_PI*S/(P*P);//4*sqrt(S*AWP_PI)/P; //обратный коэф малинковского
-		   e->Vector[3]=MI/MA;
-		   e->Vector[4]=MA/(R0);
+		  // double dist=VP->Dist;
+		   if(P==0 || MA==0 ||R==0)
+           {
+           //
+           }
+           else
+           {    double gama2=(R)/(1.4*R0);
+               double KM=(sqrt(S*AWP_PI)/P);
+               double KF=(4*AWP_PI*S/(P*P));
+               e->Vector[0]=(1.-(R/R0));
+               e->Vector[1]=pow(KM, gama2);
 
+               e->Vector[2]=pow(KF, gama2); //обратный коэф малинковского
+			   e->Vector[3]=MI/MA;
+			   e->Vector[4]=MA/(R);
+           }
 		   //memset(e->Vector, 0, sizeof(e->Vector));
 
 		   VectorP*  vp = GetNearCell(e->S_lon, e->S_lat);
@@ -2469,31 +2570,42 @@ void __fastcall TForm2::FImage1MouseUp(TObject *Sender, TMouseButton Button, TSh
 			  double p=vp->p;
 			  double mi=vp->mi;
 			  double ma=vp->ma;
+              if (p==0 || ma==0)
+              {
+               //
+              }
+              else
+              {
+                   double ee = 10./R0;
+                   double gama=(r+10)/(R+(1.4*R0));
+		           double gama1=(r)/(1.4*R0);
+                   double a=(p/(P+p));
+		           double km=(sqrt(s*AWP_PI)/p);
+                   double kf=(4*AWP_PI*s/(p*p));
 
-
-		   e->Vector[5]=(1.-  r/R0);
-		   e->Vector[6]=sqrt(s*AWP_PI)/p;  //обратный коэф малинковского
-		   e->Vector[7]=mi/ma;
-		   e->Vector[8]= ma/(r+1);
-		   e->Vector[9]=4*AWP_PI*s/(p*p);  //коэф формы
-		   e->Vector[10]=p/(2*AWP_PI*(r+1));
-		   e->Vector[11]=s/(2*AWP_PI*(r+1));
-
+                   e->Vector[5]=(1.-  r/(2*R+1));
+                   e->Vector[6]=pow(km, gama);  //обратный коэф малинковского
+                   e->Vector[7]=pow(kf, gama);
+				   e->Vector[8]= pow(a,gama1);
+				   e->Vector[9]=(1)/(p*p);  //коэф формы
+                   e->Vector[10]=ee*p/(2*AWP_PI*(r+1));
+                   e->Vector[11]=ee*s/(2*AWP_PI*(r+1));
+              }
 		   }
-
-
-		   MapList->Add(e);
+                  MapList->Add(e);
 
 		}
 
 	 }
-
+     awpReleaseImage(&img);
    }
 
    void __fastcall TForm2::DrawResult(TList * MapList)
    {
 	   awpImage* img = NULL;
-	   awpCreateImage(&img, 1200, 1200, 1, AWP_BYTE);
+
+	   awpCreateImage(&img, 1200, 1200, 1, AWP_DOUBLE);
+       AWPDOUBLE* pp = (AWPDOUBLE*)img->pPixels;
 	   for (int i = 0; i < MapList->Count; i++)
 	   {
 		   TMapElement* e = (TMapElement*)MapList->Items[i];
@@ -2503,41 +2615,60 @@ void __fastcall TForm2::FImage1MouseUp(TObject *Sender, TMouseButton Button, TSh
 		   r.right = e->S_lon + e->Size_lon/2;
 		   r.top = e->S_lat - e->Size_lon/2;
 		   r.bottom = e->S_lat + e->Size_lon/2;
+           if (r.left < 0 || r.top < 0 || r.right >= 1200||r.bottom>=1200){
+              continue;
+           }
 		   double v = 0;
+           int w=r.right-r.left;
+           int h=r.bottom-r.top;
 		   double num_flash = this->IsFlashInRect(r,600,600);
 		   if (this->m_outFile != NULL)
-				fprintf(m_outFile, "%f:", num_flash );
-		   for (int j = 0; j < 11; j++)
+		  		fprintf(m_outFile, "%f:", num_flash );
+		   for (int j = 4; j < 5; j++)  //количество признаков
 		   {
-			  v+= 0.125*e->Vector[j];
+			 //if (j==0||j==3||j==4) {continue;
+             //
+			 // }
+			  v+= 0.2*e->Vector[j];
 			  if (this->m_outFile != NULL)
 				fprintf(m_outFile, "%f:", e->Vector[j] );
 		   }
 		   if (this->m_outFile != NULL)
 			 fprintf(m_outFile, "\n");
-		   v*=255;
-		   awpFillRect (img, &r, 0, v);
+		 //  v*=255;
+
+		   for (int y = r.top; y < r.bottom; y++)
+           {
+           	 for (int x = r.left; x < r.right; x++)
+             {
+                 pp[y*img->sSizeX + x] +=v;
+             }
+           }
+
+		   //awpFillRect (img, &r, 0, v);
 	   }
+       awpConvert(img, AWP_CONVERT_TO_BYTE_WITH_NORM);
 	   FImage2->Bitmap->SetAWPImage(img);
 	   FImage2->BestFit();
 	   awpReleaseImage(&img);
+
    }
 
 VectorP* TForm2::GetNearCell(double x, double y)
 {
 	if (VecList == NULL)
 		return NULL;
-    if (VecList->Count < 2)
-        return NULL;
-    double mind = 1e10;
+	if (VecList->Count < 2)
+		return NULL;
+	double mind = 1e10;
     int    minidx;
     for (int i = 1; i < VecList->Count; i++)
     {
 	   VectorP* v = (VectorP*)VecList->Items[i];
        double d = sqrt((x - v->cX)*(x - v->cX) + (y-v->cY)*(y-v->cY));
        if (d < mind)
-       {
-         mind = d;
+	   {
+		 mind = d;
          minidx = i;
 	   }
     }
@@ -2570,7 +2701,7 @@ bool __fastcall TForm2::IsFlashInRect(awpRect r, int w, int h)
 		for (int i = 0; i < e->ListFlash->Count; i++)
 		{
 			TFlash* f = (TFlash*)e->ListFlash->Items[i];
-			ConLL(f->lat, f->lon, RLat,RLon, w,h,  x, y);
+			ConLL(f->lat, f->lon, RLat, RLon, w,h, m_2DOptions.dist_x,  x, y);
 			if (x > r.left && x < r.right && y > r.top && y < r.bottom)
 				return true;
 		}
