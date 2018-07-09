@@ -1,6 +1,6 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
-        <ProjectGuid>{72346297-D5AF-4595-B6F4-4A1F277B7D5B}</ProjectGuid>
+        <ProjectGuid>{68F3067F-D0D5-4772-8574-D60D1336C1F3}</ProjectGuid>
         <ProjectType>CppVCLApplication</ProjectType>
         <MainSource>netcdf2.cpp</MainSource>
         <Base>True</Base>
@@ -8,7 +8,7 @@
         <TargetedPlatforms>1</TargetedPlatforms>
         <AppType>Application</AppType>
         <FrameworkType>VCL</FrameworkType>
-        <ProjectVersion>18.2</ProjectVersion>
+        <ProjectVersion>16.1</ProjectVersion>
         <Platform Condition="'$(Platform)'==''">Win32</Platform>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Base' or '$(Base)'!=''">
@@ -19,6 +19,11 @@
         <CfgParent>Base</CfgParent>
         <Base>true</Base>
     </PropertyGroup>
+    <PropertyGroup Condition="('$(Platform)'=='Win64' and '$(Base)'=='true') or '$(Base_Win64)'!=''">
+        <Base_Win64>true</Base_Win64>
+        <CfgParent>Base</CfgParent>
+        <Base>true</Base>
+    </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Debug' or '$(Cfg_1)'!=''">
         <Cfg_1>true</Cfg_1>
         <CfgParent>Base</CfgParent>
@@ -26,6 +31,12 @@
     </PropertyGroup>
     <PropertyGroup Condition="('$(Platform)'=='Win32' and '$(Cfg_1)'=='true') or '$(Cfg_1_Win32)'!=''">
         <Cfg_1_Win32>true</Cfg_1_Win32>
+        <CfgParent>Cfg_1</CfgParent>
+        <Cfg_1>true</Cfg_1>
+        <Base>true</Base>
+    </PropertyGroup>
+    <PropertyGroup Condition="('$(Platform)'=='Win64' and '$(Cfg_1)'=='true') or '$(Cfg_1_Win64)'!=''">
+        <Cfg_1_Win64>true</Cfg_1_Win64>
         <CfgParent>Cfg_1</CfgParent>
         <Cfg_1>true</Cfg_1>
         <Base>true</Base>
@@ -41,84 +52,105 @@
         <Cfg_2>true</Cfg_2>
         <Base>true</Base>
     </PropertyGroup>
+    <PropertyGroup Condition="('$(Platform)'=='Win64' and '$(Cfg_2)'=='true') or '$(Cfg_2_Win64)'!=''">
+        <Cfg_2_Win64>true</Cfg_2_Win64>
+        <CfgParent>Cfg_2</CfgParent>
+        <Cfg_2>true</Cfg_2>
+        <Base>true</Base>
+    </PropertyGroup>
     <PropertyGroup Condition="'$(Base)'!=''">
-        <Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
         <VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
         <SanitizedProjectName>netcdf2</SanitizedProjectName>
-        <DCC_Namespace>Vcl;Vcl.Imaging;Vcl.Touch;Vcl.Samples;Vcl.Shell;System;Xml;Data;Datasnap;Web;Soap;$(DCC_Namespace)</DCC_Namespace>
+        <IncludePath>$(PHOTON)\photon\;$(AWP);$(LF);$(TINY);$(IncludePath)</IncludePath>
         <VerInfo_Locale>1049</VerInfo_Locale>
-        <AllPackageLibs>vcl.lib;rtl.lib;photon.lib;bcbsmp.lib;vclx.lib;vclimg.lib;Tee925.lib</AllPackageLibs>
-        <FinalOutputDir>..\bin\</FinalOutputDir>
-        <BCC_InlineFunctionExpansion>false</BCC_InlineFunctionExpansion>
-        <BRCC_IncludePath>$(BDS)\Projects;$(BDS)\Bin;$(BDS)\include;$(PHOTON);$(BDS)\include\vcl;$(AWP);..\netcdfLib\include;$(LF);$(TINY);$(BRCC_IncludePath)</BRCC_IncludePath>
-        <DCC_AdditionalSwitches> -M</DCC_AdditionalSwitches>
-        <UsePackages>true</UsePackages>
-        <TASM_AdditionalSwitches> /w2</TASM_AdditionalSwitches>
-        <ILINK_LibraryPath>$(BDS)\Projects;$(BDS)\Bin;$(BDS)\Projects\netcdf2;$(BDS)\Projects\Lib;$(BDS)\lib\obj;$(BDS)\lib;..\netcdflib\lib;$(BDS)\lib\psdk;$(AWPLIB);$(ILINK_LibraryPath)</ILINK_LibraryPath>
-        <DCC_CBuilderOutput>JPHNE</DCC_CBuilderOutput>
-        <BCC_DebugLineNumbers>true</BCC_DebugLineNumbers>
-        <PackageImports>vcl.bpi;rtl.bpi;dbrtl.bpi;adortl.bpi;vcldb.bpi;vclx.bpi;bdertl.bpi;vcldbx.bpi;ibxpress.bpi;dsnap.bpi;dsnap.bpi;dsnapcon.bpi;teeui.bpi;teedb.bpi;tee.bpi;dss.bpi;dsnapcon.bpi;bcbsmp.bpi;vclie.bpi;xmlrtl.bpi;inet.bpi;inetdbbde.bpi;inetdbxpress.bpi;inetdb.bpi;webdsnap.bpi;bcbie.bpi;websnap.bpi;soaprtl.bpi;dbexpress.bpi;dbxcds.bpi;indycore.bpi;indysystem.bpi;bcboffice2k.bpi;$(PackageImports)</PackageImports>
-        <DynamicRTL>true</DynamicRTL>
-        <BCC_PCHCache>true</BCC_PCHCache>
-        <BCC_IncludePath>$(BDS)\Bin;$(BDS)\include;$(PHOTON);$(PHOTON)\photon\;..\netcdfLib\include;$(LF);$(TINY);$(AWP);$(PHOTON)\\;$(LF)\;$(BCC_IncludePath)</BCC_IncludePath>
-        <TASM_IncludePath>$(BDS)\Projects;$(BDS)\Bin;$(BDS)\include;$(PHOTON);$(BDS)\include\vcl;$(AWP);..\netcdfLib\include;$(LF);$(TINY);$(TASM_IncludePath)</TASM_IncludePath>
-        <DCC_UnitSearchPath>.\;$(BDS)\lib;$(BDS)\lib\obj;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
-        <DCC_IncludePath>.\;$(BDS)\lib;$(BDS)\lib\obj;$(DCC_IncludePath)</DCC_IncludePath>
-        <ILINK_FullDebugInfo>true</ILINK_FullDebugInfo>
-        <BCC_GenerateWindowsApp>true</BCC_GenerateWindowsApp>
-        <BCC_DisableOptimizations>true</BCC_DisableOptimizations>
+        <DCC_Namespace>Vcl;Vcl.Imaging;Vcl.Touch;Vcl.Samples;Vcl.Shell;System;Xml;Data;Datasnap;Web;Soap;$(DCC_Namespace)</DCC_Namespace>
+        <Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
         <ILINK_AppType>Windows</ILINK_AppType>
+        <BCC_IncludePath>$(BDS)\Projects;$(BDS)\Bin;$(BDS)\include;$(PHOTON);$(BDS)\include\vcl;$(AWP);..\netcdfLib\include;$(LF);$(TINY);$(BCC_IncludePath)</BCC_IncludePath>
+        <FinalOutputDir>..\bin\</FinalOutputDir>
+        <DCC_UnitSearchPath>.\;$(BDS)\lib;$(BDS)\lib\obj;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
+        <AllPackageLibs>vcl.lib;rtl.lib;photon.lib;tee.lib;bcbsmp.lib;vclx.lib;vclimg.lib</AllPackageLibs>
+        <DCC_IncludePath>.\;$(BDS)\lib;$(BDS)\lib\obj;$(DCC_IncludePath)</DCC_IncludePath>
+        <DCC_AdditionalSwitches> -M</DCC_AdditionalSwitches>
+        <ILINK_LibraryPath>$(BDS)\Bin;$(BDS)\lib;..\netcdflib\lib;$(AWPLIB);$(ILINK_LibraryPath)</ILINK_LibraryPath>
         <BCC_SourceDebuggingOn>true</BCC_SourceDebuggingOn>
+        <TASM_IncludePath>$(BDS)\Projects;$(BDS)\Bin;$(BDS)\include;$(PHOTON);$(BDS)\include\vcl;$(AWP);..\netcdfLib\include;$(LF);$(TINY);$(TASM_IncludePath)</TASM_IncludePath>
+        <BCC_InlineFunctionExpansion>false</BCC_InlineFunctionExpansion>
+        <DCC_CBuilderOutput>JPHNE</DCC_CBuilderOutput>
+        <DynamicRTL>true</DynamicRTL>
         <TASM_Debugging>Full</TASM_Debugging>
+        <BRCC_IncludePath>$(BDS)\Projects;$(BDS)\Bin;$(BDS)\include;$(PHOTON);$(BDS)\include\vcl;$(AWP);..\netcdfLib\include;$(LF);$(TINY);$(BRCC_IncludePath)</BRCC_IncludePath>
+        <TASM_AdditionalSwitches> /w2</TASM_AdditionalSwitches>
+        <BCC_DebugLineNumbers>true</BCC_DebugLineNumbers>
+        <BCC_DisableOptimizations>true</BCC_DisableOptimizations>
+        <UsePackages>true</UsePackages>
+        <ILINK_FullDebugInfo>true</ILINK_FullDebugInfo>
+        <PackageImports>vcl.bpi;rtl.bpi;dbrtl.bpi;adortl.bpi;vcldb.bpi;vclx.bpi;bdertl.bpi;vcldbx.bpi;ibxpress.bpi;dsnap.bpi;dsnap.bpi;dsnapcon.bpi;teeui.bpi;teedb.bpi;tee.bpi;dss.bpi;dsnapcon.bpi;bcbsmp.bpi;vclie.bpi;xmlrtl.bpi;inet.bpi;inetdbbde.bpi;inetdbxpress.bpi;inetdb.bpi;webdsnap.bpi;bcbie.bpi;websnap.bpi;soaprtl.bpi;dbexpress.bpi;dbxcds.bpi;indycore.bpi;indysystem.bpi;bcboffice2k.bpi;$(PackageImports)</PackageImports>
+        <BCC_GenerateWindowsApp>true</BCC_GenerateWindowsApp>
+        <BCC_PCHCache>true</BCC_PCHCache>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win32)'!=''">
-        <VerInfo_Locale>1033</VerInfo_Locale>
-        <Icon_MainIcon>netcdf2_Icon.ico</Icon_MainIcon>
-        <BCC_UserSuppliedOptions> -tWM -Vx -r- -k -Ve</BCC_UserSuppliedOptions>
+        <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <IncludePath>$(BDSINCLUDE)\windows\vcl;$(IncludePath)</IncludePath>
+        <DCC_Namespace>Winapi;System.Win;Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;Bde;$(DCC_Namespace)</DCC_Namespace>
+        <Icon_MainIcon>netcdf2_Icon1.ico</Icon_MainIcon>
+        <Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
+        <BRCC_Defines>_DEBUG;$(BRCC_Defines)</BRCC_Defines>
+        <VerInfo_Locale>1033</VerInfo_Locale>
         <OutputExt>exe</OutputExt>
+        <TASM_Defines>_DEBUG;$(TASM_Defines)</TASM_Defines>
+        <BCC_UserSuppliedOptions> -tWM -Vx -r- -k -Ve</BCC_UserSuppliedOptions>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Base_Win64)'!=''">
+        <Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
+        <Icon_MainIcon>netcdf2_Icon1.ico</Icon_MainIcon>
+        <IncludePath>$(BDSINCLUDE)\windows\vcl;$(IncludePath)</IncludePath>
         <BRCC_Defines>_DEBUG;$(BRCC_Defines)</BRCC_Defines>
         <TASM_Defines>_DEBUG;$(TASM_Defines)</TASM_Defines>
-        <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
-        <DCC_Namespace>Winapi;System.Win;Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;Bde;$(DCC_Namespace)</DCC_Namespace>
-        <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
-        <UWP_CppLogo44>$(BDS)\bin\Artwork\Windows\UWP\cppreg_UwpDefault_44.png</UWP_CppLogo44>
-        <UWP_CppLogo150>$(BDS)\bin\Artwork\Windows\UWP\cppreg_UwpDefault_150.png</UWP_CppLogo150>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1)'!=''">
+        <BCC_AllCodeguardOptions>true</BCC_AllCodeguardOptions>
+        <BCC_MonitorGlobalAndStackData>true</BCC_MonitorGlobalAndStackData>
+        <BCC_MonitorInlinePtrAccess>true</BCC_MonitorInlinePtrAccess>
+        <BCC_MonitorThis>true</BCC_MonitorThis>
         <TASM_DisplaySourceLines>true</TASM_DisplaySourceLines>
-        <DCC_Define>DEBUG;$(DCC_Define);$(DCC_Define)</DCC_Define>
-        <ILINK_LibraryPath>$(BDS)\lib\debug;$(ILINK_LibraryPath);$(ILINK_LibraryPath)</ILINK_LibraryPath>
-        <ILINK_DisableIncrementalLinking>true</ILINK_DisableIncrementalLinking>
         <DCC_AdditionalSwitches> -M -V</DCC_AdditionalSwitches>
-        <DCC_DebugInfoInExe>true</DCC_DebugInfoInExe>
+        <ILINK_DisableIncrementalLinking>true</ILINK_DisableIncrementalLinking>
+        <ILINK_LibraryPath>$(BDS)\lib\debug;$(ILINK_LibraryPath);$(ILINK_LibraryPath)</ILINK_LibraryPath>
         <IntermediateOutputDir>Debug_Build</IntermediateOutputDir>
+        <DCC_Define>DEBUG;$(DCC_Define);$(DCC_Define)</DCC_Define>
+        <DCC_DebugInfoInExe>true</DCC_DebugInfoInExe>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win32)'!=''">
-        <Debugger_DebugSourcePath>C:\_alt\VideoA\VideoAnalytics\awpipl2\src\;$(Debugger_DebugSourcePath)</Debugger_DebugSourcePath>
-        <VerInfo_Locale>1033</VerInfo_Locale>
-        <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
+        <BCC_AllCodeguardOptions>false</BCC_AllCodeguardOptions>
+        <BCC_MonitorThis>true</BCC_MonitorThis>
+        <BCC_MonitorInlinePtrAccess>true</BCC_MonitorInlinePtrAccess>
+        <BCC_MonitorGlobalAndStackData>true</BCC_MonitorGlobalAndStackData>
         <BCC_UserSuppliedOptions> -tWM -Vx -r- -k -Ve -k</BCC_UserSuppliedOptions>
-        <ILINK_LibraryPath>..\..\VideoA\VideoAnalytics\Modules\utils\photon4\lib\;$(AWP);$(LF);$(TINY);$(PHOTON);$(ILINK_LibraryPath)</ILINK_LibraryPath>
-        <LinkPackageStatics>photon.lib;vclimg.lib;Tee925.lib</LinkPackageStatics>
-        <LinkPackageImports>vcl.bpi;rtl.bpi;bcbsmp.bpi;vclx.bpi</LinkPackageImports>
+        <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
+        <ILINK_LibraryPath>D:\Users\Public\Documents\VideoA\VideoAnalytics\Modules\utils\photon4\lib\;$(BDS)\lib\win32\release\;$(ILINK_LibraryPath)</ILINK_LibraryPath>
+        <LinkPackageStatics>photon.lib;vclimg.lib</LinkPackageStatics>
+        <LinkPackageImports>vcl.bpi;rtl.bpi;tee.bpi;bcbsmp.bpi;vclx.bpi</LinkPackageImports>
         <BCC_Defines>_DEBUG;$(BCC_Defines);$(BCC_Defines)</BCC_Defines>
-        <IncludePath>C:\Users\Александр\Documents\Embarcadero\Studio\Projects\photon;C:\Users\Александр\Documents\Embarcadero\Studio\Projects\awplflib\include;$(IncludePath)</IncludePath>
-        <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
+        <VerInfo_Locale>1033</VerInfo_Locale>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Cfg_1_Win64)'!=''">
+        <BCC_Defines>_DEBUG;$(BCC_Defines);$(BCC_Defines)</BCC_Defines>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
-        <BCC_InlineFunctionExpansion>true</BCC_InlineFunctionExpansion>
-        <IntermediateOutputDir>Release_Build</IntermediateOutputDir>
-        <ILINK_LibraryPath>$(BDS)\lib\release;$(ILINK_LibraryPath);$(ILINK_LibraryPath)</ILINK_LibraryPath>
         <TASM_Debugging>None</TASM_Debugging>
-        <BCC_OptimizationLevel>Level2</BCC_OptimizationLevel>
         <DCC_AdditionalSwitches> -M -$O+</DCC_AdditionalSwitches>
+        <ILINK_LibraryPath>$(BDS)\lib\release;$(ILINK_LibraryPath);$(ILINK_LibraryPath)</ILINK_LibraryPath>
+        <BCC_InlineFunctionExpansion>true</BCC_InlineFunctionExpansion>
+        <BCC_OptimizationLevel>Level2</BCC_OptimizationLevel>
+        <IntermediateOutputDir>Release_Build</IntermediateOutputDir>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2_Win32)'!=''">
         <BCC_UserSuppliedOptions> -tWM -Vx -r- -k -Ve -r</BCC_UserSuppliedOptions>
         <BCC_Defines>NDEBUG;$(BCC_Defines);$(BCC_Defines)</BCC_Defines>
-        <LinkPackageImports>vcl.bpi;rtl.bpi;bcbsmp.bpi;vclx.bpi</LinkPackageImports>
-        <LinkPackageStatics>photon.lib;vclimg.lib;Tee925.lib</LinkPackageStatics>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Cfg_2_Win64)'!=''">
+        <BCC_Defines>NDEBUG;$(BCC_Defines);$(BCC_Defines)</BCC_Defines>
     </PropertyGroup>
     <ItemGroup>
         <CppCompile Include="Convert_Log_Lon.cpp">
@@ -141,7 +173,7 @@
         </CppCompile>
         <CppCompile Include="map.cpp">
             <DependentOn>map.h</DependentOn>
-            <BuildOrder>8</BuildOrder>
+            <BuildOrder>9</BuildOrder>
         </CppCompile>
         <CppCompile Include="NCDataUnit.cpp">
             <BuildOrder>23</BuildOrder>
@@ -149,12 +181,13 @@
         </CppCompile>
         <CppCompile Include="nc_XML_Import.cpp">
             <DependentOn>nc_XML_Import.h</DependentOn>
-            <BuildOrder>9</BuildOrder>
+            <BuildOrder>10</BuildOrder>
         </CppCompile>
         <CppCompile Include="netcdf2.cpp">
             <BuildOrder>5</BuildOrder>
             <BuildOrder>4</BuildOrder>
         </CppCompile>
+        <None Include="netcdf2.otares"/>
         <ResFiles Include="netcdf2.res">
             <BuildOrder>5</BuildOrder>
             <BuildOrder>2</BuildOrder>
@@ -164,10 +197,6 @@
             <Form>OptionsDlg</Form>
             <DependentOn>OptionsForm.h</DependentOn>
             <BuildOrder>1</BuildOrder>
-        </CppCompile>
-        <CppCompile Include="ResultSave.cpp">
-            <DependentOn>ResultSave.h</DependentOn>
-            <BuildOrder>10</BuildOrder>
         </CppCompile>
         <FormResources Include="OptionsForm.dfm"/>
         <FormResources Include="MainCdf2.dfm"/>
@@ -280,15 +309,26 @@
                     <ProjectProperties Name="VerifyPackages">True</ProjectProperties>
                     <ProjectProperties Name="IndexFiles">False</ProjectProperties>
                 </ProjectProperties>
+                <Excluded_Packages>
+                    <Excluded_Packages Name="$(BDSBIN)\dclBindCompFireDAC210.bpl">LiveBinding Expression Components FireDac</Excluded_Packages>
+                    <Excluded_Packages Name="$(BDSBIN)\bcboffice2k210.bpl">Embarcadero C++Builder Office 2000 Servers Package</Excluded_Packages>
+                    <Excluded_Packages Name="$(BDSBIN)\bcbofficexp210.bpl">Embarcadero C++Builder Office XP Servers Package</Excluded_Packages>
+                </Excluded_Packages>
                 <Source>
                     <Source Name="MainSource">netcdf2.cpp</Source>
                 </Source>
-                <Excluded_Packages/>
             </CPlusPlusBuilder.Personality>
             <Platforms>
                 <Platform value="Win32">True</Platform>
+                <Platform value="Win64">False</Platform>
             </Platforms>
             <Deployment>
+                <DeployFile LocalName="netcdf2.otares" Configuration="Debug" Class="ProjectFile">
+                    <Platform Name="Win32">
+                        <RemoteDir>.\</RemoteDir>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
                 <DeployFile Condition="'$(UsingDelphiRTL)'=='true'" LocalName="$(BDS)\bin64\borlndmm.dll" Class="DependencyModule">
                     <Platform Name="Win64">
                         <Overwrite>true</Overwrite>
